@@ -405,7 +405,7 @@ export default function Home() {
         </div>
         <Preface className="block lg:hidden" />
       </Section>
-      <Section className="flex-col items-center">
+      <Section className="flex-col items-center text-xl">
         <h3 className="mb-4 text-2xl font-medium">— About Me —</h3>
         <div className="flex w-full max-w-7xl flex-col items-center justify-center gap-4 bg-gradient-radial from-primary/10 from-10% to-transparent to-70% text-center text-justify font-extralight lg:gap-8 lg:p-12 lg:pb-0">
           <p>
@@ -438,7 +438,7 @@ export default function Home() {
             implemented it in a production environment the next Monday without
             any bugs or issues.
           </p>
-          <p className="my-3 flex flex-col gap-3 text-center font-normal lg:text-left lg:text-lg">
+          <p className="my-3 flex flex-col gap-3 text-center font-light lg:text-left lg:text-2xl">
             <span className="flex flex-col gap-x-1 gap-y-3 lg:flex-row">
               <span>I am a problem solver, and I love to be one.</span>
               <span>I am a team player, and I love to be one.</span>
