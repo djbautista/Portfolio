@@ -30,7 +30,7 @@ export default function Typography({
     const typed = new Typed(element.current, {
       strings: [content],
       typeSpeed: 100,
-      loop: true,
+      loop: false,
       backDelay: 2000,
       backSpeed: 30,
       showCursor: false,

@@ -358,21 +358,20 @@ const Section = ({
 export default function Home() {
   return (
     <main className="min-h-screen flex-col p-12 text-neutral-50">
-      <Section className="mx-auto max-w-7xl">
-        <div className="flex w-full flex-col items-start gap-8 lg:w-auto lg:gap-12 lg:py-8">
+      <Section className="mx-auto max-w-6xl">
+        <div className="flex w-full flex-col items-start justify-evenly gap-8 lg:w-auto lg:gap-12 lg:py-8">
           <div className="w-full">
             <h3 className="mb-2 text-2xl font-light lg:mb-4 lg:text-4xl xl:mb-6 xl:text-5xl">
               Hi, I&apos;m
             </h3>
-            <Typography
-              as="h1"
-              className={classNames([
-                'mb-4 min-h-24 w-full text-5xl md:w-full lg:mb-6 lg:min-w-[660px] xl:mb-8 xl:text-6xl',
-                silkscreen.className,
-              ])}
-            >
-              DAVID BAUTISTA
-            </Typography>
+            <div className="mb-4 min-h-36 w-full max-w-xl text-4xl md:text-6xl lg:mb-6 xl:mb-8 xl:text-7xl">
+              <Typography as="h1" className={silkscreen.className}>
+                DAVID
+              </Typography>
+              <Typography as="h1" className={silkscreen.className}>
+                BAUTISTA
+              </Typography>
+            </div>
             <h2 className="text-xl font-extralight lg:text-2xl xl:text-3xl">
               YOUR NEXT STAFF SOFTWARE ENGINEER
             </h2>
@@ -389,9 +388,6 @@ export default function Home() {
               </Button>
             </Link>
           </div>
-          <Link href="/tailwind">
-            <Preface className="hidden lg:flex" />
-          </Link>
         </div>
         <div className="relative h-fit w-full max-w-lg lg:flex-1 xl:max-w-xl">
           <div className="absolute bottom-20 left-20 right-20 top-20 z-0 rounded-full bg-neutral-900 neon-secondary" />
@@ -403,11 +399,10 @@ export default function Home() {
             height="1024"
           />
         </div>
-        <Preface className="block lg:hidden" />
       </Section>
-      <Section className="flex-col items-center text-xl">
+      <Section className="mx-auto max-w-6xl flex-col items-center text-xl">
         <h3 className="mb-4 text-2xl font-medium">— About Me —</h3>
-        <div className="flex w-full max-w-7xl flex-col items-center justify-center gap-4 bg-gradient-radial from-primary/10 from-10% to-transparent to-70% text-center text-justify font-extralight lg:gap-8 lg:p-12 lg:pb-0">
+        <div className="flex w-full flex-col items-center justify-center gap-4 bg-gradient-radial from-primary/10 from-10% to-transparent to-70% text-center text-justify font-extralight lg:gap-8 lg:p-12 lg:pb-0">
           <p>
             I am a Software Engineer —<b>Product Enginner</b>— with more than 8
             years of experience in Full-Stack development, and more than 3
