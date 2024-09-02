@@ -1,8 +1,12 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Poppins } from 'next/font/google';
 import './globals.css';
+import { twMerge } from 'tailwind-merge';
 
-const inter = Inter({ subsets: ['latin'] });
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['200', '300', '400', '500', '700'],
+});
 
 export const metadata: Metadata = {
   title: 'My application to Tailwind Labs',
@@ -16,7 +20,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={twMerge(poppins.className, ['bg-boxes-neutral'])}>
+        {children}
+      </body>
     </html>
   );
 }

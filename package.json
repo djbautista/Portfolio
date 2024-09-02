@@ -13,10 +13,15 @@
   "dependencies": {
     "@headlessui/react": "^1.7.18",
     "classnames": "^2.5.1",
+    "install": "^0.13.0",
     "next": "14.1.4",
+    "npm": "^10.5.0",
     "react": "^18",
     "react-dom": "^18",
-    "react-feather": "^2.0.10"
+    "react-feather": "^2.0.10",
+    "react-icons": "^5.0.1",
+    "tailwind-merge": "^2.2.2",
+    "typed.js": "^2.1.0"
   },
   "devDependencies": {
     "@types/node": "^20",
