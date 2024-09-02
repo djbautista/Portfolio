@@ -358,7 +358,7 @@ const Section = ({
 export default function Home() {
   return (
     <main className="min-h-screen flex-col p-12 text-neutral-50">
-      <Section>
+      <Section className="mx-auto max-w-7xl">
         <div className="flex w-full flex-col items-start gap-8 lg:w-auto lg:gap-12 lg:py-8">
           <div className="w-full">
             <h3 className="mb-2 text-2xl font-light lg:mb-4 lg:text-4xl xl:mb-6 xl:text-5xl">
@@ -407,7 +407,7 @@ export default function Home() {
       </Section>
       <Section className="flex-col items-center">
         <h3 className="mb-4 text-2xl font-medium">— About Me —</h3>
-        <div className="flex w-full max-w-6xl flex-col items-center justify-center gap-4 bg-gradient-radial from-primary/10 from-10% to-transparent to-70% text-center text-justify font-extralight lg:gap-8 lg:p-12 lg:pb-0">
+        <div className="flex w-full max-w-7xl flex-col items-center justify-center gap-4 bg-gradient-radial from-primary/10 from-10% to-transparent to-70% text-center text-justify font-extralight lg:gap-8 lg:p-12 lg:pb-0">
           <p>
             I am a Software Engineer —<b>Product Enginner</b>— with more than 8
             years of experience in Full-Stack development, and more than 3
@@ -462,7 +462,7 @@ export default function Home() {
           </p>
         </div>
       </Section>
-      <Section className="block text-center">
+      <Section className="mx-auto block max-w-6xl text-center">
         <h3 className="mb-12 text-2xl font-medium">— Skills —</h3>
         <div className="flex w-full justify-center gap-24 lg:px-12">
           <div className="inline-flex flex-1 flex-col gap-8 text-left">
