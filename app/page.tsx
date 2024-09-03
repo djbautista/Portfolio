@@ -381,7 +381,13 @@ export default function Home() {
               <span>Say Hi</span>
               <Send />
             </Button>
-            <Link href="/resume">
+            <Link
+              href="/davidbautista.pdf"
+              download
+              target="_blank"
+              rel="noopener noreferrer"
+              locale={false}
+            >
               <Button className="demoted" variant="secondary">
                 <span>Resume</span>
                 <Terminal />
