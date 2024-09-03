@@ -1,14 +1,28 @@
 'use client';
 
-import { Button, Card } from '@/components/common';
+import {
+  Button,
+  Card,
+  Dialog,
+  DialogContent,
+  DialogModal,
+  DialogOverlay,
+  DialogPortal,
+  DialogTrigger,
+} from '@/components/common';
 import { useContact } from '@/hooks/api/useContact';
 import { ContactFormData } from '@/model/ContactFormData';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { twMerge } from 'tailwind-merge';
 
 interface ContactFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function ContactForm() {
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+export function ContactForm({ children }: ContactFormProps) {
+  const [open, setOpen] = useState(false);
+
   const {
     formState: { errors },
     handleSubmit,
@@ -23,9 +37,13 @@ export function ContactForm() {
   });
 
   const { sendEmail, sendingEmail } = useContact({
-    onEmailSent: () => {
+    onEmailSent: async () => {
       reset();
-      alert('Email sent!');
+      setOpen(false);
+      await sleep(100);
+      alert(
+        `Message received! I'll get back to you faster than you can say Supercalifragilisticexpialidocious... well, almost.`,
+      );
     },
     onError: () => {
       alert('Failed to send email');
@@ -50,60 +68,102 @@ export function ContactForm() {
 
   return (
     <div>
-      <Card className="text-neutral" size="md">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="flex w-full flex-1 flex-col space-y-8 px-12 py-8"
-        >
-          <div className="w-full">
-            <label htmlFor="name" className="mb-2 block text-neutral-500">
-              Name
-            </label>
-            <input
-              {...register('name', { required: true })}
-              className={inputClasses}
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="email" className="mb-2 block text-neutral-500">
-              Email
-            </label>
-            <input
-              {...register('email', {
-                required: true,
-                pattern: {
-                  value: /\S+@\S+\.\S+/,
-                  message: 'This email looks weird',
-                },
-              })}
-              className={inputClasses}
-              required
-            />
-            <div className="min-h-6">
-              <span className="w-full text-ellipsis text-xs text-red-500">
-                {errors.email ? errors.email.message : ''}
-              </span>
-            </div>
-          </div>
-          <div>
-            <label htmlFor="message" className="mb-2 block text-neutral-500">
-              Message <span>(Optional)</span>
-            </label>
-            <textarea
-              {...register('message')}
-              className={inputClasses}
-              rows={2}
-            />
-          </div>
-          <Button
-            variant="demoted"
-            className="border-neutral bg-neutral text-white hover:border-neutral-700 hover:bg-gradient-to-r hover:from-primary hover:to-secondary"
-          >
-            Contact me!
-          </Button>
-        </form>
-      </Card>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>{children}</DialogTrigger>
+        <DialogPortal>
+          <DialogOverlay />
+          <DialogModal>
+            <Card className="relative text-neutral" size="md">
+              {sendingEmail && (
+                <div className="absolute left-[50%] top-[50%] z-40 flex h-20 w-20 translate-x-[-50%] translate-y-[-50%] transform items-center justify-center rounded-full bg-primary">
+                  <svg
+                    className="h-20 w-20 animate-spin text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-15"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="6"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M12 2a10 10 0 00-2.5 19.5L12 22l2.5-2.5A10 10 0 0012 2z"
+                      scale={3}
+                    ></path>
+                  </svg>
+                </div>
+              )}
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className={twMerge(
+                  'flex w-full flex-1 flex-col space-y-8 px-12 py-8',
+                  sendingEmail && 'pointer-events-none opacity-20',
+                )}
+              >
+                <div className="w-full">
+                  <label htmlFor="name" className="mb-2 block text-neutral-500">
+                    Name
+                  </label>
+                  <input
+                    {...register('name', { required: true })}
+                    className={inputClasses}
+                    required
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="mb-2 block text-neutral-500"
+                  >
+                    Email
+                  </label>
+                  <input
+                    {...register('email', {
+                      required: true,
+                      pattern: {
+                        value: /\S+@\S+\.\S+/,
+                        message: 'This email looks weird',
+                      },
+                    })}
+                    className={inputClasses}
+                    required
+                  />
+                  <div className="min-h-6">
+                    <span className="w-full text-ellipsis text-xs text-red-500">
+                      {errors.email ? errors.email.message : ''}
+                    </span>
+                  </div>
+                </div>
+                <div>
+                  <label
+                    htmlFor="message"
+                    className="mb-2 block text-neutral-500"
+                  >
+                    Message <span>(Optional)</span>
+                  </label>
+                  <textarea
+                    {...register('message')}
+                    className={inputClasses}
+                    rows={2}
+                  />
+                </div>
+                <Button
+                  variant="demoted"
+                  className="border-neutral bg-neutral text-white hover:border-neutral-700 hover:bg-gradient-to-r hover:from-primary hover:to-secondary"
+                >
+                  Contact me!
+                </Button>
+              </form>
+            </Card>
+          </DialogModal>
+        </DialogPortal>
+      </Dialog>
     </div>
   );
 }
