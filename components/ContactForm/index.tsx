@@ -9,7 +9,12 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 interface ContactFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function ContactForm() {
-  const { register, handleSubmit, reset } = useForm({
+  const {
+    formState: { errors },
+    handleSubmit,
+    register,
+    reset,
+  } = useForm({
     defaultValues: {
       name: '',
       email: '',
@@ -65,11 +70,21 @@ export function ContactForm() {
               Email
             </label>
             <input
-              {...register('email', { required: true })}
-              type="email"
+              {...register('email', {
+                required: true,
+                pattern: {
+                  value: /\S+@\S+\.\S+/,
+                  message: 'This email looks weird',
+                },
+              })}
               className={inputClasses}
               required
             />
+            <div className="min-h-6">
+              <span className="w-full text-ellipsis text-xs text-red-500">
+                {errors.email ? errors.email.message : ''}
+              </span>
+            </div>
           </div>
           <div>
             <label htmlFor="message" className="mb-2 block text-neutral-500">
