@@ -72,7 +72,7 @@ export function ContactForm({ children }: ContactFormProps) {
         <DialogTrigger asChild>{children}</DialogTrigger>
         <DialogPortal>
           <DialogOverlay />
-          <DialogModal>
+          <DialogModal onOpenAutoFocus={(e) => e.preventDefault()}>
             <Card className="relative text-neutral" size="md">
               {sendingEmail && (
                 <div className="absolute left-[50%] top-[50%] z-40 flex h-20 w-20 translate-x-[-50%] translate-y-[-50%] transform items-center justify-center rounded-full bg-primary">
