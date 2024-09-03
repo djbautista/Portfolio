@@ -8,7 +8,7 @@ interface TypographyProps extends React.HTMLAttributes<HTMLSpanElement> {
   options?: TypedOptions;
 }
 
-export default function Typography({
+export function Typography({
   as = 'span',
   children,
   options,
@@ -40,7 +40,9 @@ export default function Typography({
     return () => {
       typed.destroy();
     };
-  }, []);
+  }, [children, options]);
 
   return <Component ref={element} {...props} />;
 }
+
+export default Typography;

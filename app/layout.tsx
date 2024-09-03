@@ -9,8 +9,9 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: 'My application to Tailwind Labs',
-  description: 'Why Tailwind Feels Like Home',
+  title: 'David Bautista | Senior Software Engineer',
+  description:
+    'Senior Software Engineer with a passion for building great UI/UX products.',
 };
 
 export default function RootLayout({

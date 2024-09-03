@@ -1,11 +1,7 @@
-import classNames from 'classnames';
 import { Silkscreen } from 'next/font/google';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Send, Terminal } from 'react-feather';
-
-import Button from '@/components/Button';
-import Card, { CardColor } from '@/components/Card';
-import { twMerge } from 'tailwind-merge';
 import {
   FaAws,
   FaDocker,
@@ -27,8 +23,21 @@ import {
   SiTailwindcss,
   SiTypescript,
 } from 'react-icons/si';
-import Link from 'next/link';
-import Typography from '@/components/Typography';
+import { twMerge } from 'tailwind-merge';
+
+import {
+  Box,
+  BoxColor,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogModal,
+  DialogOverlay,
+  DialogPortal,
+  DialogTrigger,
+  Typography,
+} from '@/components/common';
+import ContactForm from '@/components/ContactForm';
 
 const silkscreen = Silkscreen({ weight: ['700'], subsets: ['latin'] });
 
@@ -79,7 +88,7 @@ const mainSkills = [
         During my journey at Torre.ai, I was leading the User Generated Growth
         team by 2 years. I was in charge of the SEO optimization of the entire
         platform, and the performance tuning of the web application, including
-        Meta SEO tags, Open Graph tags, and Twitter Cards. Everything there
+        Meta SEO tags, Open Graph tags, and Twitter Boxs. Everything there
         stored and managed with Nuxt.js to optimize the SSR of each page. I led
         also the indexing system of the new profiles, job postings, and new
         content in general.
@@ -201,7 +210,7 @@ const hardSkills = [
   name: string;
   icon: React.ReactNode;
   type: string;
-  color: CardColor;
+  color: BoxColor;
 }[];
 
 const projects = [
@@ -270,7 +279,7 @@ const projects = [
   },
 ];
 
-const SkillCard = ({
+const SkillBox = ({
   name,
   icon,
   color,
@@ -280,9 +289,9 @@ const SkillCard = ({
   name: string;
   icon: React.ReactNode;
   className?: string;
-  color: CardColor;
+  color: BoxColor;
 }) => (
-  <Card
+  <Box
     {...props}
     className={twMerge(
       [
@@ -302,11 +311,11 @@ const SkillCard = ({
       ],
       className,
     )}
-    color={color as CardColor}
+    color={color as BoxColor}
   >
     <div className="text-4xl lg:text-5xl">{icon}</div>
     <span className="text-xs lg:text-sm">{name}</span>
-  </Card>
+  </Box>
 );
 
 const Tailwindnizer = ({
@@ -328,7 +337,7 @@ const Tailwindnizer = ({
 );
 
 const Preface = ({ className }: React.HTMLAttributes<HTMLDivElement>) => (
-  <Card
+  <Box
     className={twMerge(['flex', 'w-fit', 'flex-col', 'gap-2'], className)}
     variant="secondary"
   >
@@ -338,7 +347,7 @@ const Preface = ({ className }: React.HTMLAttributes<HTMLDivElement>) => (
       passion and unique skills I&apos;ve honed so far.
     </p>
     <p className="pr-3 text-right">— David B.</p>
-  </Card>
+  </Box>
 );
 
 const Section = ({
@@ -357,174 +366,188 @@ const Section = ({
 
 export default function Home() {
   return (
-    <main className="min-h-screen flex-col p-12 text-neutral-50">
-      <Section className="mx-auto max-w-6xl">
-        <div className="flex w-full flex-col items-start justify-evenly gap-8 lg:w-auto lg:gap-12 lg:py-8">
-          <div className="w-full">
-            <h3 className="mb-2 text-2xl font-light lg:mb-4 lg:text-4xl xl:mb-6 xl:text-5xl">
-              Hi, I&apos;m
-            </h3>
-            <div className="mb-4 min-h-36 w-full max-w-xl text-4xl md:text-6xl lg:mb-6 xl:mb-8 xl:text-7xl">
-              <Typography as="h1" className={silkscreen.className}>
-                DAVID
-              </Typography>
-              <Typography as="h1" className={silkscreen.className}>
-                BAUTISTA
-              </Typography>
-            </div>
-            <h2 className="text-xl font-extralight lg:text-2xl xl:text-3xl">
-              YOUR NEXT STAFF SOFTWARE ENGINEER
-            </h2>
-          </div>
-          <div className="flex gap-8">
-            <Button>
-              <span>Say Hi</span>
-              <Send />
-            </Button>
-            <Link
-              href="/davidbautista.pdf"
-              download
-              target="_blank"
-              rel="noopener noreferrer"
-              locale={false}
-            >
-              <Button className="demoted" variant="secondary">
-                <span>Resume</span>
-                <Terminal />
-              </Button>
-            </Link>
-          </div>
-        </div>
-        <div className="relative h-fit w-full max-w-lg lg:flex-1 xl:max-w-xl">
-          <div className="absolute bottom-20 left-20 right-20 top-20 z-0 rounded-full bg-neutral-900 neon-secondary" />
-          <Image
-            className="relative z-10 w-full object-contain"
-            src="/myself.png"
-            alt="Myself"
-            width="1024"
-            height="1024"
-          />
-        </div>
-      </Section>
-      <Section className="mx-auto max-w-6xl flex-col items-center text-xl">
-        <h3 className="mb-4 text-2xl font-medium">— About Me —</h3>
-        <div className="flex w-full flex-col items-center justify-center gap-4 bg-gradient-radial from-primary/10 from-10% to-transparent to-70% text-center text-justify font-extralight lg:gap-8 lg:p-12 lg:pb-0">
-          <p>
-            I am a Software Engineer —<b>Product Enginner</b>— with more than 8
-            years of experience in Full-Stack development, and more than 3
-            leading Front-End teams. And when I said Full-Stack, I mean it. I
-            have experience in everything end-to-end: from the database, to the
-            user interface; from data visualization, to building robust back-end
-            services; from SEO optimization and performance tuning, to software
-            architecture with AWS services to deploy entire applications... and
-            much more.
-          </p>
-          <p className="hidden lg:block">
-            I specialize in crafting high-quality, accessible user interfaces
-            with a focus on performance and what I like to call &quot;UX
-            Smothness&quot;. My expertise in the JavaScript and TypeScript
-            ecosystems —particularly with <Tailwindnizer>React</Tailwindnizer>,
-            and <Tailwindnizer>Node.js</Tailwindnizer>— allows me to bring all
-            the time the best practices and the latest technologies to the
-            table.
-          </p>
-          <p>
-            Of course, I am still under construction, all we are forever.
-            However, with my Master&apos;s in Software Engineering underway, I
-            am pretty sure that I am on the right path to join eventually a team
-            like <Tailwindnizer>Tailwind Labs</Tailwindnizer>. And that&apos;s
-            something else that makes me shine all the time:{' '}
-            <b>I am a —really— crazy fast learner</b>. I have a couple of
-            stories about how I learned a new technology in a weekend and then
-            implemented it in a production environment the next Monday without
-            any bugs or issues.
-          </p>
-          <p className="my-3 flex flex-col gap-3 text-center font-light lg:text-left lg:text-2xl">
-            <span className="flex flex-col gap-x-1 gap-y-3 lg:flex-row">
-              <span>I am a problem solver, and I love to be one.</span>
-              <span>I am a team player, and I love to be one.</span>
-            </span>
-            <span className="hidden lg:block">
-              <span>
-                I am a mentor, and I love to be one. I am a leader, and I love
-                to be one.
-              </span>
-            </span>
-            <span>
-              I am a Software/Product Engineer, and{' '}
-              <Tailwindnizer className="font-normal" variant="secondary">
-                I love to be one.
-              </Tailwindnizer>
-            </span>
-          </p>
-          <p className="lg:text-xl">
-            I am truly eager to give this experience to contribute to Tailwind
-            CSS, Headless UI, and new projects comming soon.
-          </p>
-        </div>
-      </Section>
-      <Section className="mx-auto block max-w-6xl text-center">
-        <h3 className="mb-12 text-2xl font-medium">— Skills —</h3>
-        <div className="flex w-full justify-center gap-24 lg:px-12">
-          <div className="inline-flex flex-1 flex-col gap-8 text-left">
-            {mainSkills.map(({ title, content }, index) => (
-              <div key={index}>
-                <h4 className="mb-2 text-xl font-medium">{title}</h4>
-                <hr />
-                <p className="my-4 text-justify text-xl font-extralight lg:text-left">
-                  {content}
-                </p>
-                <div className="my-8 flex w-full flex-wrap justify-center gap-8 lg:hidden">
-                  {hardSkills
-                    .filter(({ type }) => type === title)
-                    .map((props, index) => (
-                      <SkillCard key={index} {...props} />
-                    ))}
-                </div>
+    <Dialog>
+      <main className="min-h-screen flex-col p-12 text-neutral-50">
+        <Section className="mx-auto max-w-6xl">
+          <div className="flex w-full flex-col items-start justify-evenly gap-8 lg:w-auto lg:gap-12 lg:py-8">
+            <div className="w-full">
+              <h3 className="mb-2 text-2xl font-light lg:mb-4 lg:text-4xl xl:mb-6 xl:text-5xl">
+                Hi, I&apos;m
+              </h3>
+              <div className="mb-4 min-h-36 w-full max-w-xl text-4xl md:text-6xl lg:mb-6 xl:mb-8 xl:text-7xl">
+                <Typography as="h1" className={silkscreen.className}>
+                  DAVID
+                </Typography>
+                <Typography as="h1" className={silkscreen.className}>
+                  BAUTISTA
+                </Typography>
               </div>
-            ))}
-          </div>
-          <div className="hidden flex-1 flex-wrap items-center justify-center gap-8 lg:inline-flex">
-            {hardSkills.map((props, index) => (
-              <SkillCard key={index} {...props} />
-            ))}
-          </div>
-        </div>
-      </Section>
-      <Section className="block text-center">
-        <h3 className="mb-12 text-2xl font-medium">— I&apos;m proud of —</h3>
-        <div className="mx-auto inline-flex w-full max-w-4xl flex-wrap items-center gap-12">
-          {projects.map(
-            ({ description, role, company, year, minWidth }, index) => (
-              <Card
-                key={index}
-                variant={index % 2 === 0 ? 'primary' : 'secondary'}
-                className={twMerge([
-                  'w-full',
-                  'h-full',
-                  'rounded-3xl',
-                  'shadow-xs',
-                  'p-8',
-                  'lg:flex-1',
-                  'lg:p-0',
-                  minWidth,
-                  index % 2 === 0 ? 'bg-primary-200/10' : 'bg-secondary-200/10',
-                ])}
+              <h2 className="text-xl font-extralight lg:text-2xl xl:text-3xl">
+                YOUR NEXT STAFF SOFTWARE ENGINEER
+              </h2>
+            </div>
+            <div className="flex gap-8">
+              <DialogTrigger asChild>
+                <Button>
+                  <span>Say Hi</span>
+                  <Send />
+                </Button>
+              </DialogTrigger>
+              <Link
+                href="/davidbautista.pdf"
+                download
+                target="_blank"
+                rel="noopener noreferrer"
+                locale={false}
               >
-                <div className="flex h-full flex-col justify-between space-y-4 text-left lg:p-8">
-                  <p className="text-sm font-light lg:text-lg">{description}</p>
-                  <div className="font-medium">
-                    <p className="text-neutral-400">{role}</p>
-                    <p className="text-xs text-neutral-500">
-                      {company}, {year}
-                    </p>
+                <Button className="demoted" variant="secondary">
+                  <span>Resume</span>
+                  <Terminal />
+                </Button>
+              </Link>
+            </div>
+          </div>
+          <div className="relative h-fit w-full max-w-lg lg:flex-1 xl:max-w-xl">
+            <div className="absolute bottom-20 left-20 right-20 top-20 z-0 rounded-full bg-neutral-900 neon-secondary" />
+            <Image
+              className="relative z-10 w-full object-contain"
+              src="/myself.png"
+              alt="Myself"
+              width="1024"
+              height="1024"
+            />
+          </div>
+        </Section>
+        <Section className="mx-auto max-w-6xl flex-col items-center text-xl">
+          <h3 className="mb-4 text-2xl font-medium">— About Me —</h3>
+          <div className="flex w-full flex-col items-center justify-center gap-4 bg-gradient-radial from-primary/10 from-10% to-transparent to-70% text-center text-justify font-extralight lg:gap-8 lg:p-12 lg:pb-0">
+            <p>
+              I am a Software Engineer —<b>Product Enginner</b>— with more than
+              8 years of experience in Full-Stack development, and more than 3
+              leading Front-End teams. And when I said Full-Stack, I mean it. I
+              have experience in everything end-to-end: from the database, to
+              the user interface; from data visualization, to building robust
+              back-end services; from SEO optimization and performance tuning,
+              to software architecture with AWS services to deploy entire
+              applications... and much more.
+            </p>
+            <p className="hidden lg:block">
+              I specialize in crafting high-quality, accessible user interfaces
+              with a focus on performance and what I like to call &quot;UX
+              Smothness&quot;. My expertise in the JavaScript and TypeScript
+              ecosystems —particularly with <Tailwindnizer>React</Tailwindnizer>
+              , and <Tailwindnizer>Node.js</Tailwindnizer>— allows me to bring
+              all the time the best practices and the latest technologies to the
+              table.
+            </p>
+            <p>
+              Of course, I am still under construction, all we are forever.
+              However, with my Master&apos;s in Software Engineering underway, I
+              am pretty sure that I am on the right path to join eventually a
+              team like <Tailwindnizer>Tailwind Labs</Tailwindnizer>. And
+              that&apos;s something else that makes me shine all the time:{' '}
+              <b>I am a —really— crazy fast learner</b>. I have a couple of
+              stories about how I learned a new technology in a weekend and then
+              implemented it in a production environment the next Monday without
+              any bugs or issues.
+            </p>
+            <p className="my-3 flex flex-col gap-3 text-center font-light lg:text-left lg:text-2xl">
+              <span className="flex flex-col gap-x-1 gap-y-3 lg:flex-row">
+                <span>I am a problem solver, and I love to be one.</span>
+                <span>I am a team player, and I love to be one.</span>
+              </span>
+              <span className="hidden lg:block">
+                <span>
+                  I am a mentor, and I love to be one. I am a leader, and I love
+                  to be one.
+                </span>
+              </span>
+              <span>
+                I am a Software/Product Engineer, and{' '}
+                <Tailwindnizer className="font-normal" variant="secondary">
+                  I love to be one.
+                </Tailwindnizer>
+              </span>
+            </p>
+            <p className="lg:text-xl">
+              I am truly eager to give this experience to contribute to Tailwind
+              CSS, Headless UI, and new projects comming soon.
+            </p>
+          </div>
+        </Section>
+        <Section className="mx-auto block max-w-6xl text-center">
+          <h3 className="mb-12 text-2xl font-medium">— Skills —</h3>
+          <div className="flex w-full justify-center gap-24 lg:px-12">
+            <div className="inline-flex flex-1 flex-col gap-8 text-left">
+              {mainSkills.map(({ title, content }, index) => (
+                <div key={index}>
+                  <h4 className="mb-2 text-xl font-medium">{title}</h4>
+                  <hr />
+                  <p className="my-4 text-justify text-xl font-extralight lg:text-left">
+                    {content}
+                  </p>
+                  <div className="my-8 flex w-full flex-wrap justify-center gap-8 lg:hidden">
+                    {hardSkills
+                      .filter(({ type }) => type === title)
+                      .map((props, index) => (
+                        <SkillBox key={index} {...props} />
+                      ))}
                   </div>
                 </div>
-              </Card>
-            ),
-          )}
-        </div>
-      </Section>
-    </main>
+              ))}
+            </div>
+            <div className="hidden flex-1 flex-wrap items-center justify-center gap-8 lg:inline-flex">
+              {hardSkills.map((props, index) => (
+                <SkillBox key={index} {...props} />
+              ))}
+            </div>
+          </div>
+        </Section>
+        <Section className="block text-center">
+          <h3 className="mb-12 text-2xl font-medium">— I&apos;m proud of —</h3>
+          <div className="mx-auto inline-flex w-full max-w-4xl flex-wrap items-center gap-12">
+            {projects.map(
+              ({ description, role, company, year, minWidth }, index) => (
+                <Box
+                  key={index}
+                  variant={index % 2 === 0 ? 'primary' : 'secondary'}
+                  className={twMerge([
+                    'w-full',
+                    'h-full',
+                    'rounded-3xl',
+                    'shadow-xs',
+                    'p-8',
+                    'lg:flex-1',
+                    'lg:p-0',
+                    minWidth,
+                    index % 2 === 0
+                      ? 'bg-primary-200/10'
+                      : 'bg-secondary-200/10',
+                  ])}
+                >
+                  <div className="flex h-full flex-col justify-between space-y-4 text-left lg:p-8">
+                    <p className="text-sm font-light lg:text-lg">
+                      {description}
+                    </p>
+                    <div className="font-medium">
+                      <p className="text-neutral-400">{role}</p>
+                      <p className="text-xs text-neutral-500">
+                        {company}, {year}
+                      </p>
+                    </div>
+                  </div>
+                </Box>
+              ),
+            )}
+          </div>
+        </Section>
+      </main>
+      <DialogPortal>
+        <DialogOverlay />
+        <DialogModal>
+          <ContactForm />
+        </DialogModal>
+      </DialogPortal>
+    </Dialog>
   );
 }

@@ -1,13 +1,14 @@
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
-import { Slot } from '@/components/Slot';
+
+import { Slot } from '@/components/common';
 
 const variants = {
   primary: 'bg-primary-500/20 shadow-primary-500',
   secondary: 'bg-secondary-500/20 shadow-secondary-500',
 };
 
-export type CardColor = 'green' | 'red' | 'blue' | 'yellow' | 'orange';
+export type BoxColor = 'green' | 'red' | 'blue' | 'yellow' | 'orange';
 
 const colorsClassNames = {
   blue: 'bg-blue-500/20 shadow-blue-500',
@@ -19,15 +20,15 @@ const colorsClassNames = {
   yellow: 'bg-yellow-500/20 shadow-yellow-500',
   black: 'bg-neutral-500/20 shadow-neutral-500',
   purple: 'bg-purple-500/20 shadow-purple-500',
-} as { [key in CardColor]: string };
+} as { [key in BoxColor]: string };
 
-interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+interface BoxProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: keyof typeof variants;
-  color?: CardColor;
+  color?: BoxColor;
   asChild?: boolean;
 }
 
-const Card: React.FC<CardProps> = ({
+export const Box: React.FC<BoxProps> = ({
   className,
   children,
   color,
@@ -36,8 +37,6 @@ const Card: React.FC<CardProps> = ({
   ...rest
 }) => {
   const Comp = asChild ? Slot : 'div';
-
-  console.log('Comp', Comp);
 
   return (
     <Comp
@@ -54,4 +53,4 @@ const Card: React.FC<CardProps> = ({
   );
 };
 
-export default Card;
+export default Box;

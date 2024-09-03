@@ -22,6 +22,45 @@ const config: Config = {
         secondary: { ...colors.fuchsia, DEFAULT: colors.fuchsia[500] },
         neutral: { ...colors.neutral, DEFAULT: colors.neutral[900] },
       },
+      spacing: {
+        '8xl': '88rem',
+        '100': '30rem',
+        '106': '32rem',
+        '108': '34rem',
+        '110': '36rem',
+        '112': '38rem',
+        '114': '40rem',
+        '116': '42rem',
+        '118': '44rem',
+        '120': '46rem',
+        '122': '48rem',
+        '124': '50rem',
+        '126': '52rem',
+        '128': '54rem',
+        '130': '56rem',
+        '132': '58rem',
+      },
+      maxWidth: {
+        '8xl': '90rem',
+        '9xl': '100rem',
+      },
+      keyframes: {
+        overlayShow: {
+          from: { opacity: '0' },
+          to: { opacity: '1' },
+        },
+        contentShow: {
+          from: {
+            opacity: '0',
+            transform: 'translate(-50%, -48%) scale(0.96)',
+          },
+          to: { opacity: '1', transform: 'translate(-50%, -50%) scale(1)' },
+        },
+      },
+      animation: {
+        overlayShow: 'overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1)',
+        contentShow: 'contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1)',
+      },
     },
   },
   plugins: [

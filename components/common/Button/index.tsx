@@ -11,7 +11,7 @@ interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   variant?: keyof typeof variants;
 }
 
-const Button: React.FC<ButtonProps> = ({
+export const Button: React.FC<ButtonProps> = ({
   children,
   className,
   variant = 'primary',
