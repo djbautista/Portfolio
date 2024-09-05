@@ -262,14 +262,14 @@ export default function Home() {
   return (
     <>
       <Navigation className="fixed left-[50%] top-8 z-20 w-fit -translate-x-1/2 transform" />
-      <main className="h-screen flex-col text-neutral-50">
-        <Section className="mx-auto h-screen max-w-6xl items-center pb-0">
-          <div className="flex w-full flex-col items-start justify-evenly gap-8 lg:w-auto lg:py-8">
+      <main className="h-screen flex-col p-8 text-neutral-50">
+        <Section className="mx-auto h-screen max-w-6xl flex-col items-center justify-center pb-0 md:flex-row">
+          <div className="flex w-full flex-col items-start justify-start gap-8 md:justify-evenly lg:w-auto lg:py-8">
             <div className="flex w-full flex-col gap-2">
               <h3 className="text-2xl font-light lg:text-4xl xl:text-5xl">
                 Hi, I&apos;m
               </h3>
-              <div className="mb-2 min-h-36 w-full max-w-xl text-4xl md:text-6xl xl:text-7xl">
+              <div className="mb-2 min-h-20 w-full max-w-xl text-4xl md:min-h-36 md:text-6xl xl:text-7xl">
                 <Typography as="h1" className={silkscreen.className}>
                   DAVID
                 </Typography>
@@ -281,7 +281,6 @@ export default function Home() {
                 YOUR NEXT STAFF SOFTWARE ENGINEER
               </h2>
             </div>
-            <Preface className="shadow-md" />
             <div className="flex gap-8">
               <ContactForm>
                 <Button>

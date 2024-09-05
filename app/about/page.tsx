@@ -22,9 +22,10 @@ const SocialLink = ({
 export default function AboutMePage() {
   return (
     <>
-      <Navigation className="sticky left-[50%] top-8 z-20 w-fit -translate-x-1/2 transform" />
+      <Navigation className="fixed left-[50%] top-8 z-20 w-fit -translate-x-1/2 transform" />
       <main
         className={twMerge([
+          'mt-24',
           'mx-auto min-h-screen max-w-3xl px-6 py-12 md:py-24',
           'flex-col items-center',
           'text-neutral-50',
