@@ -2,5 +2,8 @@ export * from './Box';
 export * from './Button';
 export * from './Card';
 export * from './Dialog';
+export * from './Highlight';
+export * from './Navigation';
+export * from './Section';
 export * from './Slot';
 export * from './Typography';

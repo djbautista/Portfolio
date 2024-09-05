@@ -1,0 +1,39 @@
+import Link from 'next/link';
+import React from 'react';
+import { FaHouse } from 'react-icons/fa6';
+import { twMerge } from 'tailwind-merge';
+
+import Button from '@/components/common/Button';
+
+export interface NavigationProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+const linkClasses =
+  'text-gray-300 transition-colors hover:text-white flex items-center justify-center gap-2';
+
+export function Navigation({ className, ...props }: NavigationProps) {
+  return (
+    <nav
+      {...props}
+      className={twMerge([
+        'flex items-center space-x-8 rounded-lg bg-black bg-opacity-50 px-6 py-3 backdrop-blur-sm',
+        'shadow shadow-secondary/30',
+        className,
+      ])}
+    >
+      <Link href="#" className={linkClasses}>
+        <FaHouse />
+      </Link>
+      <Link href="#" className={linkClasses}>
+        <span>About</span>
+      </Link>
+      <Link href="#" className={linkClasses}>
+        <span>Journey</span>
+      </Link>
+      <Link href="#" className={linkClasses}>
+        <span>Contact</span>
+      </Link>
+    </nav>
+  );
+}
+
+export default Navigation;

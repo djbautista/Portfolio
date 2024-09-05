@@ -1,4 +1,4 @@
-import { ContactFormData } from '@/model/ContactFormData';
+import { ContactFormData } from '@/model';
 import { useState } from 'react';
 
 interface SendEmailData extends Omit<ContactFormData, 'propertyImages'> {
