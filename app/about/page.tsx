@@ -1,16 +1,28 @@
 import Image from 'next/image';
+import Link, { LinkProps } from 'next/link';
 import React from 'react';
-import { FaGithubSquare, FaTwitterSquare } from 'react-icons/fa';
-import { FaLinkedin } from 'react-icons/fa6';
+import { FaGithubSquare, FaLinkedin, FaTwitterSquare } from 'react-icons/fa';
 import { twMerge } from 'tailwind-merge';
 
 import { Box, Highlight, Navigation, Section } from '@/components/common';
 import { projects } from '@/data';
 
+const SocialLink = ({
+  children,
+  ...props
+}: LinkProps & React.HTMLAttributes<HTMLAnchorElement>) => (
+  <Link {...props} className="group relative">
+    <div className="absolute inset-0 h-full w-full scale-75 group-hover:bg-white" />
+    {React.cloneElement(children as React.ReactElement, {
+      className: 'text-secondary-200 relative z-10 group-hover:text-secondary',
+    })}
+  </Link>
+);
+
 export default function AboutMePage() {
   return (
     <>
-      <Navigation className="fixed left-[50%] top-8 z-20 w-fit -translate-x-1/2 transform" />
+      <Navigation className="sticky left-[50%] top-8 z-20 w-fit -translate-x-1/2 transform" />
       <main
         className={twMerge([
           'mx-auto min-h-screen max-w-3xl px-6 py-12 md:py-24',
@@ -39,8 +51,16 @@ export default function AboutMePage() {
                   Senior Software Engineer
                 </Highlight>
               </h2>
-              <span className="flex gap-2 text-3xl text-secondary-200">
-                <FaLinkedin /> <FaGithubSquare /> <FaTwitterSquare />
+              <span className="flex gap-2 text-3xl text-secondary-200 text-white">
+                <SocialLink href="https://www.linkedin.com/in/davidjoelbautista/?locale=en_US">
+                  <FaLinkedin />
+                </SocialLink>
+                <SocialLink href="https://github.com/djbautista">
+                  <FaGithubSquare />
+                </SocialLink>
+                <SocialLink href="https://x.com/djbautista10">
+                  <FaTwitterSquare />
+                </SocialLink>
               </span>
             </div>
           </div>

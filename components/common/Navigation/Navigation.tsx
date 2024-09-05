@@ -32,12 +32,13 @@ export function Navigation({
       <Link href="/about" className={linkClasses}>
         <span>About</span>
       </Link>
-      <Link href="#" className={linkClasses}>
+      {/* @TODO: Add more links */}
+      <span className={twMerge([linkClasses, 'opacity-10'])}>
         <span>Journey</span>
-      </Link>
-      <Link href="#" className={linkClasses}>
+      </span>
+      <span className={twMerge([linkClasses, 'opacity-10'])}>
         <span>Contact</span>
-      </Link>
+      </span>
     </nav>
   );
 }
