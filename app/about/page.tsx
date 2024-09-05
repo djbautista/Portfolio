@@ -1,49 +1,75 @@
+import Image from 'next/image';
+import React from 'react';
+import { FaGithubSquare, FaTwitterSquare } from 'react-icons/fa';
+import { FaLinkedin } from 'react-icons/fa6';
+import { twMerge } from 'tailwind-merge';
+
 import { Box, Highlight, Section } from '@/components/common';
 import { projects } from '@/data';
-import React from 'react';
-import { twMerge } from 'tailwind-merge';
 
 export default function AboutMePage() {
   return (
-    <main className="min-h-screen flex-col p-12 text-neutral-50">
-      <Section className="mx-auto max-w-6xl flex-col items-center text-xl">
-        <h3 className="mb-4 text-2xl font-medium">— About Me —</h3>
-        <div className="flex w-full flex-col items-center justify-center gap-4 bg-gradient-radial from-primary/10 from-10% to-transparent to-70% text-center text-justify font-extralight lg:gap-8 lg:p-12 lg:pb-0">
+    <main
+      className={twMerge([
+        'mx-auto min-h-screen max-w-3xl px-6 py-12 md:py-24',
+        'flex-col items-center',
+        'text-neutral-50',
+      ])}
+    >
+      <Section className="mx-auto max-w-4xl flex-col items-center gap-16 md:gap-24">
+        <div className="flex w-full flex-wrap items-center gap-8 md:gap-12">
+          <Image
+            className="overflow-hidden rounded-full"
+            src="/profile.jpg"
+            width={200}
+            height={200}
+            alt="Profile Picture"
+          />
+          <div className="flex flex-col gap-2">
+            <h1 className="text-4xl font-black text-secondary-50">
+              David Bautista
+            </h1>
+            <h2 className="mb-4 text-2xl">
+              <Highlight variant="secondary" className="text-secondary-100/70">
+                Senior Software Engineer
+              </Highlight>
+            </h2>
+            <span className="flex gap-2 text-3xl text-secondary-200">
+              <FaLinkedin /> <FaGithubSquare /> <FaTwitterSquare />
+            </span>
+          </div>
+        </div>
+        <div
+          className={twMerge([
+            'flex w-full flex-col items-center justify-center gap-8',
+            'bg-gradient-radial from-primary/10 from-10% to-transparent to-70%',
+            'font-light leading-7 md:text-lg md:leading-8',
+          ])}
+        >
           <p>
-            I am a Software Engineer —<b>Product Enginner</b>— with more than 8
-            years of experience in Full-Stack development, and more than 3
-            leading Front-End teams. And when I said Full-Stack, I mean it. I
-            have experience in everything end-to-end: from the database, to the
-            user interface; from data visualization, to building robust back-end
-            services; from SEO optimization and performance tuning, to software
-            architecture with AWS services to deploy entire applications... and
-            much more.
-          </p>
-          <p className="hidden lg:block">
-            I specialize in crafting high-quality, accessible user interfaces
-            with a focus on performance and what I like to call &quot;UX
-            Smothness&quot;. My expertise in the JavaScript and TypeScript
-            ecosystems —particularly with <Highlight>React</Highlight>, and{' '}
-            <Highlight>Node.js</Highlight>— allows me to bring all the time the
-            best practices and the latest technologies to the table.
+            I&apos;m a Software Engineer and <b>Product Engineer</b> with over 7
+            years of experience in Full-Stack development and more than 3 years
+            leading Front-End teams. I&apos;m passionate about building
+            high-quality, accessible user interfaces that prioritize
+            performance.
           </p>
           <p>
-            Of course, I am still under construction, all we are forever.
-            However, with my Master&apos;s in Software Engineering underway, I
-            am pretty sure that I am on the right path to join eventually a team
-            like <Highlight>Tailwind Labs</Highlight>. And that&apos;s something
-            else that makes me shine all the time:{' '}
-            <b>I am a —really— crazy fast learner</b>. I have a couple of
-            stories about how I learned a new technology in a weekend and then
-            implemented it in a production environment the next Monday without
-            any bugs or issues.
+            My stack is HTML/CSS, Tailwind CSS, JavaScript, React, React Native,
+            GSAP, Node.Js, and a bit of Scala. My expertise spans the full
+            stack: from databases, micro-services architecture, to responsive
+            front-end complex applications.
           </p>
-          <p className="my-3 flex flex-col gap-3 text-center font-light lg:text-left lg:text-2xl">
-            <span className="flex flex-col gap-x-1 gap-y-3 lg:flex-row">
+          <p>
+            I&apos;m a lifelong learner, currently pursuing a Master&apos;s in
+            Software Engineering. I love tackling challenges, mentoring teams,
+            and leading projects to success.
+          </p>
+          {/* <p className="my-3 flex flex-col gap-3">
+            <span className="flex flex-col gap-x-1 gap-y-3 md:flex-row">
               <span>I am a problem solver, and I love to be one.</span>
               <span>I am a team player, and I love to be one.</span>
             </span>
-            <span className="hidden lg:block">
+            <span className="hidden md:block">
               <span>
                 I am a mentor, and I love to be one. I am a leader, and I love
                 to be one.
@@ -55,10 +81,10 @@ export default function AboutMePage() {
                 I love to be one.
               </Highlight>
             </span>
-          </p>
-          <p className="lg:text-xl">
-            I am truly eager to give this experience to contribute to Tailwind
-            CSS, Headless UI, and new projects comming soon.
+          </p> */}
+          <p>
+            When I&apos;m not coding, I&apos;m probably learning a new tech
+            stack over a weekend, or learning how to play guitar.
           </p>
         </div>
       </Section>
@@ -76,14 +102,14 @@ export default function AboutMePage() {
                   'rounded-3xl',
                   'shadow-xs',
                   'p-8',
-                  'lg:flex-1',
-                  'lg:p-0',
+                  'md:flex-1',
+                  'md:p-0',
                   minWidth,
                   index % 2 === 0 ? 'bg-primary-200/10' : 'bg-secondary-200/10',
                 ])}
               >
-                <div className="flex h-full flex-col justify-between space-y-4 text-left lg:p-8">
-                  <p className="text-sm font-light lg:text-lg">{description}</p>
+                <div className="flex h-full flex-col justify-between space-y-4 text-left md:p-8">
+                  <p className="text-sm font-light">{description}</p>
                   <div className="font-medium">
                     <p className="text-neutral-400">{role}</p>
                     <p className="text-xs text-neutral-500">

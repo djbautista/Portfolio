@@ -23,7 +23,7 @@ export function Navigation({ className, ...props }: NavigationProps) {
       <Link href="#" className={linkClasses}>
         <FaHouse />
       </Link>
-      <Link href="#" className={linkClasses}>
+      <Link href="/about" className={linkClasses}>
         <span>About</span>
       </Link>
       <Link href="#" className={linkClasses}>
