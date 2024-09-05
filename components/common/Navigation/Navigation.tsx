@@ -5,12 +5,18 @@ import { twMerge } from 'tailwind-merge';
 
 import Button from '@/components/common/Button';
 
-export interface NavigationProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface NavigationProps extends React.HTMLAttributes<HTMLDivElement> {
+  floating?: boolean;
+}
 
 const linkClasses =
   'text-gray-300 transition-colors hover:text-white flex items-center justify-center gap-2';
 
-export function Navigation({ className, ...props }: NavigationProps) {
+export function Navigation({
+  className,
+  floating = true,
+  ...props
+}: NavigationProps) {
   return (
     <nav
       {...props}
@@ -20,7 +26,7 @@ export function Navigation({ className, ...props }: NavigationProps) {
         className,
       ])}
     >
-      <Link href="#" className={linkClasses}>
+      <Link href="/" className={linkClasses}>
         <FaHouse />
       </Link>
       <Link href="/about" className={linkClasses}>
