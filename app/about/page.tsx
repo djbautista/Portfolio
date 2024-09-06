@@ -19,6 +19,9 @@ const SocialLink = ({
   </Link>
 );
 
+const getRandom = (min: number, max: number) =>
+  Math.floor(Math.random() * (max - min + 1) + min);
+
 export default function AboutMePage() {
   return (
     <>
@@ -112,37 +115,50 @@ export default function AboutMePage() {
         </Section>
         <Section className="block text-center">
           <h3 className="mb-12 text-2xl font-medium">— I&apos;m proud of —</h3>
-          <div className="mx-auto inline-flex w-full max-w-4xl flex-wrap items-center gap-12">
+          <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-12 md:grid-cols-6">
             {projects.map(
-              ({ description, role, company, year, minWidth }, index) => (
-                <Box
-                  key={index}
-                  variant={index % 2 === 0 ? 'primary' : 'secondary'}
-                  className={twMerge([
-                    'w-full',
-                    'h-full',
-                    'rounded-3xl',
-                    'shadow-xs',
-                    'p-8',
-                    'md:flex-1',
-                    'md:p-0',
-                    minWidth,
-                    index % 2 === 0
-                      ? 'bg-primary-200/10'
-                      : 'bg-secondary-200/10',
-                  ])}
-                >
-                  <div className="flex h-full flex-col justify-between space-y-4 text-left md:p-8">
-                    <p className="text-sm font-light">{description}</p>
-                    <div className="font-medium">
-                      <p className="text-neutral-400">{role}</p>
-                      <p className="text-xs text-neutral-500">
-                        {company}, {year}
-                      </p>
-                    </div>
+              ({ description, role, company, year, relevance }, index) => {
+                const relevances = {
+                  1: 'md:col-span-2 text-sm leading-5',
+                  2: 'md:col-span-3 text-md leading-6',
+                  2.5: 'md:col-span-4 text-lg font-light',
+                  3: 'md:col-span-6 text-xl font-light',
+                };
+                return (
+                  <div
+                    key={index}
+                    className={twMerge([
+                      'h-full w-full font-extralight',
+                      relevance && relevances[relevance],
+                    ])}
+                  >
+                    <Box
+                      variant={index % 2 === 0 ? 'primary' : 'secondary'}
+                      className={twMerge([
+                        'w-full',
+                        'h-full',
+                        'rounded-3xl',
+                        'shadow-xs',
+                        'p-8',
+                        'md:p-0',
+                        getRandom(1, 2) % 2 === 0
+                          ? 'bg-primary-200/10'
+                          : 'bg-secondary-200/10',
+                      ])}
+                    >
+                      <div className="flex h-full flex-col justify-between space-y-4 text-left md:p-8">
+                        <p>{description}</p>
+                        <div className="font-medium">
+                          <p className="text-sm text-neutral-400">{role}</p>
+                          <p className="text-xs text-neutral-500">
+                            {company}, {year}
+                          </p>
+                        </div>
+                      </div>
+                    </Box>
                   </div>
-                </Box>
-              ),
+                );
+              },
             )}
           </div>
         </Section>

@@ -4,5 +4,5 @@ export interface Project {
   role: string;
   company: string;
   year: string;
-  minWidth?: string;
+  relevance?: 1 | 2 | 3 | 2.5;
 }

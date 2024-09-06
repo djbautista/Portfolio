@@ -262,7 +262,7 @@ export default function Home() {
   return (
     <>
       <Navigation className="fixed left-[50%] top-8 z-20 w-fit -translate-x-1/2 transform" />
-      <main className="h-screen flex-col p-8 text-neutral-50">
+      <main className="h-screen flex-col overflow-hidden p-8 text-neutral-50">
         <Section className="mx-auto h-screen max-w-6xl flex-col items-center justify-center pb-0 md:flex-row">
           <div className="flex w-full flex-col items-start justify-start gap-8 md:justify-evenly lg:w-auto lg:py-8">
             <div className="flex w-full flex-col gap-2">
