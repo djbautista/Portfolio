@@ -11,7 +11,7 @@ const SocialLink = ({
   children,
   ...props
 }: LinkProps & React.HTMLAttributes<HTMLAnchorElement>) => (
-  <Link {...props} className="group relative">
+  <Link {...props} className="group relative" target="_blank">
     <div className="absolute inset-0 h-full w-full scale-75 group-hover:bg-white" />
     {React.cloneElement(children as React.ReactElement, {
       className: 'text-secondary-200 relative z-10 group-hover:text-secondary',

@@ -3,6 +3,7 @@ export * from './Button';
 export * from './Card';
 export * from './Dialog';
 export * from './Highlight';
+export * from './Modal';
 export * from './Navigation';
 export * from './Section';
 export * from './Slot';

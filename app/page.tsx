@@ -30,14 +30,14 @@ import {
   BoxColor,
   Button,
   Highlight,
+  Modal,
   Navigation,
   Section,
   Typography,
 } from '@/components/common';
-import ContactForm from '@/components/ContactForm';
 import { projects } from '@/data';
-
-const silkscreen = Silkscreen({ weight: ['700'], subsets: ['latin'] });
+import { ContactForm } from '@/components/ContactForm';
+import { silkscreen } from '@/utils/fonts';
 
 const mainSkills = [
   {
@@ -282,12 +282,12 @@ export default function Home() {
               </h2>
             </div>
             <div className="flex gap-8">
-              <ContactForm>
+              <Modal content={<ContactForm />}>
                 <Button>
                   <span>Say Hi</span>
                   <Send />
                 </Button>
-              </ContactForm>
+              </Modal>
 
               <Link
                 href="/davidbautista.pdf"
