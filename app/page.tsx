@@ -282,13 +282,12 @@ export default function Home() {
               </h2>
             </div>
             <div className="flex gap-8">
-              <Modal content={<ContactForm />}>
+              <Link href="/contact">
                 <Button>
                   <span>Say Hi</span>
                   <Send />
                 </Button>
-              </Modal>
-
+              </Link>
               <Link
                 href="/davidbautista.pdf"
                 target="_blank"
