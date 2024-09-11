@@ -44,6 +44,11 @@ const config: Config = {
         '8xl': '90rem',
         '9xl': '100rem',
       },
+      fontSize: {
+        '10xl': '8rem',
+        '11xl': '9rem',
+        '12xl': '10rem',
+      },
       keyframes: {
         overlayShow: {
           from: { opacity: '0' },
