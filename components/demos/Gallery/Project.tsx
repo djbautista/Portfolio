@@ -39,14 +39,18 @@ export function Project({
     >
       <span
         className={twMerge([
-          'text-5xl font-medium group-hover:translate-x-2',
+          'text-2xl font-medium group-hover:translate-x-2 md:text-5xl',
           animationClasses,
         ])}
       >
         {title}
       </span>
       <span
-        className={twMerge(['group-hover:translate-x-2', animationClasses])}
+        className={twMerge([
+          'text-xs md:text-sm',
+          'group-hover:translate-x-2',
+          animationClasses,
+        ])}
       >
         Design & Development
       </span>
