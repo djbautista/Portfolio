@@ -85,7 +85,7 @@ export default function Component() {
                       <span className="text-sm text-gray-400">
                         Year: {demo.year}
                       </span>
-                      <Button variant="secondary">
+                      <Button variant="secondary" className="z-10">
                         See More
                         <LuArrowRight className="ml-2 h-4 w-4" />
                       </Button>
@@ -99,7 +99,7 @@ export default function Component() {
           </div>
         </div>
         <svg
-          className="pointer-events-none absolute left-0 top-0 h-full w-full opacity-10"
+          className="pointer-events-none absolute left-0 top-0 z-0 h-full w-full opacity-10"
           xmlns="http://www.w3.org/2000/svg"
         >
           <defs>
