@@ -5,7 +5,7 @@ import React, { useRef } from 'react';
 import { Block3 as Block3Props } from '../../model/Blocks';
 
 import styles from './Block3.module.scss';
-import { AnimatedText } from '../../components/AnimatedText';
+import { AnimatedText } from '../AnimatedText';
 
 const Block3: React.FC<Block3Props> = ({ quote, name, title }) => {
   const blockRef = useRef<HTMLDivElement>(null);

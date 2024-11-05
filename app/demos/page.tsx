@@ -39,7 +39,7 @@ const demos = [
   {
     id: 4,
     title: 'Dynamic Landing Page',
-    slug: 'dynamic-landing-page',
+    slug: 'smk-landing-page',
     description:
       'Dynamic landing page for a fictional use case—built using Next.js, GSAP, and SCSS modules',
     year: 2024,

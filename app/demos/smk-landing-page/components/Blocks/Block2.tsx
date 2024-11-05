@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 
-import { Card } from '../../components/Card';
+import { Card } from '../Card';
 import { Block2 as Block2Props } from '../../model/Blocks';
 
 import styles from './Block2.module.scss';
