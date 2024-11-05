@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { Component } from '@/model/Component';
+import { Component } from '../model/Component';
 
 export type InitialComponents = {
   components: Component[];
