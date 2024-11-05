@@ -74,6 +74,7 @@ export default function Component() {
                       src={demo.image}
                       alt={demo.title}
                       className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                      priority
                     />
                   </div>
                   <h3 className="mb-2 text-xl font-semibold">{demo.title}</h3>

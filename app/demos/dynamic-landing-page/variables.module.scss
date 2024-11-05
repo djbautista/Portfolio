@@ -1,0 +1,41 @@
+// variables.module.scss
+
+$sand: #ebe7df;
+$desert: #f2eee8;
+$brown: #977755;
+$gray-light: #d9d9d9;
+
+$primary-color: $brown;
+
+$text-color-primary: $brown;
+$text-color-secondary: rgba($brown, 0.5);
+
+$background-color: $sand;
+$background-color-alt: $desert;
+
+$font-sans-serif: var(--font-inter), sans-serif;
+$font-sans: var(--font-canela), sans-serif;
+
+$breakpoint-xs: 640px;
+$breakpoint-sm: 720px;
+$breakpoint-md: 1024px;
+$breakpoint-lg: 1280px;
+$breakpoint-xl: 1580px;
+
+:export {
+  sand: $sand;
+  desert: $desert;
+  brown: $brown;
+  grayLight: $gray-light;
+
+  primaryColor: $primary-color;
+
+  textColorPrimary: $text-color-primary;
+  textColorSecondary: $text-color-secondary;
+
+  backgroundColor: $background-color;
+  backgroundColorAlt: $background-color-alt;
+
+  fontSansSerif: $font-sans-serif;
+  fontSans: $font-sans;
+}

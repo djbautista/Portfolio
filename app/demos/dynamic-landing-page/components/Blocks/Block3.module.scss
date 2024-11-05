@@ -1,0 +1,116 @@
+/* Block3.module.scss */
+
+@import '../../variables.module.scss';
+
+.block3 {
+  /* xs */
+  height: 100vh;
+  color: $text-color-primary;
+  background-color: $background-color;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+  padding: 5rem 1.5rem;
+  letter-spacing: -0.05em;
+  font-family: $font-sans-serif;
+
+  .text {
+    font-weight: 300;
+    font-size: 2.5rem;
+    line-height: 3rem;
+
+    margin-bottom: 2.5rem;
+
+    span {
+      will-change: opacity;
+    }
+  }
+
+  p {
+    margin: 0.5em 0;
+    font-weight: 400;
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    color: $text-color-secondary;
+  }
+}
+
+.background {
+  height: 100vh;
+  width: 100vw;
+  background-color: $background-color;
+}
+
+/* sm */
+@media (min-width: $breakpoint-sm) {
+  .block3 {
+    padding: 6rem 2rem;
+
+    .text {
+      font-size: 3rem;
+      line-height: 3.5rem;
+      margin-bottom: 3rem;
+    }
+
+    p {
+      font-size: 1.375rem;
+      line-height: 2rem;
+    }
+  }
+}
+
+/* md */
+@media (min-width: $breakpoint-md) {
+  .block3 {
+    padding: 7rem 2.5rem;
+
+    .text {
+      font-size: 3.5rem;
+      line-height: 4rem;
+      margin-bottom: 3.5rem;
+    }
+
+    p {
+      font-size: 1.5rem;
+      line-height: 2.25rem;
+    }
+  }
+}
+
+/* lg */
+@media (min-width: $breakpoint-lg) {
+  .block3 {
+    padding: 8rem 3rem;
+
+    .text {
+      font-size: 4rem;
+      line-height: 4.5rem;
+      margin-bottom: 4rem;
+    }
+
+    p {
+      font-size: 1.75rem;
+      line-height: 2.5rem;
+    }
+  }
+}
+
+/* xl */
+@media (min-width: $breakpoint-xl) {
+  .block3 {
+    padding: 14.375rem 1.875rem;
+
+    .text {
+      font-size: 5rem;
+      line-height: 5.625rem;
+      margin-bottom: 3.75rem;
+    }
+
+    p {
+      font-size: 1.5625rem;
+      line-height: 2.1875rem;
+    }
+  }
+}

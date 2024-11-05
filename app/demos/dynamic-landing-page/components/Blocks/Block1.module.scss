@@ -1,0 +1,153 @@
+/* Block1.module.scss */
+
+@import '../../variables.module.scss';
+
+.block1 {
+  /* xs */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.25rem 0;
+  text-align: center;
+  color: $text-color-secondary;
+  background-color: $background-color;
+  font-family: $font-sans-serif;
+
+  h1,
+  h2 {
+    font-style: normal;
+    font-size: 0.78rem;
+    line-height: 1.04rem;
+    letter-spacing: -0.05em;
+    font-weight: 400;
+  }
+
+  ul {
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9375rem;
+    padding: 1.875rem 0;
+    border-top: 0.0625rem solid $text-color-secondary;
+    border-bottom: 0.0625rem solid $text-color-secondary;
+
+    li {
+      color: $text-color-primary;
+      font-size: 2.4375rem;
+      line-height: 2.84375rem;
+      letter-spacing: -0.1em;
+      font-weight: 300;
+
+      &:nth-child(2) {
+        font-family: $font-sans;
+        font-weight: 300;
+        font-size: 2.84375rem;
+        line-height: 3.25rem;
+        letter-spacing: -0.05em;
+      }
+    }
+  }
+
+  /* sm */
+  @media (min-width: $breakpoint-sm) {
+    gap: 1.5625rem;
+    padding: 1.5625rem 0;
+
+    h1,
+    h2 {
+      font-size: 1.1rem;
+      line-height: 1.4rem;
+    }
+
+    ul {
+      flex-direction: row;
+      gap: 1.25rem;
+      padding: 2.5rem 0;
+
+      li {
+        font-size: 3.5rem;
+        line-height: 4rem;
+
+        &:nth-child(2) {
+          font-size: 4rem;
+          line-height: 4.5rem;
+        }
+      }
+    }
+  }
+
+  /* md */
+  @media (min-width: $breakpoint-md) {
+    gap: 1.5625rem;
+    padding: 1.5625rem 0;
+
+    h1,
+    h2 {
+      font-size: 1.4rem;
+      line-height: 1.8rem;
+    }
+
+    ul {
+      flex-direction: row;
+      gap: 1.25rem;
+      padding: 2.5rem 0;
+
+      li {
+        font-size: 4.65625rem;
+        line-height: 5.0625rem;
+
+        &:nth-child(2) {
+          font-size: 5.0625rem;
+          line-height: 5.46875rem;
+        }
+      }
+    }
+  }
+
+  /* lg */
+  @media (min-width: $breakpoint-lg) {
+    gap: 1.875rem;
+    padding: 1.875rem 0;
+
+    h1,
+    h2 {
+      font-size: 1.5rem;
+      line-height: 2.2rem;
+    }
+
+    ul {
+      gap: 1.875rem;
+      padding: 3.125rem 0;
+
+      li {
+        font-size: 6.3625rem;
+        line-height: 6.76875rem;
+
+        &:nth-child(2) {
+          font-size: 7.09375rem;
+          line-height: 7.5rem;
+        }
+      }
+    }
+  }
+
+  /* xl */
+  @media (min-width: $breakpoint-xl) {
+    ul {
+      gap: 1.875rem;
+      padding: 3.125rem 0;
+
+      li {
+        font-size: 8.25rem;
+        line-height: 8.25rem;
+
+        &:nth-child(2) {
+          font-size: 9.375rem;
+          line-height: 9.375rem;
+        }
+      }
+    }
+  }
+}
