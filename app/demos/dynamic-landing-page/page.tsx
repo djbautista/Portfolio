@@ -31,7 +31,7 @@ export default async function Home() {
   }
 
   return (
-    <div className={`${inter.variable} ${canelaThin.variable}  ${styles.page}`}>
+    <div className={`${inter.variable} ${canelaThin.variable} ${styles.page}`}>
       <main className={styles.main}>
         {initialComponents.map((component, index) => (
           <Block key={index} component={component} />
