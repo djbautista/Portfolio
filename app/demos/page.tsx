@@ -58,9 +58,6 @@ export default function Component() {
   return (
     <div className="min-h-screen bg-gray-900 p-8 text-white">
       <div className="mx-auto max-w-6xl">
-        <h1 className="mb-8 bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-center text-4xl font-bold text-transparent">
-          My Demo Projects
-        </h1>
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
           {sortedDemos.map((demo) => (
             <Link key={demo.id} href={`/demos/${demo.slug}`}>

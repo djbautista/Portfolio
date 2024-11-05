@@ -35,10 +35,15 @@ export function Navigation({
       <Link href="/contact" className={linkClasses}>
         <span>Contact</span>
       </Link>
+      <Link href="/demos" className={linkClasses}>
+        <Button variant="secondary">
+          <span>Demos</span>
+        </Button>
+      </Link>
       {/* @TODO: Add more links */}
-      <span className={twMerge([linkClasses, 'opacity-10'])}>
+      {/* <span className={twMerge([linkClasses, 'opacity-10'])}>
         <span>Journey</span>
-      </span>
+      </span> */}
     </nav>
   );
 }
