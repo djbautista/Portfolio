@@ -11,7 +11,10 @@ import { silkscreen } from '@/utils/fonts';
 export default function ContactPage() {
   return (
     <>
-      <Navigation className="fixed left-[50%] top-8 z-20 w-fit -translate-x-1/2 transform" />
+      <Navigation
+        className="fixed left-[50%] top-8 z-20 w-fit -translate-x-1/2 transform"
+        current="/contact"
+      />
       <main
         className={twMerge([
           'mt-24',

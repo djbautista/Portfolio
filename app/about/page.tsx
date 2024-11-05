@@ -25,7 +25,10 @@ const getRandom = (min: number, max: number) =>
 export default function AboutMePage() {
   return (
     <>
-      <Navigation className="fixed left-[50%] top-8 z-20 w-fit -translate-x-1/2 transform" />
+      <Navigation
+        className="fixed left-[50%] top-8 z-20 w-fit -translate-x-1/2 transform"
+        current="/about"
+      />
       <main
         className={twMerge([
           'mt-24',
