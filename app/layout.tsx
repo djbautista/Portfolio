@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={twMerge(poppins.className, ['bg-boxes-neutral'])}>
+      <body className={twMerge(poppins.className, ['bg-black'])}>
         {children}
       </body>
     </html>

@@ -1,0 +1,47 @@
+.container {
+  position: relative;
+  height: 500vh;
+}
+
+.scrollArea {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.circleContainer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ef4444;
+}
+
+.circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 10rem;
+  width: 10rem;
+  border-radius: 50%;
+  background-color: #6366f1;
+  font-weight: bold;
+  color: #ffffff;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
+}
+
+.textContainer {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 2.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.scrollText {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #3730a3;
+}

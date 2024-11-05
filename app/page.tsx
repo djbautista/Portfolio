@@ -1,4 +1,3 @@
-import { Silkscreen } from 'next/font/google';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Send, Terminal } from 'react-feather';
