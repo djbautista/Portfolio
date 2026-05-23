@@ -1,7 +1,5 @@
 @import "tailwindcss";
 
-@plugin "../tailwind-plugins.ts";
-
 @theme {
   --color-primary-50: var(--color-sky-50);
   --color-primary-100: var(--color-sky-100);
@@ -88,4 +86,38 @@
 
 @utility bg-gradient-radial {
   background-image: radial-gradient(var(--tw-gradient-stops));
+}
+
+@utility retro-button-* {
+  background-color: --value(--color- *-500);
+  border-color: --value(--color- *-700);
+  &:hover {
+    background-color: --value(--color- *-400);
+    border-color: --value(--color- *-600);
+  }
+  &:active {
+    background-color: --value(--color- *-600);
+    border-color: --value(--color- *-800);
+  }
+  &.demoted {
+    background-color: transparent;
+  }
+}
+
+@utility neon-* {
+  box-shadow:
+    0 0 60px 20px --value(--color- *-500),
+    0 0 20px 10px --value(--color- *-700);
+}
+
+@utility bg-boxes-* {
+  background-color: --value(--color- *-950);
+  background-image:
+    linear-gradient(--value(--color- *-900) 0.1rem, transparent 0.1rem),
+    linear-gradient(
+      to right,
+      --value(--color- *-900) 0.1rem,
+      --value(--color- *-950) 0.1rem
+    );
+  background-size: 0.5rem 0.5rem;
 }
