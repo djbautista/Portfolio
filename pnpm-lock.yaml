@@ -100,6 +100,28 @@ importers:
         specifier: 5.9.2
         version: 5.9.2
 
+  packages/agent:
+    dependencies:
+      zod:
+        specifier: ^3.23.8
+        version: 3.25.76
+    devDependencies:
+      '@portfolio/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@portfolio/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      eslint:
+        specifier: ^9.39.1
+        version: 9.39.1(jiti@2.7.0)
+      tsx:
+        specifier: ^4.22.3
+        version: 4.22.3
+      typescript:
+        specifier: 5.9.2
+        version: 5.9.2
+
   packages/contracts:
     dependencies:
       zod:

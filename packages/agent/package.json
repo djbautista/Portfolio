@@ -1,5 +1,5 @@
 {
-  "name": "@portfolio/contracts",
+  "name": "@portfolio/agent",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -9,23 +9,12 @@
     ".": {
       "types": "./src/index.ts",
       "default": "./src/index.ts"
-    },
-    "./twilio": {
-      "types": "./src/twilio.ts",
-      "default": "./src/twilio.ts"
-    },
-    "./knowledge": {
-      "types": "./src/knowledge.ts",
-      "default": "./src/knowledge.ts"
-    },
-    "./agent": {
-      "types": "./src/agent.ts",
-      "default": "./src/agent.ts"
     }
   },
   "scripts": {
     "check-types": "tsc --noEmit",
-    "lint": "eslint --max-warnings 0"
+    "lint": "eslint --max-warnings 0",
+    "smoke:agent": "tsx --env-file=../../.env scripts/smoke-agent.ts"
   },
   "dependencies": {
     "zod": "^3.23.8"
@@ -34,6 +23,7 @@
     "@portfolio/eslint-config": "workspace:*",
     "@portfolio/typescript-config": "workspace:*",
     "eslint": "^9.39.1",
+    "tsx": "^4.22.3",
     "typescript": "5.9.2"
   }
 }
