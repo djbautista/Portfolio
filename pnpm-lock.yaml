@@ -94,6 +94,19 @@ importers:
         specifier: 5.9.2
         version: 5.9.2
 
+  packages/contracts:
+    dependencies:
+      zod:
+        specifier: ^3.23.8
+        version: 3.25.76
+    devDependencies:
+      '@portfolio/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      typescript:
+        specifier: 5.9.2
+        version: 5.9.2
+
   packages/db:
     dependencies:
       '@prisma/adapter-pg':
@@ -154,19 +167,6 @@ importers:
       typescript-eslint:
         specifier: ^8.50.0
         version: 8.50.0(eslint@9.39.1(jiti@2.7.0))(typescript@5.9.2)
-
-  packages/shared:
-    dependencies:
-      zod:
-        specifier: ^3.23.8
-        version: 3.25.76
-    devDependencies:
-      '@portfolio/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      typescript:
-        specifier: 5.9.2
-        version: 5.9.2
 
   packages/typescript-config: {}
 
