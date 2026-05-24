@@ -55,7 +55,12 @@ export async function runAgent(
     );
   } catch (err) {
     thrown = err;
-  } finally {
+  }
+
+  // Persistence runs unconditionally but outside `finally` so a failure here
+  // doesn't silently replace the graph error when both fail.
+  let persistenceError: unknown;
+  try {
     await flushSteps({
       prisma: deps.prisma,
       traceId,
@@ -78,10 +83,21 @@ export async function runAgent(
       retryCount: terminalState?.retryCount ?? 0,
       error: thrown,
     });
+  } catch (err) {
+    persistenceError = err;
   }
 
   if (thrown !== undefined) {
+    if (persistenceError !== undefined) {
+      console.error(
+        `[runAgent] trace ${traceId} persistence failed while handling a graph error:`,
+        persistenceError,
+      );
+    }
     throw thrown;
+  }
+  if (persistenceError !== undefined) {
+    throw persistenceError;
   }
 
   const state = terminalState as GraphState;

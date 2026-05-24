@@ -22,7 +22,7 @@ export async function openTrace({
       id: traceId,
       input: request.message,
       conversationId: request.conversationId ?? null,
-      model: model ?? null,
+      model,
       shouldEscalate: false,
     },
   });

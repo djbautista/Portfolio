@@ -22,6 +22,14 @@ const CASES: SmokeCase[] = [
   },
 ];
 
+function pickRewritten(metadata: unknown): string | null {
+  if (metadata === null || typeof metadata !== "object" || Array.isArray(metadata)) {
+    return null;
+  }
+  const rewritten = (metadata as Record<string, unknown>).rewrittenQuery;
+  return typeof rewritten === "string" ? rewritten : null;
+}
+
 async function readRewrites(traceId: string): Promise<string[]> {
   const rows = await prisma.agentStep.findMany({
     where: { traceId, stepName: "rewrite_query" },
@@ -30,11 +38,7 @@ async function readRewrites(traceId: string): Promise<string[]> {
   });
 
   return rows
-    .map((row) => {
-      const metadata = row.metadata as Record<string, unknown> | null;
-      const rewritten = metadata?.rewrittenQuery;
-      return typeof rewritten === "string" ? rewritten : null;
-    })
+    .map((row) => pickRewritten(row.metadata))
     .filter((value): value is string => value !== null);
 }
 
@@ -79,13 +83,22 @@ function printResult(
 }
 
 async function main(): Promise<void> {
+  let hadFailure = false;
+
   for (const testCase of CASES) {
     console.log(`\n[smoke-agent] running case: ${testCase.label}`);
 
-    const response = await runAgent({
-      message: testCase.question,
-      channel: "web",
-    });
+    let response: AgentResponse;
+    try {
+      response = await runAgent({
+        message: testCase.question,
+        channel: "web",
+      });
+    } catch (err) {
+      console.error(`[smoke-agent] FAIL: case "${testCase.label}" threw:`, err);
+      hadFailure = true;
+      continue;
+    }
 
     const rewrites = await readRewrites(response.traceId);
     printResult(testCase.label, testCase.question, response, rewrites);
@@ -94,8 +107,18 @@ async function main(): Promise<void> {
       console.error(
         `[smoke-agent] FAIL: expected answerable case "${testCase.label}" to return high/medium confidence, got "low"`,
       );
-      process.exitCode = 1;
+      hadFailure = true;
     }
+    if (!testCase.expectAnswerable && response.confidence !== "low") {
+      console.error(
+        `[smoke-agent] FAIL: expected unanswerable case "${testCase.label}" to return "low" confidence, got "${response.confidence}"`,
+      );
+      hadFailure = true;
+    }
+  }
+
+  if (hadFailure) {
+    process.exitCode = 1;
   }
 }
 
