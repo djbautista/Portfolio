@@ -1,6 +1,13 @@
-import { Project } from '@/model';
+export interface Project {
+  title: string;
+  description: string;
+  role: string;
+  company: string;
+  year: string;
+  relevance?: 1 | 2 | 3 | 2.5;
+}
 
-export const projects: Project[] = [
+export const projects: readonly Project[] = [
   {
     title: 'High-complexity critical feature development',
     description:
@@ -65,5 +72,3 @@ export const projects: Project[] = [
     relevance: 2,
   },
 ];
-
-export default projects;

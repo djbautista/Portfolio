@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import './globals.css';
 import { twMerge } from 'tailwind-merge';
+import { siteMetadata } from '@portfolio/content';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -9,9 +10,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: 'David Bautista | Senior Software Engineer',
-  description:
-    'Senior Software Engineer with a passion for building great UI/UX products.',
+  title: siteMetadata.title,
+  description: siteMetadata.description,
 };
 
 export default function RootLayout({
