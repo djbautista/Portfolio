@@ -2,8 +2,12 @@ import pgvector from "pgvector";
 
 import { RetrievalQuerySchema, RetrievedChunkSchema, type RetrievalQuery, type RetrievedChunk } from "@portfolio/contracts/knowledge";
 
-import { getEmbeddingProvider } from "@/embeddings/index";
-import { prisma } from "@/index";
+// Relative paths (not @/*) so cross-package consumers (e.g. @portfolio/agent)
+// resolve these via their own tsc — package-local path aliases don't propagate.
+// eslint-disable-next-line no-restricted-imports
+import { getEmbeddingProvider } from "../embeddings/index";
+// eslint-disable-next-line no-restricted-imports
+import { prisma } from "../index";
 
 export interface RetrieveChunksInput extends RetrievalQuery {
   embedding?: number[];

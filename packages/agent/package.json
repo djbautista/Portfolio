@@ -17,7 +17,9 @@
     "smoke:agent": "tsx --env-file=../../.env scripts/smoke-agent.ts"
   },
   "dependencies": {
+    "@langchain/langgraph": "^0.2.74",
     "@portfolio/contracts": "workspace:*",
+    "@portfolio/db": "workspace:*",
     "openai": "^5.0.0",
     "zod": "^3.23.8"
   },

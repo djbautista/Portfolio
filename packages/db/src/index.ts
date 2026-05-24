@@ -21,3 +21,4 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 export * from "./generated/prisma/client.js";
+export { retrieveChunks, type RetrieveChunksInput } from "./knowledge/retrieve";
