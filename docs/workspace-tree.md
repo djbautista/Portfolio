@@ -11,12 +11,10 @@ Portfolio/
 ├── .gitignore                  — top-level ignore rules.
 ├── .npmrc                      — pnpm settings (hoisting, registry).
 ├── docker-compose.yml          — spins up local Postgres + pgvector for dev.
-├── KNOWLEDGE_PIPELINE_EXPLAINED.md — this document.
 ├── package.json                — root workspace manifest; defines repo-wide scripts and dev deps.
 ├── pnpm-lock.yaml              — pinned dep graph.
 ├── pnpm-workspace.yaml         — declares which folders are workspace packages.
 ├── turbo.json                  — Turborepo pipeline config (build/test/lint task graph).
-├── prompt-build-knowledge-ingestion-and-retrieval.md — original spec/prompt this branch implements.
 │
 ├── apps/
 │   └── web/                    — Next.js 16 portfolio site (React 19 + Tailwind v4).
@@ -70,7 +68,11 @@ Portfolio/
 │           └── mergeProps.ts   — utility to merge JSX prop objects.
 │
 ├── docs/
-│   └── architecture.md         — high-level architecture write-up for the AI assistant.
+│   ├── 03-build-agent-core-plan.md   — phased implementation plan that produced packages/agent.
+│   ├── architecture.md               — high-level architecture write-up (channel model + agent core).
+│   ├── knowledge-pipeline.md         — walkthrough of the @portfolio/db knowledge ingestion + retrieval path.
+│   ├── module-resolution-refactor.md — record of the Bundler-resolution / drop-`.js`-suffix migration.
+│   └── workspace-tree.md             — this document.
 │
 ├── infra/
 │   └── postgres/
@@ -127,6 +129,49 @@ Portfolio/
     │           ├── internal/{class,prismaNamespace,prismaNamespaceBrowser}.ts
     │           └── models/{AgentStep, AgentTrace, ChannelEvent, Conversation, Document, DocumentChunk, Message, RetrievedContext}.ts
     │
+    ├── agent/                  — LangGraph CRAG agent: turns retrieveChunks() into a grounded, self-correcting assistant.
+    │   ├── eslint.config.js
+    │   ├── package.json        — exports @portfolio/agent; defines smoke:agent script + LangGraph/OpenAI runtime deps.
+    │   ├── tsconfig.json
+    │   │
+    │   ├── scripts/
+    │   │   └── smoke-agent.ts  — exercises runAgent() end-to-end against the real DB + OpenAI with an answerable + an unanswerable question.
+    │   │
+    │   └── src/
+    │       ├── index.ts        — barrel: runAgent + public types (AgentDeps, GraphState, ChatProvider, ContextGrader, …).
+    │       ├── env.ts          — lazy, Zod-validated chat env accessor (OPENAI_API_KEY, CHAT_MODEL, CHAT_TIMEOUT_MS, CHAT_MAX_TOKENS).
+    │       ├── deps.ts         — AgentDeps shape + resolveDeps(): the DI seam for prisma, chatProvider, grader, retrieve.
+    │       ├── runAgent.ts     — public entrypoint; owns trace persistence at the try/catch boundary.
+    │       │
+    │       ├── graph/
+    │       │   ├── index.ts    — buildAgentGraph(deps): wires the StateGraph + computeRecursionLimit().
+    │       │   ├── state.ts    — AgentStateAnnotation: state channels (originalQuery, retrievedChunks, pendingSteps, …) + StepRecord type.
+    │       │   ├── routing.ts  — decisionRouter: conditional edge from grade_context → generate / rewrite / fallback.
+    │       │   └── nodes/
+    │       │       ├── step.ts            — withStep() helper: wraps a node body and emits a StepRecord.
+    │       │       ├── analyzeIntent.ts   — first-pass intent capture + query normalization (pure; never short-circuits).
+    │       │       ├── retrieveContext.ts — calls deps.retrieve(); replaces retrievedChunks each round.
+    │       │       ├── gradeContext.ts    — runs deps.grader; sets relevanceLabel + acceptedChunks.
+    │       │       ├── rewriteQuery.ts    — LLM-rewrites the query on weak retrieval; increments retryCount.
+    │       │       ├── generateAnswer.ts  — LLM answer grounded on acceptedChunks (terminal).
+    │       │       └── fallback.ts        — deterministic escalation string; no LLM call (terminal).
+    │       │
+    │       ├── llm/
+    │       │   ├── types.ts    — ChatProvider interface + ChatMessage / ChatRequest / ChatResult types.
+    │       │   ├── openai.ts   — createOpenAIChatProvider(): lazy OpenAI client w/ timeout + retries, AbortSignal-aware.
+    │       │   └── index.ts    — getChatProvider() memoized singleton.
+    │       │
+    │       ├── grader/
+    │       │   ├── types.ts     — ContextGrader interface, ContextVerdict, RelevanceLabel ("good" | "weak" | "none").
+    │       │   └── heuristic.ts — createHeuristicGrader(): score-threshold grader (LLM grader is a planned follow-up).
+    │       │
+    │       ├── prompts/
+    │       │   ├── systemPrompt.ts — buildSystemPrompt(acceptedChunks): grounded-answer system prompt.
+    │       │   └── rewriteQuery.ts — buildRewritePrompt({…}): query-rewrite system + user prompts.
+    │       │
+    │       └── persistence/
+    │           └── trace.ts    — openTrace / flushSteps / writeRetrievedContexts / finalizeTrace; runs at the entrypoint, never in nodes.
+    │
     ├── portfolio-content/      — single source of truth for portfolio copy (used by web + seeder).
     │   ├── package.json
     │   ├── tsconfig.json
@@ -156,6 +201,7 @@ Portfolio/
 ## How to read the tree quickly
 
 - **★ marks the knowledge pipeline.** Trace it top-to-bottom: `seed-knowledge-data.ts` → `seed-knowledge.ts` → (`chunking.ts` + `documents.ts` + `embeddings/openai.ts` + `chunks.ts`) → at query time, `retrieve.ts` → smoke-checked by `smoke-retrieval.ts`. The schemas they all speak through live in `packages/contracts/src/knowledge.ts`.
+- **`packages/agent/`** sits on top of the knowledge pipeline. Trace it from the entrypoint: `runAgent` (`src/runAgent.ts`) → graph (`src/graph/index.ts` + nodes) → `deps.retrieve` (wraps `retrieveChunks()`) and `deps.chatProvider` (OpenAI) → trace persistence (`src/persistence/trace.ts`). The high-level shape lives in `docs/architecture.md` under "Agent core"; smoke-checked by `scripts/smoke-agent.ts`.
 - **`apps/web/`** is the public-facing Next.js site. It renders `@portfolio/content` directly; the knowledge pipeline reads that same package so the bot stays in sync with the site.
 - **`packages/db/src/generated/prisma/`** is auto-generated — never edit by hand; it gets blown away by `prisma generate`.
 - **Shared configs** (`eslint-config`, `typescript-config`) keep all packages on the same lint/TS settings without duplication.
