@@ -7,6 +7,9 @@
     "OPENAI_API_KEY",
     "EMBEDDING_MODEL",
     "EMBEDDING_DIMENSIONS",
+    "CHAT_MODEL",
+    "CHAT_TIMEOUT_MS",
+    "CHAT_MAX_TOKENS",
     "NODE_ENV"
   ],
   "tasks": {
