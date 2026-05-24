@@ -2,8 +2,8 @@ import { randomUUID } from "node:crypto";
 
 import pgvector from "pgvector";
 
-import { prisma, Prisma } from "../index.js";
-import type { TextChunk } from "./chunking.js";
+import { prisma, Prisma } from "../index";
+import type { TextChunk } from "./chunking";
 
 const EXPECTED_DIMENSIONS = 1536;
 

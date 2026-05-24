@@ -5,7 +5,7 @@ import {
   ChannelSchema,
   ISODateStringSchema,
   MetadataSchema,
-} from "./common.js";
+} from "./common";
 
 export const ChannelEventDirectionSchema = z.enum(["inbound", "outbound"]);
 

@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 
 import type { KnowledgeDocumentInput } from "@portfolio/contracts/knowledge";
 
-import { prisma, Prisma, type Document } from "../index.js";
+import { prisma, Prisma, type Document } from "../index";
 
 export function computeContentHash(content: string): string {
   const normalized = content.trim().replace(/[ \t]+\n/g, "\n");

@@ -2,8 +2,8 @@ import pgvector from "pgvector";
 
 import { RetrievalQuerySchema, RetrievedChunkSchema, type RetrievalQuery, type RetrievedChunk } from "@portfolio/contracts/knowledge";
 
-import { getEmbeddingProvider } from "../embeddings/index.js";
-import { prisma } from "../index.js";
+import { getEmbeddingProvider } from "../embeddings/index";
+import { prisma } from "../index";
 
 export interface RetrieveChunksInput extends RetrievalQuery {
   embedding?: number[];

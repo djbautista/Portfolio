@@ -1,12 +1,12 @@
 import type { KnowledgeDocumentInput } from "@portfolio/contracts/knowledge";
 
-import { getEmbeddingProvider } from "../src/embeddings/index.js";
-import { chunkText } from "../src/knowledge/chunking.js";
-import { replaceDocumentChunks } from "../src/knowledge/chunks.js";
-import { upsertDocument } from "../src/knowledge/documents.js";
-import { prisma, Prisma } from "../src/index.js";
+import { getEmbeddingProvider } from "../src/embeddings/index";
+import { chunkText } from "../src/knowledge/chunking";
+import { replaceDocumentChunks } from "../src/knowledge/chunks";
+import { upsertDocument } from "../src/knowledge/documents";
+import { prisma, Prisma } from "../src/index";
 
-import { allSeedDocuments } from "./seed-knowledge-data.js";
+import { allSeedDocuments } from "./seed-knowledge-data";
 
 // Identifies rows this seed owns. The cleanup pass only removes documents
 // whose metadata.source matches one of these values — production rows
@@ -107,7 +107,7 @@ async function pruneStaleSeedDocuments(current: readonly KnowledgeDocumentInput[
         metadata: {
           path: ["source"],
           equals: source
-        } as Prisma.JsonFilter<"Document">
+        } as Prisma.JsonNullableFilter<"Document">
       }))
     },
     select: { id: true, sourceType: true, sourceUri: true, title: true }
