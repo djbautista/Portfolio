@@ -1,34 +1,20 @@
 import { LuArrowRight } from 'react-icons/lu';
-import Image from 'next/image';
+import Image, { type StaticImageData } from 'next/image';
+import Link from 'next/link';
+
+import { demos } from '@portfolio/content';
 import { Button, Navigation } from '@/components/common';
 
 import GalleryPreview from '@/public/demos/previews/gallery.gif';
 import InfinityTextPreview from '@/public/demos/previews/infinity-text.gif';
-import Link from 'next/link';
 
-const demos = [
-  {
-    id: 1,
-    title: 'Gallery',
-    slug: 'gallery',
-    description:
-      'A nice reactive gallery with animations when hovering over the elements.',
-    year: 2024,
-    image: GalleryPreview,
-  },
-  {
-    id: 2,
-    title: 'Infinity Text',
-    slug: 'infinity-text',
-    description:
-      'A simple text animation that creates an infinity effect and dynamically switch direction when scrolling.',
-    year: 2023,
-    image: InfinityTextPreview,
-  },
-];
+const demoImages: Record<string, StaticImageData> = {
+  gallery: GalleryPreview,
+  'infinity-text': InfinityTextPreview,
+};
 
 export default function Component() {
-  const sortedDemos = demos.sort((a, b) => {
+  const sortedDemos = [...demos].sort((a, b) => {
     if (a.year === b.year) {
       return b.id - a.id;
     }
@@ -53,7 +39,7 @@ export default function Component() {
                       <Image
                         width={200}
                         height={200}
-                        src={demo.image}
+                        src={demoImages[demo.slug]!}
                         alt={demo.title}
                         className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
                         priority

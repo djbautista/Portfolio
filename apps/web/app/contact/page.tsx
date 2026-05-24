@@ -3,6 +3,7 @@ import React from 'react';
 import { FileText, GitHub, Linkedin, Mail } from 'react-feather';
 import { twMerge } from 'tailwind-merge';
 
+import { contact } from '@portfolio/content';
 import { Button, Navigation, Section, Typography } from '@/components/common';
 import { ContactForm } from '@/components/ContactForm';
 import { silkscreen } from '@/utils/fonts';
@@ -41,37 +42,37 @@ export default function ContactPage() {
             </div>
             <div className="space-y-4 text-xs md:text-sm">
               <Link
-                href="mailto:david@davidbautista.co"
+                href={`mailto:${contact.email}`}
                 className="flex w-fit items-center space-x-2 text-primary-200 hover:text-primary"
               >
                 <Mail className="h-5 w-5" />
-                <span>david@davidbautista.co</span>
+                <span>{contact.email}</span>
               </Link>
 
               <Link
-                href="https://github.com/djbautista"
+                href={contact.github.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex w-fit items-center space-x-2 text-primary-200 hover:text-primary"
               >
                 <GitHub className="h-5 w-5" />
-                <span>Davidjba</span>
+                <span>{contact.github.label}</span>
               </Link>
 
               <Link
-                href="https://www.linkedin.com/in/davidjoelbautista/?locale=en_US"
+                href={contact.linkedin.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex w-fit items-center space-x-2 text-primary-200 hover:text-primary"
               >
                 <Linkedin className="h-5 w-5" />
-                <span>David Bautista</span>
+                <span>{contact.linkedin.name}</span>
               </Link>
             </div>
 
             <div className="flex w-fit flex-col space-y-4 md:mt-4">
               <Link
-                href="/davidbautista.pdf"
+                href={contact.resumePath}
                 target="_blank"
                 rel="noopener noreferrer"
               >
