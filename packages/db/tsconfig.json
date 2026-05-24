@@ -3,6 +3,6 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "include": ["index.ts", "generated/**/*.ts", "prisma.config.ts"],
+  "include": ["src/**/*.ts", "prisma.config.ts"],
   "exclude": ["node_modules"]
 }
