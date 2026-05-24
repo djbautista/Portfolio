@@ -21,7 +21,13 @@ export function makeRewriteQuery(deps: AgentDeps) {
         ],
       });
 
-      const rewritten = chatResult.content.trim();
+      // Fall back to the original query when the model returns nothing
+      // usable — a blank string would crash retrieveChunks' NonEmptyString
+      // validation on the next loop. The retry counter still ticks, so the
+      // loop terminates via decisionRouter → fallback within maxRetries.
+      const trimmed = chatResult.content.trim();
+      const rewritten = trimmed.length > 0 ? trimmed : state.originalQuery;
+      const fellBack = trimmed.length === 0;
 
       return {
         result: { rewritten },
@@ -30,6 +36,7 @@ export function makeRewriteQuery(deps: AgentDeps) {
           rewrittenQuery: rewritten,
           retryCount: state.retryCount + 1,
           model: chatResult.model,
+          fellBack,
         },
       };
     });

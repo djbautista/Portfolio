@@ -15,11 +15,6 @@ export function computeRecursionLimit(maxRetries: number): number {
   return maxRetries * 4 + 4;
 }
 
-export interface BuiltAgentGraph {
-  graph: ReturnType<ReturnType<typeof buildStateGraph>["compile"]>;
-  defaultRecursionLimit: number;
-}
-
 function buildStateGraph(deps: AgentDeps) {
   return new StateGraph(AgentStateAnnotation)
     .addNode("analyze_intent", makeAnalyzeIntent())
@@ -41,10 +36,12 @@ function buildStateGraph(deps: AgentDeps) {
     .addEdge("fallback", END);
 }
 
-export function buildAgentGraph(deps: AgentDeps): BuiltAgentGraph {
+export function buildAgentGraph(deps: AgentDeps) {
   const graph = buildStateGraph(deps).compile();
   return {
     graph,
     defaultRecursionLimit: computeRecursionLimit(1),
   };
 }
+
+export type BuiltAgentGraph = ReturnType<typeof buildAgentGraph>;
