@@ -1,5 +1,6 @@
 import { PrismaPg } from "@prisma/adapter-pg";
 
+import { getDatabaseEnv } from "./env.js";
 import { PrismaClient } from "./generated/prisma/client.js";
 
 const globalForPrisma = globalThis as unknown as {
@@ -7,13 +8,8 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 function createPrismaClient(): PrismaClient {
-  const connectionString = process.env.DATABASE_URL;
-  if (!connectionString) {
-    throw new Error(
-      "DATABASE_URL is not set. The @portfolio/db client requires a Postgres connection string.",
-    );
-  }
-  const adapter = new PrismaPg({ connectionString });
+  const { DATABASE_URL } = getDatabaseEnv();
+  const adapter = new PrismaPg({ connectionString: DATABASE_URL });
   return new PrismaClient({ adapter });
 }
 
