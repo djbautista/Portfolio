@@ -27,8 +27,8 @@
     "typed.js": "^2.1.0"
   },
   "devDependencies": {
-    "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
+    "@portfolio/eslint-config": "workspace:*",
+    "@portfolio/typescript-config": "workspace:*",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^22.15.3",
     "@types/react": "19.2.2",
