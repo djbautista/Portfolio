@@ -106,9 +106,15 @@ importers:
         specifier: ^3.23.8
         version: 3.25.76
     devDependencies:
+      '@portfolio/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
       '@portfolio/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
+      eslint:
+        specifier: ^9.39.1
+        version: 9.39.1(jiti@2.7.0)
       typescript:
         specifier: 5.9.2
         version: 5.9.2
@@ -140,9 +146,15 @@ importers:
         specifier: ^3.23.8
         version: 3.25.76
     devDependencies:
+      '@portfolio/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
       '@portfolio/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
+      eslint:
+        specifier: ^9.39.1
+        version: 9.39.1(jiti@2.7.0)
       prisma:
         specifier: ^7.8.0
         version: 7.8.0(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.2)
@@ -191,9 +203,15 @@ importers:
 
   packages/portfolio-content:
     devDependencies:
+      '@portfolio/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
       '@portfolio/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
+      eslint:
+        specifier: ^9.39.1
+        version: 9.39.1(jiti@2.7.0)
       typescript:
         specifier: 5.9.2
         version: 5.9.2

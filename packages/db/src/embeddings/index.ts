@@ -1,5 +1,5 @@
-import { createOpenAIEmbeddingProvider } from "./openai.js";
-import type { EmbeddingProvider } from "./types.js";
+import { createOpenAIEmbeddingProvider } from "./openai";
+import type { EmbeddingProvider } from "./types";
 
 let provider: EmbeddingProvider | undefined;
 

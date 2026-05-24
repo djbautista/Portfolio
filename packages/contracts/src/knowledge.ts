@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { MetadataSchema, NonEmptyStringSchema } from "./common.js";
+import { MetadataSchema, NonEmptyStringSchema } from "./common";
 
 export const KnowledgeSourceTypeSchema = z.enum(["portfolio", "project", "experience", "skill", "dev_fixture"]);
 

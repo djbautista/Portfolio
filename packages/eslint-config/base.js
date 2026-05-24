@@ -22,11 +22,27 @@ export const config = [
     },
   },
   {
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["../*", "../**"],
+              message:
+                "Use an alias import (e.g. '@/...') instead of '../' imports. './' is fine.",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     plugins: {
       onlyWarn,
     },
   },
   {
-    ignores: ["dist/**"],
+    ignores: ["dist/**", "**/generated/**"],
   },
 ];

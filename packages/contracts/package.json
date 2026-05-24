@@ -20,13 +20,16 @@
     }
   },
   "scripts": {
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "lint": "eslint --max-warnings 0"
   },
   "dependencies": {
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@portfolio/eslint-config": "workspace:*",
     "@portfolio/typescript-config": "workspace:*",
+    "eslint": "^9.39.1",
     "typescript": "5.9.2"
   }
 }
