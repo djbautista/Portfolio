@@ -1,6 +1,13 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
+  "//": "globalEnv lists cross-cutting vars that can affect any task's output. Coarse-grained for this 3-package repo; refine via per-task `env` once tasks diverge meaningfully in what they read.",
+  "globalEnv": [
+    "DATABASE_URL",
+    "OPENAI_API_KEY",
+    "EMBEDDING_MODEL",
+    "EMBEDDING_DIMENSIONS"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
