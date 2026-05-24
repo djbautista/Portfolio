@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 
-import { getEmbeddingEnv } from "../env";
+import { getEmbeddingEnv } from "@/env";
 import type { EmbeddingProvider } from "./types";
 
 // OpenAI documents a 2048-input cap on embeddings; we chunk requests at this

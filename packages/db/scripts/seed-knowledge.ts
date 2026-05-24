@@ -1,10 +1,10 @@
 import type { KnowledgeDocumentInput } from "@portfolio/contracts/knowledge";
 
-import { getEmbeddingProvider } from "../src/embeddings/index";
-import { chunkText } from "../src/knowledge/chunking";
-import { replaceDocumentChunks } from "../src/knowledge/chunks";
-import { upsertDocument } from "../src/knowledge/documents";
-import { prisma, Prisma } from "../src/index";
+import { getEmbeddingProvider } from "@/embeddings/index";
+import { chunkText } from "@/knowledge/chunking";
+import { replaceDocumentChunks } from "@/knowledge/chunks";
+import { upsertDocument } from "@/knowledge/documents";
+import { prisma, Prisma } from "@/index";
 
 import { allSeedDocuments } from "./seed-knowledge-data";
 

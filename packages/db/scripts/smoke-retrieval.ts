@@ -1,5 +1,5 @@
-import { retrieveChunks } from "../src/knowledge/retrieve";
-import { prisma } from "../src/index";
+import { retrieveChunks } from "@/knowledge/retrieve";
+import { prisma } from "@/index";
 
 const QUERY = "What is David's stack?";
 const TOP_K = 5;

@@ -6,7 +6,8 @@
     "DATABASE_URL",
     "OPENAI_API_KEY",
     "EMBEDDING_MODEL",
-    "EMBEDDING_DIMENSIONS"
+    "EMBEDDING_DIMENSIONS",
+    "NODE_ENV"
   ],
   "tasks": {
     "build": {
