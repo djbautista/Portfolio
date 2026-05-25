@@ -774,7 +774,6 @@ function StoryCard({
         <div className="topline" />
         <div className="scrim" />
         <span className="idx">{story.n}</span>
-        <span className="twilio">Twilio relevance</span>
         <StoryDiagram kind={story.diagram} />
       </div>
       <div className="body">
@@ -948,8 +947,17 @@ function StoryDrawer({
             </div>
 
             <div className="drawer-cover">
-              <div className="scrim" />
-              <StoryDiagram kind={story.diagram} />
+              {story.image ? (
+                <>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={story.image} alt={story.title} />
+                </>
+              ) : (
+                <>
+                  <div className="scrim" />
+                  <StoryDiagram kind={story.diagram} />
+                </>
+              )}
             </div>
 
             <div className="drawer-body">
