@@ -34,6 +34,7 @@ export interface ProudTile {
   title: string;
   body: string;
   badge: string;
+  image?: string;
 }
 
 export interface InterviewSection {
@@ -238,7 +239,8 @@ export const proudMoments: ProudTile[] = [
     n: "P · 03",
     title: "Fintech / blockchain hackathon — won.",
     body: "A team prototype under tight time-constrained product and engineering conditions. We won. I still keep the photo.",
-    badge: "Hackathon"
+    badge: "Hackathon",
+    image: "/zulu-hackaton.jpg"
   },
   {
     n: "P · 04",

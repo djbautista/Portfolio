@@ -554,6 +554,20 @@
   z-index: -1;
 }
 
+/* Photo-backed proud tile (e.g. hackathon). Background image is set inline;
+   wash becomes a darkening overlay so the title + badge stay readable. */
+.tir-root .proud-tile.has-photo {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.tir-root .proud-tile.has-photo .wash {
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.18) 30%, rgba(0,0,0,0.78) 100%),
+    radial-gradient(ellipse at 0% 100%, rgba(217,70,239,0.18), transparent 60%);
+}
+.tir-root .proud-tile.has-photo .glyph-bg { display: none; }
+
 /* ===== Drawer (story detail) ============================================ */
 .tir-drawer-scrim {
   position: fixed; inset: 0; z-index: 100;

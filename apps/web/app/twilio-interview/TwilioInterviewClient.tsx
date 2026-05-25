@@ -866,7 +866,11 @@ function Proud() {
         />
         <div className="proud-grid">
           {proudMoments.map((p, i) => (
-            <div key={p.n} className={`proud-tile t${i + 1}`}>
+            <div
+              key={p.n}
+              className={`proud-tile t${i + 1}${p.image ? ' has-photo' : ''}`}
+              style={p.image ? { backgroundImage: `url('${p.image}')` } : undefined}
+            >
               <div className="wash" />
               <span className="glyph-bg">{glyphs[i]}</span>
               <span className="badge">{p.badge}</span>
