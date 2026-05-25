@@ -1,10 +1,12 @@
 import {
+  ChatResponseSchema,
+  ErrorResponseSchema,
+} from '@portfolio/contracts';
+import type {
   ChatRequest,
   ChatResponse,
-  ChatResponseSchema,
   ErrorCode,
   ErrorResponse,
-  ErrorResponseSchema,
 } from '@portfolio/contracts';
 
 export class AgentClientError extends Error {

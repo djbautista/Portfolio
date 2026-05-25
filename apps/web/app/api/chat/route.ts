@@ -2,6 +2,10 @@
 // Intentionally dumb: no auth, no transformation, no business logic.
 // Keeps the browser same-origin (no CORS) and hides the Fastify origin from clients.
 
+// Upstream timeout: long enough to cover model-call latency on apps/api,
+// short enough that a hung agent doesn't tie up a Next.js worker indefinitely.
+const UPSTREAM_TIMEOUT_MS = 30_000;
+
 export async function POST(request: Request) {
   const upstream = process.env.AGENT_API_URL;
   if (!upstream) {
@@ -25,15 +29,23 @@ export async function POST(request: Request) {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body,
+      signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
     });
   } catch (error) {
-    console.error('[api/chat] upstream fetch failed', error);
+    const isTimeout =
+      error instanceof DOMException && error.name === 'TimeoutError';
+    console.error(
+      `[api/chat] upstream fetch ${isTimeout ? 'timed out' : 'failed'}`,
+      error,
+    );
     return Response.json(
       {
         code: 'internal_error',
-        message: 'Failed to reach the agent service.',
+        message: isTimeout
+          ? 'Agent service did not respond in time.'
+          : 'Failed to reach the agent service.',
       },
-      { status: 502 },
+      { status: isTimeout ? 504 : 502 },
     );
   }
 
