@@ -31,7 +31,7 @@ export const slashCommands: readonly SlashCommand[] = [
     label: 'Projects',
     description: "Browse what I'm proud of",
     kind: 'navigate',
-    href: '/about#projects',
+    href: '/#projects',
   },
   {
     command: '/stack',
@@ -52,7 +52,7 @@ export const slashCommands: readonly SlashCommand[] = [
     label: 'Contact',
     description: 'Email, LinkedIn, GitHub',
     kind: 'navigate',
-    href: '/contact',
+    href: '/#contact',
   },
   {
     command: '/whatsapp',

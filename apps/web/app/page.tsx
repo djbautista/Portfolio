@@ -4,6 +4,8 @@ import { Send, Terminal } from 'react-feather';
 
 import { contact, fullName, greeting, tagline } from '@portfolio/content';
 import { Button, Navigation, Section, Typography } from '@/components/common';
+import { AboutSection } from '@/components/AboutSection';
+import { ContactSection } from '@/components/ContactSection';
 import { silkscreen } from '@/utils/fonts';
 
 export default function Home() {
@@ -13,8 +15,11 @@ export default function Home() {
         className="fixed left-[50%] top-8 z-20 w-fit -translate-x-1/2 transform"
         current="/"
       />
-      <main className="h-screen flex-col overflow-hidden p-8 text-neutral-50">
-        <Section className="mx-auto h-screen max-w-6xl flex-col items-center justify-center pb-0 md:flex-row">
+      <main className="flex-col p-8 text-neutral-50">
+        <Section
+          id="home"
+          className="mx-auto h-screen max-w-6xl flex-col items-center justify-center pb-0 md:flex-row"
+        >
           <div className="flex w-full flex-col items-start justify-start gap-8 md:justify-evenly lg:w-auto lg:py-8">
             <div className="flex w-full flex-col gap-2">
               <h3 className="text-2xl font-light lg:text-4xl xl:text-5xl">
@@ -33,7 +38,7 @@ export default function Home() {
               </h2>
             </div>
             <div className="flex gap-8">
-              <Link href="/contact">
+              <Link href="#contact">
                 <Button>
                   <span>Say Hi</span>
                   <Send />
@@ -62,6 +67,8 @@ export default function Home() {
             />
           </div>
         </Section>
+        <AboutSection />
+        <ContactSection />
       </main>
     </>
   );
