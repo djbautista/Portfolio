@@ -127,9 +127,90 @@ file to audit (`packages/agent/src/persistence/trace.ts`).
 ### Wire contracts
 
 `AgentRequestSchema` and `AgentResponseSchema` in
-`packages/contracts/src/agent.ts` are the seams the future API and frontend
-will consume. `AgentSourceSchema` is an alias of `RetrievedChunkSchema` from
-`./knowledge` — there is no parallel chunk shape.
+`packages/contracts/src/agent.ts` are the seams the API and frontend consume.
+`AgentSourceSchema` is an alias of `RetrievedChunkSchema` from `./knowledge`
+— there is no parallel chunk shape.
+
+`packages/contracts/src/chat.ts` layers the HTTP wire shape on top:
+
+- `ChatRequestSchema` is the inbound `/chat` body (message, channel, optional
+  conversationId / userId / metadata).
+- `ChatResponseSchema` is `AgentResponseSchema.extend({ conversationId })` —
+  intentionally `.extend()` rather than redeclared so the API response stays
+  in lockstep with the agent response on agent-owned fields (`confidence`,
+  `sources`, `traceId`, `shouldEscalate`, `metadata`).
+
+`packages/contracts/src/errors.ts` defines the failure envelope
+(`ErrorCodeSchema` + `ErrorResponseSchema`) that the API returns for every
+non-2xx response. The codes are the closed set
+`validation_error | conversation_not_found | agent_failure | internal_error`.
+
+## API layer
+
+`apps/api` is the Fastify HTTP boundary that fronts `@portfolio/agent`. It is
+intentionally thin: the agent owns intelligence and trace persistence; the API
+owns transport, conversation lifecycle, message persistence, and the error
+envelope.
+
+### Boot and request lifecycle
+
+- `src/server.ts` reads env via `getApiEnv()` and calls `app.listen()`.
+- `src/app.ts` (`buildApp`) constructs the Fastify instance, registers `@fastify/cors`
+  (origins parsed from `API_CORS_ORIGINS`; in production an unset value
+  disables CORS rather than allowing `*`), and installs a single error handler
+  that maps every thrown error to `ErrorResponseSchema`. Unknown errors are
+  logged server-side and surfaced as a generic `internal_error` — internals
+  are never echoed to clients.
+- `src/env.ts` validates only API-owned env vars (`API_HOST`, `API_PORT`,
+  `NODE_ENV`, `API_CORS_ORIGINS`). `DATABASE_URL` belongs to `@portfolio/db`
+  and `OPENAI_API_KEY` to `@portfolio/agent`; the API does not re-validate
+  them.
+
+### Routes
+
+- `GET /health` (`src/routes/health.ts`) — liveness probe.
+- `POST /chat` (`src/routes/chat.ts`) — parses the body with
+  `ChatRequestSchema` and delegates to `handleChat()`. On parse failure it
+  throws `ValidationError`, which the central handler converts to a 400
+  `validation_error` envelope with per-issue details.
+
+### Chat orchestration
+
+`src/services/chatService.ts#handleChat` is where the API earns its keep:
+
+1. **Resolve the conversation.** If `conversationId` is provided, look it up
+   and throw `ConversationNotFoundError` (→ 404 `conversation_not_found`) if
+   it does not exist. Otherwise create a new `Conversation` row.
+2. **Persist the user `Message`** before invoking the agent, so the inbound
+   side of the conversation is durable even if the agent throws.
+3. **Invoke `runAgent`**, mapping `ChatRequest` to `AgentRequest`. Any thrown
+   error is wrapped in `AgentFailureError` (→ 500 `agent_failure`) and the
+   original cause is preserved on `Error.cause` for server-side logs.
+4. **Persist the assistant `Message`** with `traceId`, `confidence`, and
+   `shouldEscalate` stored on its metadata, so the message row is
+   self-describing without needing to join the trace table.
+5. **Best-effort back-fill** `AgentTrace.assistantMessageId` so traces can be
+   navigated from message → trace as well as trace → messages. A failure here
+   is logged and swallowed: the user-visible response is already produced and
+   the assistant message is already saved, so failing the request would be
+   strictly worse than a missing back-pointer.
+6. **Return a `ChatResponse`** — the agent response plus the resolved
+   `conversationId`.
+
+### Error envelope
+
+Every non-2xx response is shaped by `ErrorResponseSchema`. The mapping
+(`HttpError → status + code`, `ZodError → 400 validation_error`, unknown →
+500 `internal_error`) lives in one place in `app.ts`. Route handlers and
+services only throw; they never format error payloads.
+
+### Smoke check
+
+`apps/api/scripts/smoke-chat.ts` boots the app via `fastify.inject()` (no
+real port binding, no network) and exercises the happy path, the validation
+error path, and the missing-conversation 404 path against the real database
+and agent. It is the API counterpart to `smoke:agent` / `smoke:retrieval` —
+a one-command "is this wired correctly" check, not a test suite.
 
 ### Known limitations (planned follow-ups)
 

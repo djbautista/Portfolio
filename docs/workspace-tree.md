@@ -17,6 +17,27 @@ Portfolio/
 ├── turbo.json                  — Turborepo pipeline config (build/test/lint task graph).
 │
 ├── apps/
+│   ├── api/                    — Fastify HTTP boundary that fronts @portfolio/agent.
+│   │   ├── eslint.config.js
+│   │   ├── package.json        — exports @portfolio/api; defines dev/start scripts + smoke:chat.
+│   │   ├── tsconfig.json
+│   │   │
+│   │   ├── scripts/
+│   │   │   └── smoke-chat.ts   — boots the app via fastify.inject() and exercises happy path, validation error, and missing-conversation 404.
+│   │   │
+│   │   └── src/
+│   │       ├── server.ts       — process entrypoint; reads env and calls app.listen().
+│   │       ├── app.ts          — buildApp(): Fastify factory; registers CORS, routes, and the central error handler that maps to ErrorResponseSchema.
+│   │       ├── env.ts          — lazy, Zod-validated API env accessor (API_HOST, API_PORT, NODE_ENV, API_CORS_ORIGINS) + parseCorsOrigins helper.
+│   │       ├── errors.ts       — HttpError base + ValidationError / ConversationNotFoundError / AgentFailureError.
+│   │       │
+│   │       ├── routes/
+│   │       │   ├── health.ts   — GET /health.
+│   │       │   └── chat.ts     — POST /chat; validates ChatRequestSchema and delegates to chatService.
+│   │       │
+│   │       └── services/
+│   │           └── chatService.ts — resolves/creates the Conversation, writes the user Message, invokes runAgent(), writes the assistant Message, and best-effort back-fills assistantMessageId on the AgentTrace.
+│   │
 │   └── web/                    — Next.js 16 portfolio site (React 19 + Tailwind v4).
 │       ├── .env.local.example  — example env for the web app.
 │       ├── .gitignore          — Next-specific ignores.
@@ -68,10 +89,8 @@ Portfolio/
 │           └── mergeProps.ts   — utility to merge JSX prop objects.
 │
 ├── docs/
-│   ├── 03-build-agent-core-plan.md   — phased implementation plan that produced packages/agent.
-│   ├── architecture.md               — high-level architecture write-up (channel model + agent core).
+│   ├── architecture.md               — high-level architecture write-up (channel model + agent core + API layer).
 │   ├── knowledge-pipeline.md         — walkthrough of the @portfolio/db knowledge ingestion + retrieval path.
-│   ├── module-resolution-refactor.md — record of the Bundler-resolution / drop-`.js`-suffix migration.
 │   └── workspace-tree.md             — this document.
 │
 ├── infra/
@@ -89,6 +108,9 @@ Portfolio/
     │       ├── common.ts       — primitive schemas (NonEmptyString, ISO date, channel enums).
     │       ├── channel.ts      — inbound/outbound channel event schemas (used by webhooks).
     │       ├── knowledge.ts ★  — KnowledgeDocumentInput, RetrievalQuery, RetrievedChunk schemas.
+    │       ├── agent.ts        — AgentRequest / AgentResponse / AgentConfidence / AgentSource (alias of RetrievedChunk).
+    │       ├── chat.ts         — ChatRequest + ChatResponse (extends AgentResponse with conversationId); the HTTP wire shape for /chat.
+    │       ├── errors.ts       — ErrorCode enum + ErrorResponse envelope returned by the API on every failure.
     │       └── twilio.ts       — Twilio-specific webhook payload schemas.
     │
     ├── db/                     — Prisma + pgvector data layer; home of the knowledge pipeline.
@@ -202,6 +224,7 @@ Portfolio/
 
 - **★ marks the knowledge pipeline.** Trace it top-to-bottom: `seed-knowledge-data.ts` → `seed-knowledge.ts` → (`chunking.ts` + `documents.ts` + `embeddings/openai.ts` + `chunks.ts`) → at query time, `retrieve.ts` → smoke-checked by `smoke-retrieval.ts`. The schemas they all speak through live in `packages/contracts/src/knowledge.ts`.
 - **`packages/agent/`** sits on top of the knowledge pipeline. Trace it from the entrypoint: `runAgent` (`src/runAgent.ts`) → graph (`src/graph/index.ts` + nodes) → `deps.retrieve` (wraps `retrieveChunks()`) and `deps.chatProvider` (OpenAI) → trace persistence (`src/persistence/trace.ts`). The high-level shape lives in `docs/architecture.md` under "Agent core"; smoke-checked by `scripts/smoke-agent.ts`.
+- **`apps/api/`** is the HTTP boundary in front of the agent. Trace it: `server.ts` → `buildApp` (`src/app.ts`) → `POST /chat` (`src/routes/chat.ts`) → `handleChat` (`src/services/chatService.ts`) → conversation + user Message rows → `runAgent` → assistant Message row + `AgentTrace.assistantMessageId` back-fill. Errors are normalized to `ErrorResponseSchema` by the central error handler in `app.ts`; smoke-checked by `scripts/smoke-chat.ts`.
 - **`apps/web/`** is the public-facing Next.js site. It renders `@portfolio/content` directly; the knowledge pipeline reads that same package so the bot stays in sync with the site.
 - **`packages/db/src/generated/prisma/`** is auto-generated — never edit by hand; it gets blown away by `prisma generate`.
 - **Shared configs** (`eslint-config`, `typescript-config`) keep all packages on the same lint/TS settings without duplication.
