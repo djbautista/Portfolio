@@ -206,7 +206,7 @@ export const ChatComposer = forwardRef<HTMLTextAreaElement, ChatComposerProps>(
             aria-activedescendant={activeOptionId}
             disabled={disabled}
             rows={1}
-            className="cw-focus-ring-inset"
+            className="cw-focus-ring-inset cw-composer-textarea"
             style={{
               flex: 1,
               minWidth: 0,
@@ -215,12 +215,9 @@ export const ChatComposer = forwardRef<HTMLTextAreaElement, ChatComposerProps>(
               outline: 'none',
               color: 'var(--fg-1)',
               fontFamily: 'var(--font-body)',
-              fontSize: 13.5,
               fontWeight: 300,
               padding: '6px 4px',
               resize: 'none',
-              lineHeight: '20px',
-              maxHeight: 20 * MAX_ROWS + 12,
               overflowY: 'hidden',
             }}
           />
