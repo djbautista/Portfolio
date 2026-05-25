@@ -1,0 +1,177 @@
+name: Deploy API
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/api/**"
+      - "packages/agent/**"
+      - "packages/db/**"
+      - "packages/contracts/**"
+      - "packages/portfolio-content/**"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/api-deploy.yml"
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  AWS_ACCOUNT_ID: "694062402452"
+  ECR_REPO: portfolio-api
+  EC2_INSTANCE_ID: i-08e49d550abb27e49
+  DB_URL_SECRET: portfolio/database_url
+
+concurrency:
+  group: deploy-api
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::694062402452:role/GitHubActionsDeployRole
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set up QEMU (arm64 emulation)
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build & push image (arm64)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/api/Dockerfile
+          platforms: linux/arm64
+          push: true
+          tags: |
+            ${{ steps.ecr.outputs.registry }}/${{ env.ECR_REPO }}:latest
+            ${{ steps.ecr.outputs.registry }}/${{ env.ECR_REPO }}:sha-${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.0.0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+
+      - name: Install workspace deps (db only)
+        # We only need @portfolio/db and its workspace deps to run prisma migrate deploy.
+        run: pnpm install --frozen-lockfile --filter @portfolio/db...
+
+      - name: Fetch DATABASE_URL from Secrets Manager
+        id: dburl
+        run: |
+          URL=$(aws secretsmanager get-secret-value \
+            --secret-id "$DB_URL_SECRET" \
+            --query SecretString --output text)
+          # Mask before exposing as output
+          echo "::add-mask::$URL"
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+
+      - name: Apply Prisma migrations
+        env:
+          DATABASE_URL: ${{ steps.dburl.outputs.url }}
+        run: pnpm --filter @portfolio/db exec prisma migrate deploy
+
+      - name: Redeploy container on EC2 via SSM
+        env:
+          IMAGE_URI: ${{ steps.ecr.outputs.registry }}/${{ env.ECR_REPO }}:sha-${{ github.sha }}
+        run: |
+          # The script runs on the EC2 instance as root.
+          # Reuses the instance's existing IAM permissions (ECR pull, Secrets Manager read).
+          # Fetches secrets fresh on every deploy so a secret rotation gets picked up.
+          CMD=$(cat <<'EOS'
+          set -euxo pipefail
+          AWS_REGION=us-east-1
+          IMAGE_URI="__IMAGE_URI__"
+          aws ecr get-login-password --region $AWS_REGION | \
+            docker login --username AWS --password-stdin "$(echo $IMAGE_URI | cut -d/ -f1)"
+          docker pull "$IMAGE_URI"
+          DATABASE_URL=$(aws secretsmanager get-secret-value --region $AWS_REGION --secret-id portfolio/database_url --query SecretString --output text)
+          OPENAI_API_KEY=$(aws secretsmanager get-secret-value --region $AWS_REGION --secret-id portfolio/openai_api_key --query SecretString --output text)
+          docker rm -f portfolio-api 2>/dev/null || true
+          docker run -d \
+            --name portfolio-api \
+            --restart unless-stopped \
+            -p 80:3001 \
+            -e NODE_ENV=production \
+            -e API_HOST=0.0.0.0 \
+            -e API_PORT=3001 \
+            -e API_CORS_ORIGINS="https://davidbautista.co,https://www.davidbautista.co" \
+            -e DATABASE_URL="$DATABASE_URL" \
+            -e OPENAI_API_KEY="$OPENAI_API_KEY" \
+            "$IMAGE_URI"
+          # Prune dangling images so disk doesn't fill over time
+          docker image prune -af --filter "until=24h" || true
+          EOS
+          )
+          SCRIPT="${CMD//__IMAGE_URI__/$IMAGE_URI}"
+
+          CMD_ID=$(aws ssm send-command \
+            --instance-ids "$EC2_INSTANCE_ID" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Deploy ${{ github.sha }}" \
+            --parameters "commands=[$(printf '%s' "$SCRIPT" | jq -Rs .)]" \
+            --query 'Command.CommandId' --output text)
+          echo "SSM command: $CMD_ID"
+
+          # Wait for completion
+          aws ssm wait command-executed \
+            --command-id "$CMD_ID" \
+            --instance-id "$EC2_INSTANCE_ID" || true
+
+          STATUS=$(aws ssm get-command-invocation \
+            --command-id "$CMD_ID" \
+            --instance-id "$EC2_INSTANCE_ID" \
+            --query 'Status' --output text)
+          echo "SSM status: $STATUS"
+          aws ssm get-command-invocation \
+            --command-id "$CMD_ID" \
+            --instance-id "$EC2_INSTANCE_ID" \
+            --query 'StandardOutputContent' --output text | tail -30 || true
+          if [ "$STATUS" != "Success" ]; then
+            echo "::error::SSM redeploy failed (status: $STATUS)"
+            aws ssm get-command-invocation \
+              --command-id "$CMD_ID" \
+              --instance-id "$EC2_INSTANCE_ID" \
+              --query 'StandardErrorContent' --output text
+            exit 1
+          fi
+
+      - name: Smoke test via CloudFront
+        run: |
+          # CloudFront caches none of /chat (CachingDisabled policy), so the
+          # next request hits the fresh container.
+          for i in 1 2 3 4 5; do
+            CODE=$(curl -s -o /dev/null -w '%{http_code}' https://d3gcs6379sz8p0.cloudfront.net/health)
+            if [ "$CODE" = "200" ]; then
+              echo "health: 200 ✓"
+              exit 0
+            fi
+            echo "health attempt $i: $CODE — retrying"
+            sleep 5
+          done
+          echo "::error::health check did not return 200 within 25s"
+          exit 1

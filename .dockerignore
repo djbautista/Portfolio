@@ -1,0 +1,29 @@
+**/node_modules
+**/.next
+**/.turbo
+**/dist
+**/build
+**/out
+**/coverage
+
+# Never bake env files into the image
+.env
+.env.*
+!.env.example
+
+# Generated Prisma client (regenerated inside image)
+packages/db/src/generated
+
+# Local + VCS
+.git
+.gitignore
+.DS_Store
+*.log
+.vscode
+.idea
+.claude
+
+# Docs / infra
+docs
+infra
+README.md
