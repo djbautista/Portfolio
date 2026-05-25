@@ -156,6 +156,7 @@ export function ChatHeader({
               : 'Start this conversation on WhatsApp'
           }
           title="Continue on WhatsApp"
+          className="cw-focus-ring"
           style={iconButtonStyle}
         >
           <WhatsAppGlyph size={14} />
@@ -164,6 +165,7 @@ export function ChatHeader({
           type="button"
           aria-label="Close chat"
           onClick={onClose}
+          className="cw-focus-ring"
           style={iconButtonStyle}
         >
           <X size={16} strokeWidth={1.75} />
