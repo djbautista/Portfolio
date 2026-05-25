@@ -1,354 +1,389 @@
-export type InterviewCategory = 'technical' | 'leadership' | 'proud';
+export type StoryDiagramKind =
+  | 'multipart'
+  | 'genie'
+  | 'rag'
+  | 'billing'
+  | 'torre'
+  | 'perf';
+
+export type WhyIcon = 'wave' | 'cube' | 'plug' | 'spark';
 
 export interface InterviewStory {
   id: string;
+  n: string;
   title: string;
-  category: InterviewCategory;
   summary: string;
-  context?: string;
-  decision?: string;
-  impact?: string;
-  leadershipAngle?: string;
-  twilioRelevance?: string;
-  discussionPrompts?: string[];
-  assets?: { label: string; href?: string }[];
+  tags: string[];
+  diagram: StoryDiagramKind;
+  twilioRelevance: string;
+  context: string;
+  decisions: string[];
+  impact: string[];
+  leadership: string;
 }
 
-export type VisualResourceCategory =
-  | 'diagram'
-  | 'screenshot'
-  | 'photo'
-  | 'document'
-  | 'link';
+export interface WhyCard {
+  icon: WhyIcon;
+  title: string;
+  body: string;
+}
 
-export interface VisualResource {
-  id: string;
+export interface LeadershipRow {
+  n: string;
+  title: string;
+  body: string;
+  meta: [string, string];
+}
+
+export interface ProudTile {
+  n: string;
+  title: string;
+  body: string;
+  badge: string;
+}
+
+export type ResourceSpan = 'wide' | 'tall' | 'sq' | 'flat' | 'narrow';
+
+export interface ResourceImageTile {
+  kind: 'img';
+  span: ResourceSpan;
   label: string;
-  category: VisualResourceCategory;
-  description?: string;
-  href?: string;
+  tag: string;
+  src: string;
 }
 
-export interface InterviewContent {
-  hero: {
-    title: string;
-    subtitle: string;
-    intro: string;
-    positioning: string;
-    pitch: string;
-  };
-  whyThisConversation: {
-    heading: string;
-    body: string;
-    bullets: string[];
-  };
-  technicalStories: InterviewStory[];
-  leadershipStories: InterviewStory[];
-  proudMoments: InterviewStory[];
-  visualResources: VisualResource[];
+export interface ResourceLinkTile {
+  kind: 'link';
+  label: string;
+  k: string;
+  href: string;
+  external?: boolean;
 }
 
-export const twilioInterviewContent: InterviewContent = {
-  hero: {
-    title: 'Twilio Interview Room',
-    subtitle:
-      'A focused view of the systems, stories, and technical decisions I’d love to discuss today.',
-    intro:
-      'I built this page as a curated companion for our conversation: a quick way to explore my applied AI work, product engineering background, leadership stories, and the kinds of systems I enjoy designing.',
-    positioning: 'Senior Software Engineer | Applied AI & Product Engineering',
-    pitch:
-      'I build production-grade software, lead engineering teams, and design AI-powered systems that are useful, reliable, and ready for real users.',
+export type ResourceTile = ResourceImageTile | ResourceLinkTile;
+
+export interface InterviewSection {
+  id: 'hero' | 'why' | 'stories' | 'leadership' | 'proud' | 'resources';
+  n: string;
+  label: string;
+}
+
+export const interviewSections: InterviewSection[] = [
+  { id: 'hero', n: '00', label: 'Welcome' },
+  { id: 'why', n: '01', label: 'Why this conversation' },
+  { id: 'stories', n: '02', label: 'Technical stories' },
+  { id: 'leadership', n: '03', label: 'Leadership' },
+  { id: 'proud', n: '04', label: 'Proud moments' },
+  { id: 'resources', n: '05', label: 'Resources' },
+];
+
+export const whyStrip: WhyCard[] = [
+  {
+    icon: 'wave',
+    title: 'Messaging & event-driven systems',
+    body: 'Webhook-heavy architectures, retries, idempotency, fan-out — the kind of plumbing Twilio is built around.',
   },
-  whyThisConversation: {
-    heading: 'Why this conversation matters',
-    body: 'I’m especially interested in Twilio because the work sits close to the kind of systems I like building: communication workflows, APIs, product infrastructure, AI-assisted experiences, and reliability-sensitive user journeys.',
-    bullets: [
-      'Applied AI systems',
-      'Product engineering',
-      'APIs and integrations',
-      'Messaging and customer communication',
-      'Reliable event-driven workflows',
-      'Developer experience',
-      'Portfolio agent with planned WhatsApp/Twilio continuation',
+  {
+    icon: 'cube',
+    title: 'Applied AI, end-to-end',
+    body: 'RAG, agentic workflows, real product AI features — not demos, but live systems shipped to users.',
+  },
+  {
+    icon: 'plug',
+    title: 'APIs & developer experience',
+    body: 'Years of building integrations and SDK-shaped surfaces. I care about the DX a Twilio user feels.',
+  },
+  {
+    icon: 'spark',
+    title: 'Product engineering instinct',
+    body: 'Comfortable owning a feature from contract design to billing to telemetry. Communication is the next chapter.',
+  },
+];
+
+export const interviewStories: InterviewStory[] = [
+  {
+    id: 's3-multipart',
+    n: '01',
+    title: 'Direct-to-S3 multipart upload for large video assets',
+    summary:
+      'Replaced server-proxied uploads with browser-direct multipart pipelines. Multi-GB renders, resumable, signed-URL orchestrated.',
+    tags: ['S3', 'AWS', 'Multipart', 'Resumable', 'Signed URLs', 'Node'],
+    diagram: 'multipart',
+    twilioRelevance:
+      'Webhook-driven post-upload pipelines and signed-URL orchestration map directly to how Twilio Media stores and routes large assets.',
+    context:
+      'Very large video ad assets — often over 100 GB — submitted by global users across uneven networks. The original path streamed bytes through our API server, which became the bottleneck rather than the slow client links.',
+    decisions: [
+      'Browser uploads directly to S3 using multipart + presigned URLs. Our API only orchestrates: init, sign chunks, complete.',
+      'Chunked into multi-MB parts with concurrent uploads, exponential backoff, and per-part resumability.',
+      'Server moves to a thin "ticket" role. State machine: INIT → UPLOADING → COMPLETED → INDEXED.',
+      'Post-complete webhook fan-out to transcode, thumbnail, and notify pipelines — decoupled and replayable.',
     ],
+    impact: [
+      'Removed the backend as an upload bridge — clients talk to S3, the API only mediates.',
+      'Big asset uploads stopped pinning API CPU on the critical path.',
+      'Unlocked very large asset workflows that the old proxying approach could not sustain.',
+    ],
+    leadership:
+      'I drove the technical spec across two teams (backend + creator-experience), challenged the initial backend-optimization framing, and paired with a mid-level engineer to land the state machine — they later owned the v2.',
   },
-  technicalStories: [
-    {
-      id: 'multipart-s3',
-      title: 'Direct-to-S3 multipart upload architecture for large video assets',
-      category: 'technical',
-      summary:
-        'I helped redesign an enterprise upload flow for very large video ad assets, often over 100 GB, submitted from different regions. Instead of proxying chunked uploads through the backend, I pushed the architecture toward direct client-to-S3 multipart uploads using presigned URLs, reducing backend pressure and addressing the real client-to-server bottleneck.',
-      context:
-        'Large video ad assets, sometimes north of 100 GB, uploaded by global users across corporate VPNs and uneven network conditions. The existing pipeline proxied chunks through our backend, which became the bottleneck rather than the slow client links.',
-      decision:
-        'Move to direct client-to-S3 multipart uploads with presigned URLs. The backend hands out URLs and tracks state; the bytes never touch our servers.',
-      impact:
-        'Removed the backend as an upload bridge, freed up infrastructure capacity, and aligned the architecture with where the real latency actually lived. Cleaner contracts between frontend and backend, fewer moving pieces to scale.',
-      leadershipAngle:
-        'I had to push back on the initial instinct to optimize the backend bridge and re-frame the conversation around the real bottleneck. That meant aligning frontend, backend, and product on a different mental model before any code changed.',
-      twilioRelevance:
-        'Scalable file transfer, presigned-URL patterns, frontend/backend contracts, and reliability-sensitive user journeys — all close cousins of communication infrastructure work.',
-      discussionPrompts: [
-        'How we framed the bottleneck and brought teams along',
-        'Trade-offs of presigned URLs vs. proxied uploads at this scale',
-        'Failure modes: resumability, retries, and partial-upload recovery',
-      ],
-    },
-    {
-      id: 'genie-ai',
-      title: 'Genie AI: AI-powered video generation product',
-      category: 'technical',
-      summary:
-        'I’m currently working on Disney’s Genie AI, an innovation product around AI-powered video generation workflows. My role is focused on product/frontend leadership, UI architecture, and integrating AI-powered workflows into a usable enterprise experience.',
-      context:
-        'Innovation product inside Disney exploring how AI-powered video generation can fit into real enterprise creative workflows. The product needs to be polished and trustworthy enough for internal users, not just a tech demo.',
-      decision:
-        'Lead the product/frontend side: UI architecture, integration patterns, and how human-in-the-loop steps thread through workflows involving providers such as Runway, Sora, and Google Veo as we explore them.',
-      impact:
-        'Helping turn AI workflows into an enterprise-grade experience — with the affordances, recoverability, and clarity that real users need.',
-      leadershipAngle:
-        'Aligning design, AI/ML, and platform teams around a single coherent product shape, while keeping the frontend architecture flexible enough for fast iteration.',
-      twilioRelevance:
-        'AI product UX, frontend architecture under change, human-in-the-loop product design — directly relevant to AI-assisted communication experiences.',
-      discussionPrompts: [
-        'Designing UX around non-deterministic AI outputs',
-        'Keeping the frontend flexible across evolving provider integrations',
-        'Where human review fits in generative pipelines',
-      ],
-    },
-    {
-      id: 'portfolio-rag',
-      title: 'AI portfolio assistant with RAG and agentic workflows',
-      category: 'technical',
-      summary:
-        'This portfolio is also an applied AI project. I’m building an AI assistant that can answer questions about my background, projects, skills, and technical decisions using RAG, LangGraph, pgvector, embeddings, a dedicated API layer, and a frontend chat experience.',
-      context:
-        'I wanted my portfolio to be more than a static site — something that reflects how I actually think about applied AI systems end to end: knowledge modeling, retrieval, agent orchestration, evaluation, and a real product UX.',
-      decision:
-        'Build it as a small but production-shaped stack: a dedicated API, a typed contracts package, embeddings + pgvector for retrieval, LangGraph for agent flow, and a polished chat surface in the web app. Planned WhatsApp/Twilio continuation so the same agent can meet people where they already are.',
-      impact:
-        'A working applied-AI product I own end to end — useful as both a portfolio piece and a sandbox for the kinds of patterns I want to bring to production work.',
-      leadershipAngle:
-        'Treating a personal project with the same discipline I’d expect on a real team: typed contracts, evaluation, observability, and a clear knowledge model.',
-      twilioRelevance:
-        'Conversational agent UX, messaging continuation, retrieval and evaluation, developer experience — many of the same primitives Twilio products serve.',
-      discussionPrompts: [
-        'Knowledge modeling and RAG corpus design',
-        'Where LangGraph helps vs. where simpler orchestration is enough',
-        'Evaluation: how I’d grade agent answers in this domain',
-        'What a WhatsApp/Twilio continuation looks like architecturally',
-      ],
-    },
-    {
-      id: 'turnstile-billing',
-      title: 'Turnstile billing and subscription workflows',
-      category: 'technical',
-      summary:
-        'I worked on subscription, billing, quote, invoice, and usage-based workflows across TypeScript, React/Next.js, and AWS. A lot of the work involved stabilizing complex data-model transformations and improving test reliability around billing scenarios.',
-      context:
-        'Billing is one of the least forgiving domains: quotes, subscriptions, metering, invoicing, and event history all have to agree, across a TypeScript / React / Next.js / AWS stack.',
-      decision:
-        'Invest in the data-model transformations between quote, subscription, and invoice; stabilize the E2E and integration tests around billing scenarios; and shape the data so it’s ready for future automation and AI-assisted decisions.',
-      impact:
-        'Fewer flaky billing tests, clearer transformations, and a billing data shape that downstream tooling can actually reason about.',
-      leadershipAngle:
-        'Holding the line on correctness in a domain where shortcuts compound. Standardizing review and testing practices around billing changes specifically.',
-      twilioRelevance:
-        'Correctness-heavy product systems, reliability, testing, and domain modeling — the same posture good messaging/usage-based products need.',
-      discussionPrompts: [
-        'Strategies for trustworthy E2E tests in billing flows',
-        'Shaping data for both humans and future automation',
-        'Where event history changes the design',
-      ],
-    },
-    {
-      id: 'torre-monetization',
-      title: 'Torre monetization, referrals, and payments',
-      category: 'technical',
-      summary:
-        'At Torre, I worked on monetization and growth infrastructure, including referral tracking, subscriptions, recurring payments, and Stripe-based payment flows.',
-      context:
-        'Torre is a recruitment platform; I worked on the monetization and growth side — referral tracking (who referred whom), subscriptions, recurring payments, and Stripe-based flows, in a Scala / MySQL backend.',
-      decision:
-        'Build the referral and monetization primitives in a way that both product analytics and growth experiments could actually use, including the Torre Concierge surface.',
-      impact:
-        'Shipped the monetization and referral primitives that growth and product experimentation later built on.',
-      leadershipAngle:
-        'Bridging backend, frontend, and product/analytics needs into a single coherent monetization story.',
-      twilioRelevance:
-        'Growth systems, payment workflows, backend/frontend integration — patterns that show up wherever products are billed and referred.',
-      discussionPrompts: [
-        'Referral tracking at scale without leaking attribution',
-        'How payment flows shape backend APIs',
-        'When to use Stripe primitives directly vs. wrapping them',
-      ],
-    },
-    {
-      id: 'torre-performance',
-      title: 'Torre performance and product analytics',
-      category: 'technical',
-      summary:
-        'I led performance work that reduced Largest Contentful Paint from 22 seconds to 2 seconds, while also working with analytics infrastructure to improve product decision-making.',
-      context:
-        'Torre’s landing experience had drifted to a Largest Contentful Paint of around 22 seconds. That kind of latency is product-fatal.',
-      decision:
-        'Treat performance as a product feature: profile carefully, fix the actual hot paths in React/Next.js and the Python/Django backend, and pair that with better Snowplow analytics to understand the user impact.',
-      impact:
-        'Brought LCP from 22 seconds to about 2 seconds, with analytics infrastructure that made product iteration actually data-informed.',
-      leadershipAngle:
-        'Making performance a shared, measurable priority across frontend and backend, not a one-engineer crusade.',
-      twilioRelevance:
-        'Performance, observability, and turning raw telemetry into product decisions — all transferable to communications products.',
-      discussionPrompts: [
-        'Where the LCP wins actually came from',
-        'Pairing performance work with analytics so wins are legible',
-        'How to keep performance from regressing afterward',
-      ],
-    },
-  ],
-  leadershipStories: [
-    {
-      id: 'fe-be-alignment',
-      title: 'Aligning frontend and backend architecture',
-      category: 'leadership',
-      summary:
-        'I’ve often been the person responsible for making sure frontend needs, backend contracts, and product constraints converge into a system that is actually maintainable.',
-      leadershipAngle:
-        'I work from the seams: where the frontend stops trusting the backend, where the backend stops modeling the product, where the product stops believing the data. Closing those seams early is most of the job.',
-      twilioRelevance:
-        'API-first products live or die on contract clarity — this is the work I’m most comfortable owning.',
-      discussionPrompts: [
-        'A time I rewrote a contract to fit the product instead of the database',
-        'How I keep contracts honest as teams scale',
-      ],
-    },
-    {
-      id: 'anti-patterns',
-      title: 'Preventing architecture anti-patterns',
-      category: 'leadership',
-      summary:
-        'In modernization work, part of my role has been challenging inefficient approaches early, before they become expensive production problems.',
-      leadershipAngle:
-        'Modernization is mostly about saying “not that” at the right moment, with enough context that the team agrees rather than feels overridden.',
-      twilioRelevance:
-        'Communication systems compound complexity quickly; preventing the wrong pattern early is much cheaper than refactoring later.',
-      discussionPrompts: [
-        'A pattern I pushed back on and what we did instead',
-        'How I decide when to challenge vs. when to let a team learn',
-      ],
-    },
-    {
-      id: 'coaching',
-      title: 'Coaching engineers and improving delivery quality',
-      category: 'leadership',
-      summary:
-        'I’ve coached mid-to-senior engineers, standardized code review and testing practices, and helped teams improve reliability and delivery discipline.',
-      leadershipAngle:
-        'Most of the durable wins come from raising the floor: clearer reviews, healthier tests, more honest delivery signals.',
-      discussionPrompts: [
-        'How I structure code reviews so they teach as well as gate',
-        'What I do when a team’s tests are technically passing but not trustworthy',
-      ],
-    },
-    {
-      id: 'torre-growth',
-      title: 'Accelerated leadership growth at Torre',
-      category: 'leadership',
-      summary:
-        'At Torre, I grew quickly into leadership because I consistently pushed beyond assigned tasks: improving systems, mentoring others, and taking ownership of product outcomes.',
-      leadershipAngle:
-        'My growth at Torre was unusually fast because I consistently took ownership beyond my formal role — improving systems, mentoring engineers, and pulling product outcomes across the line.',
-      discussionPrompts: [
-        'A specific moment that shifted how I was trusted',
-        'What “ownership” actually looks like day to day',
-      ],
-    },
-  ],
-  proudMoments: [
-    {
-      id: 'genie-move',
-      title: 'Moving into Disney Genie AI innovation work',
-      category: 'proud',
-      summary:
-        'One of the moments I’m most proud of is moving from modernization work into Disney’s Genie AI innovation track, where I can combine product engineering, frontend leadership, and AI-powered workflows.',
-      discussionPrompts: [
-        'How I positioned myself for the move',
-        'What I want this chapter to teach me',
-      ],
-    },
-    {
-      id: 'portfolio-ai',
-      title: 'Building this AI portfolio assistant',
-      category: 'proud',
-      summary:
-        'This portfolio is not just a website. It is a working applied AI product that reflects the kind of systems I want to build professionally.',
-      discussionPrompts: [
-        'What I’d build next on top of this stack',
-        'Where I’d expect it to break first under real load',
-      ],
-    },
-    {
-      id: 'hackathon-winner',
-      title: 'Fintech/blockchain hackathon winner',
-      category: 'proud',
-      summary:
-        'I also won a Colombian fintech/blockchain hackathon with a team, building a decentralized technology prototype under time-constrained product and engineering conditions.',
-      discussionPrompts: [
-        'How we made product decisions on a hackathon clock',
-        'What I learned about team dynamics under pressure',
-      ],
-    },
-    {
-      id: 'career-ownership',
-      title: 'Career growth through ownership',
-      category: 'proud',
-      summary:
-        'I’m proud of the way my career has grown through ownership: stepping into ambiguous problems, aligning people, and turning technical complexity into product progress.',
-      discussionPrompts: [
-        'A specific ambiguous problem I leaned into',
-        'How I balance ownership with not overstepping',
-      ],
-    },
-  ],
-  visualResources: [
-    {
-      id: 'arch-diagrams',
-      label: 'Architecture diagrams',
-      category: 'diagram',
-      description: 'Multipart upload flow, agent orchestration, billing data model.',
-    },
-    {
-      id: 'product-screenshots',
-      label: 'Product screenshots',
-      category: 'screenshot',
-      description: 'Genie AI surfaces, Turnstile billing flows, portfolio chat UI.',
-    },
-    {
-      id: 'hackathon-photo',
-      label: 'Hackathon photo',
-      category: 'photo',
-      description: 'Fintech/blockchain hackathon team photo (to be added).',
-    },
-    {
-      id: 'rag-architecture',
-      label: 'AI portfolio / RAG architecture',
-      category: 'diagram',
-      description: 'Retrieval, embeddings, LangGraph flow, and chat surface.',
-    },
-    {
-      id: 'resume',
-      label: 'Resume',
-      category: 'document',
-      description: 'Latest resume PDF.',
-      href: '/davidbautista.pdf',
-    },
-    {
-      id: 'public-links',
-      label: 'Public links',
-      category: 'link',
-      description: 'LinkedIn, GitHub, and other public profiles.',
-      href: '/#contact',
-    },
+  {
+    id: 'genie',
+    n: '02',
+    title: 'Genie AI: AI-powered video generation product',
+    summary:
+      "I'm currently on Disney's Genie AI innovation track — product/frontend leadership for AI-powered video generation workflows.",
+    tags: ['Next.js', 'Real-time', 'AI', 'Streaming', 'Workflows'],
+    diagram: 'genie',
+    twilioRelevance:
+      'Long-running async jobs with progress streaming, fan-out webhooks, and creator notifications — the same shape as any Twilio Studio-style workflow product.',
+    context:
+      "Inside Disney's innovation arm. The product has to feel polished and trustworthy enough for real internal users — not just a tech demo. I own the creator-facing experience.",
+    decisions: [
+      'Real-time job feed using SSE + a thin event bus on top of our existing webhook system.',
+      'Optimistic UI: prompts feel like an instant action while the heavy generation streams in over minutes.',
+      'Designed the asset model to support the multipart pipeline cleanly — pre-signed everything.',
+      'Workflows that involve providers such as Runway, Sora, and Google Veo are wired in as integrations we can swap as the space evolves.',
+      'A "moments" abstraction so generation steps can be inspected, retried, and shared individually.',
+    ],
+    impact: [
+      'Took the creator surface from prototype to internal pilot.',
+      'The wait stopped feeling like a wait — streamed progress made the experience usable.',
+      'Patterns from this surface are now reused across adjacent innovation products.',
+    ],
+    leadership:
+      'I came in mid-flight and quickly framed the contract between the model team and the product team — async statuses, event schema, error vocabulary. Removed weeks of integration thrash.',
+  },
+  {
+    id: 'portfolio-ai',
+    n: '03',
+    title: 'AI portfolio assistant with RAG and agentic workflows',
+    summary:
+      'A real RAG + agent that lives in this portfolio. It can navigate the site, surface stories, and answer technically — including this very page.',
+    tags: ['RAG', 'Agents', 'LangGraph', 'pgvector', 'TypeScript'],
+    diagram: 'rag',
+    twilioRelevance:
+      "The same primitives Twilio is leaning into with AI Assistants: retrieval over real product surfaces, tool-augmented agents, and conversation-shaped UX. Planned WhatsApp/Twilio continuation so the agent can meet people where they're already messaging.",
+    context:
+      'I wanted to dogfood applied AI in a place where the consequences were real (interviewers!) rather than a toy demo. So I built it as a small but production-shaped stack: API, typed contracts, embeddings + pgvector, LangGraph for agent flow, and a polished chat surface.',
+    decisions: [
+      'RAG over my own writing, projects, and story notes — chunked, embedded, versioned per deploy.',
+      'Agentic tool calls: navigate, open story, summarize section, surface resources.',
+      'Guardrails: refuses speculation, cites which story it pulled from, falls back to my voice when uncertain.',
+      'This "Interview Room" page is one of the things the agent can route you to.',
+    ],
+    impact: [
+      'Removed friction from recruiters and interviewers asking "tell me about X".',
+      'Became my best showcase of how I would design an applied-AI feature inside a real product.',
+    ],
+    leadership:
+      "I held myself to product-engineer standards: telemetry, evals, a refusal taxonomy. No vibes — even on a side project.",
+  },
+  {
+    id: 'turnstile-billing',
+    n: '04',
+    title: 'Turnstile billing & subscription workflows',
+    summary:
+      'Subscription lifecycle from checkout through dunning. Idempotent webhook ingestion, state-machine billing, audit trails everywhere.',
+    tags: ['TypeScript', 'AWS', 'Webhooks', 'State machine', 'Idempotency'],
+    diagram: 'billing',
+    twilioRelevance:
+      'Webhook ingestion patterns — idempotency, signature verification, replay, fan-out — are exactly the patterns Twilio webhooks demand at scale.',
+    context:
+      "Subscription, billing, quote, invoice, and usage-based workflows across TypeScript, React/Next.js, and AWS. Real money, real disputes, no room for \"we think it worked\".",
+    decisions: [
+      'Webhook ingest layer with signature verification, idempotency keys, and a replay log.',
+      'Subscription as an explicit state machine — every transition auditable, no implicit branches.',
+      'Reconciliation worker that closes the gap between provider truth and our DB on a schedule.',
+      'Dunning flow with retries, customer comms, and a graceful downgrade path.',
+      'AI-ready billing data shape so downstream automation and decision-support can reason about it.',
+    ],
+    impact: [
+      'Fewer flaky billing tests and clearer transformations between quote, subscription, and invoice.',
+      'The audit log made the real story legible whenever a customer escalated.',
+    ],
+    leadership:
+      'I wrote the design doc, ran an architecture review with senior engineers, and made the call to invest in the reconciliation worker before launch instead of after.',
+  },
+  {
+    id: 'torre-monetization',
+    n: '05',
+    title: 'Torre monetization, referrals & payments',
+    summary:
+      'Subscription + referral + payments stack at Torre. Stripe-based flows, Scala/MySQL backend, internal abuse-prevention, the full product surface.',
+    tags: ['Stripe', 'Scala', 'MySQL', 'Referrals', 'Growth'],
+    diagram: 'torre',
+    twilioRelevance:
+      'Communication-driven growth (referrals, payment receipts, dunning emails) is naturally Twilio-shaped: SMS receipts, WhatsApp activations, transactional flows.',
+    context:
+      'At Torre I worked on the monetization slice — from paid plans to a referral program that paid creators in real cash. Torre Concierge was part of that surface.',
+    decisions: [
+      'Stripe Checkout for trust and speed; custom on top for catalog and entitlements.',
+      'Referral attribution as an event stream — every credit traceable to the click that earned it.',
+      'Server-side feature gating with a thin TS SDK so product teams could ship plans without billing knowledge.',
+    ],
+    impact: [
+      'Shipped the monetization and referral primitives that growth and product experimentation later built on.',
+      'Referral program became a measurable acquisition channel down to cohorts.',
+    ],
+    leadership:
+      'My growth at Torre was unusually fast because I consistently took ownership beyond my formal role — improving systems, mentoring engineers, and pulling product outcomes across the line.',
+  },
+  {
+    id: 'torre-perf',
+    n: '06',
+    title: 'Torre performance & product analytics',
+    summary:
+      'Led performance work that cut LCP from 22s to 2s. Then helped build the analytics pipeline so product decisions stopped being guesses.',
+    tags: ['Performance', 'Snowplow', 'LCP', 'SEO', 'Analytics'],
+    diagram: 'perf',
+    twilioRelevance:
+      'Telemetry-first thinking — what every Twilio integrator wants from their messaging and voice infra: legible, queryable, actionable signal.',
+    context:
+      'The Torre signed-in experience was loading in 22 seconds. SEO was collapsing. Product had no good signal on what users actually did.',
+    decisions: [
+      'Audited the LCP path: code-splitting, route-level data fetching, and a ruthless image budget.',
+      'Worked with the analytics infrastructure (Snowplow) to build a schema-versioned event pipeline and real dashboards.',
+      'Made performance budgets a CI check so regressions had a name and an owner.',
+    ],
+    impact: [
+      'LCP: 22s → 2s. SEO recovered.',
+      'Product decisions started citing event data instead of opinions.',
+    ],
+    leadership:
+      "I made \"tracked or it didn't happen\" the team rule and onboarded engineers to the new analytics contracts.",
+  },
+];
+
+export const leadershipRows: LeadershipRow[] = [
+  {
+    n: 'L · 01',
+    title: 'Aligning frontend and backend architecture',
+    body: 'I run "contract-first" reviews before code: shared types, error vocabulary, paging shapes. Stops integration thrash before it starts.',
+    meta: ['Cross-team', 'Architecture'],
+  },
+  {
+    n: 'L · 02',
+    title: 'Preventing architecture anti-patterns',
+    body: "I keep a short, evergreen list of patterns I won't ship — sync-only critical paths, hidden state, magic strings. Reviews go faster when \"no\" has a citation.",
+    meta: ['Quality', 'Review culture'],
+  },
+  {
+    n: 'L · 03',
+    title: 'Coaching engineers, improving delivery quality',
+    body: 'My favorite shape: take a mid-level engineer, hand them an ambitious chunk, pair on the first 20%, then get out of their way. Both of us level up.',
+    meta: ['Mentorship', 'Delivery'],
+  },
+  {
+    n: 'L · 04',
+    title: 'Accelerated leadership growth at Torre',
+    body: 'Growth came from consistently taking ownership beyond my formal role — improving systems, mentoring engineers, and pulling product outcomes across the line.',
+    meta: ['Career', 'Ownership'],
+  },
+];
+
+export const proudMoments: ProudTile[] = [
+  {
+    n: 'P · 01',
+    title: "Moving into Disney's Genie AI innovation work",
+    body: 'Joining the team that gets to ask "what does AI feel like when it\'s actually delightful?" — and being trusted with the creator-facing surface of it.',
+    badge: 'Innovation',
+  },
+  {
+    n: 'P · 02',
+    title: 'Building this AI portfolio assistant',
+    body: "Shipped a real RAG + agent over my own work. Used in real interviews. The page you're on is one of its routes.",
+    badge: 'Built in 2025',
+  },
+  {
+    n: 'P · 03',
+    title: 'Fintech / blockchain hackathon — won.',
+    body: 'A team prototype under tight time-constrained product and engineering conditions. We won. I still keep the photo.',
+    badge: 'Hackathon',
+  },
+  {
+    n: 'P · 04',
+    title: 'Career growth through ownership',
+    body: 'I have never had to ask for the next role. The work asked for it on my behalf — by being legible, finished, and useful to the people around me.',
+    badge: 'Through-line',
+  },
+];
+
+export const visualResources: ResourceTile[] = [
+  {
+    kind: 'img',
+    span: 'wide',
+    label: 'Genie creator surface',
+    tag: 'Screenshot · 2025',
+    src: '/twilio-interview/img-1.png',
+  },
+  {
+    kind: 'img',
+    span: 'tall',
+    label: 'Multipart upload — architecture',
+    tag: 'Diagram',
+    src: '/twilio-interview/img-2.png',
+  },
+  {
+    kind: 'img',
+    span: 'sq',
+    label: 'Hackathon team',
+    tag: 'Photo',
+    src: '/twilio-interview/img-3.png',
+  },
+  {
+    kind: 'img',
+    span: 'flat',
+    label: 'RAG pipeline overview',
+    tag: 'Diagram',
+    src: '/twilio-interview/img-4.png',
+  },
+  {
+    kind: 'img',
+    span: 'narrow',
+    label: 'Torre performance dashboard',
+    tag: 'Screenshot',
+    src: '/twilio-interview/infinity-bg.jpg',
+  },
+  {
+    kind: 'link',
+    label: 'Download resume',
+    k: 'PDF',
+    href: '/davidbautista.pdf',
+  },
+  {
+    kind: 'link',
+    label: 'github.com/djbautista',
+    k: 'GitHub',
+    href: 'https://github.com/djbautista',
+    external: true,
+  },
+  {
+    kind: 'link',
+    label: 'linkedin / davidjoelbautista',
+    k: 'LinkedIn',
+    href: 'https://www.linkedin.com/in/davidjoelbautista/',
+    external: true,
+  },
+  {
+    kind: 'link',
+    label: 'davidbautista.co',
+    k: 'Site',
+    href: 'https://davidbautista.co',
+    external: true,
+  },
+];
+
+export const hero = {
+  eyebrowPrefix: '— Interview companion · ',
+  eyebrowSuffix: ' —',
+  title: { line1: 'Twilio', line2: 'Interview', line3: 'Room' },
+  sub: "A focused view of the systems, stories, and technical decisions I'd love to discuss today.",
+  intro:
+    'I built this page as a curated companion for our conversation — a quick way to explore my applied AI work, product engineering background, leadership stories, and the kinds of systems I enjoy designing.',
+  chips: [
+    { label: 'Senior Software Engineer', variant: 'primary' as const },
+    { label: 'Applied AI & Product Engineering', variant: 'primary' as const },
+    { label: 'Made for Twilio', variant: 'twilio' as const },
   ],
 };
