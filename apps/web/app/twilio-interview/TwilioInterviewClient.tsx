@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import {
   useCallback,
@@ -948,21 +947,8 @@ function StoryDrawer({
             </div>
 
             <div className="drawer-cover">
-              {story.image ? (
-                <Image
-                  src={story.image}
-                  alt={story.title}
-                  fill
-                  sizes="(max-width: 820px) 100vw, 640px"
-                  style={{ objectFit: 'cover' }}
-                  priority
-                />
-              ) : (
-                <>
-                  <div className="scrim" />
-                  <StoryDiagram kind={story.diagram} />
-                </>
-              )}
+              <div className="scrim" />
+              <StoryDiagram kind={story.diagram} />
             </div>
 
             <div className="drawer-body">

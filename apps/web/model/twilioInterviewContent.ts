@@ -9,7 +9,6 @@ export interface InterviewStory {
   summary: string;
   tags: string[];
   diagram: StoryDiagramKind;
-  image?: string;
   twilioRelevance: string;
   context: string;
   decisions: string[];
@@ -75,7 +74,6 @@ export const interviewStories: InterviewStory[] = [
       "Replaced server-proxied uploads with browser-direct multipart pipelines. Multi-GB renders, resumable, signed-URL orchestrated.",
     tags: ["S3", "AWS", "Multipart", "Resumable", "Signed URLs", "Node"],
     diagram: "multipart",
-    image: "/multi-part-s3-uploading.png",
     twilioRelevance:
       "Webhook-driven post-upload pipelines and signed-URL orchestration map directly to how Twilio Media stores and routes large assets.",
     context:
@@ -101,7 +99,6 @@ export const interviewStories: InterviewStory[] = [
     summary: "I'm currently on Disney's Genie AI innovation track — product/frontend leadership for AI-powered video generation workflows.",
     tags: ["Next.js", "Real-time", "AI", "Streaming", "Workflows"],
     diagram: "genie",
-    image: "/genie-ai.png",
     twilioRelevance:
       "Long-running async jobs with progress streaming, fan-out webhooks, and creator notifications — the same shape as any Twilio Studio-style workflow product.",
     context:
@@ -129,7 +126,6 @@ export const interviewStories: InterviewStory[] = [
       "A real RAG + agent that lives in this portfolio. It can navigate the site, surface stories, and answer technically — including this very page.",
     tags: ["RAG", "Agents", "LangGraph", "pgvector", "TypeScript"],
     diagram: "rag",
-    image: "/AI-system-RAG.png",
     twilioRelevance:
       "The same primitives Twilio is leaning into with AI Assistants: retrieval over real product surfaces, tool-augmented agents, and conversation-shaped UX. Planned WhatsApp/Twilio continuation so the agent can meet people where they're already messaging.",
     context:
@@ -154,7 +150,6 @@ export const interviewStories: InterviewStory[] = [
       "Subscription lifecycle from checkout through dunning. Idempotent webhook ingestion, state-machine billing, audit trails everywhere.",
     tags: ["TypeScript", "AWS", "Webhooks", "State machine", "Idempotency"],
     diagram: "billing",
-    image: "/turnstile-billing.png",
     twilioRelevance:
       "Webhook ingestion patterns — idempotency, signature verification, replay, fan-out — are exactly the patterns Twilio webhooks demand at scale.",
     context:
