@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import {
   useCallback,
@@ -799,7 +800,7 @@ function Stories({ onOpen }: { onOpen: (id: string) => void }) {
     <section id="stories" className="section">
       <div className="page">
         <SectionHead
-          n="02"
+          n="03"
           eyebrow="Featured technical stories"
           title={
             <>
@@ -828,7 +829,7 @@ function Leadership() {
     <section id="leadership" className="section">
       <div className="page">
         <SectionHead
-          n="03"
+          n="04"
           eyebrow="Leadership stories"
           title={<>How I lead in the room, not just on the org chart.</>}
           lede="Less architecture, more people. Four stories about decisions, influence, and the shape of teams I want to build."
@@ -860,7 +861,7 @@ function Proud() {
     <section id="proud" className="section">
       <div className="page">
         <SectionHead
-          n="04"
+          n="02"
           eyebrow="Proud moments"
           title={<>The handful of things I&apos;d still tell a friend about over coffee.</>}
         />
@@ -948,10 +949,14 @@ function StoryDrawer({
 
             <div className="drawer-cover">
               {story.image ? (
-                <>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={story.image} alt={story.title} />
-                </>
+                <Image
+                  src={story.image}
+                  alt={story.title}
+                  fill
+                  sizes="(max-width: 820px) 100vw, 640px"
+                  style={{ objectFit: 'cover' }}
+                  priority
+                />
               ) : (
                 <>
                   <div className="scrim" />
@@ -1072,9 +1077,9 @@ export function TwilioInterviewClient() {
       <main>
         <Hero onJump={jump} />
         <Why />
+        <Proud />
         <Stories onOpen={setOpenStory} />
         <Leadership />
-        <Proud />
 
         <footer className="page foot">
           <div className="left">

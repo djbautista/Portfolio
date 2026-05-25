@@ -46,9 +46,9 @@ export interface InterviewSection {
 export const interviewSections: InterviewSection[] = [
   { id: "hero", n: "00", label: "Welcome" },
   { id: "why", n: "01", label: "Why Twilio" },
-  { id: "stories", n: "02", label: "Technical stories" },
-  { id: "leadership", n: "03", label: "Leadership" },
-  { id: "proud", n: "04", label: "Proud moments" }
+  { id: "proud", n: "02", label: "Proud moments" },
+  { id: "stories", n: "03", label: "Technical stories" },
+  { id: "leadership", n: "04", label: "Leadership" }
 ];
 
 export const whyStrip: WhyCard[] = [
