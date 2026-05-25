@@ -38,9 +38,6 @@ export class ConversationNotFoundError extends HttpError {
 export class AgentFailureError extends HttpError {
   constructor(cause: unknown) {
     super(500, "agent_failure", "The assistant failed to produce a response.");
-    if (cause instanceof Error && cause.stack) {
-      this.stack = cause.stack;
-    }
     this.cause = cause;
   }
 }
