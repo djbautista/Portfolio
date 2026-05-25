@@ -35,6 +35,8 @@ export interface ProudTile {
   body: string;
   badge: string;
   image?: string;
+  evidenceImage?: string;
+  evidenceAlt?: string;
 }
 
 export interface InterviewSection {
@@ -227,26 +229,34 @@ export const proudMoments: ProudTile[] = [
     n: "P · 01",
     title: "Moving into Disney's Genie AI innovation work",
     body: 'Joining the team that gets to ask "what does AI feel like when it\'s actually delightful?" — and being trusted with the creator-facing surface of it.',
-    badge: "Innovation"
+    badge: "Innovation",
+    evidenceImage: "/poc-sucess.png",
+    evidenceAlt: "Genie AI proof-of-concept success screenshot"
   },
   {
     n: "P · 02",
     title: "Building this AI portfolio assistant",
     body: "Shipped a real RAG + agent over my own work. Used in real interviews. The page you're on is one of its routes.",
-    badge: "Built in 2025"
+    badge: "Built in 2025",
+    evidenceImage: "/ai-arch.png",
+    evidenceAlt: "Architecture diagram of the AI portfolio assistant"
   },
   {
     n: "P · 03",
     title: "Fintech / blockchain hackathon — won.",
     body: "A team prototype under tight time-constrained product and engineering conditions. We won. I still keep the photo.",
     badge: "Hackathon",
-    image: "/zulu-hackaton.jpg"
+    image: "/zulu-hackaton.png",
+    evidenceImage: "/zulu-hackaton.png",
+    evidenceAlt: "Photo from the fintech / blockchain hackathon win"
   },
   {
     n: "P · 04",
     title: "Career growth through ownership",
     body: "I have never had to ask for the next role. The work asked for it on my behalf — by being legible, finished, and useful to the people around me.",
-    badge: "Through-line"
+    badge: "Through-line",
+    evidenceImage: "/Steve-shotout.png",
+    evidenceAlt: "Leadership shoutout recognizing ownership and impact"
   }
 ];
 

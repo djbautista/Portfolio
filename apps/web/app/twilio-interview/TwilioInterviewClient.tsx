@@ -854,7 +854,11 @@ function Leadership() {
 // ============================================================================
 // Proud Moments
 // ============================================================================
-function Proud() {
+function Proud({
+  onOpenEvidence,
+}: {
+  onOpenEvidence: (src: string, alt: string) => void;
+}) {
   const glyphs = ['★', '◆', '✦', '◐'];
   return (
     <section id="proud" className="section">
@@ -865,24 +869,111 @@ function Proud() {
           title={<>The handful of things I&apos;d still tell a friend about over coffee.</>}
         />
         <div className="proud-grid">
-          {proudMoments.map((p, i) => (
-            <div
-              key={p.n}
-              className={`proud-tile t${i + 1}${p.image ? ' has-photo' : ''}`}
-              style={p.image ? { backgroundImage: `url('${p.image}')` } : undefined}
-            >
-              <div className="wash" />
-              <span className="glyph-bg">{glyphs[i]}</span>
-              <span className="badge">{p.badge}</span>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                <h3>{p.title}</h3>
-                <p>{p.body}</p>
+          {proudMoments.map((p, i) => {
+            const hasEvidence = Boolean(p.evidenceImage);
+            const className = `proud-tile t${i + 1}${p.image ? ' has-photo' : ''}${hasEvidence ? ' has-evidence' : ''}`;
+            const style = p.image ? { backgroundImage: `url('${p.image}')` } : undefined;
+            const content = (
+              <>
+                <div className="wash" />
+                <span className="glyph-bg">{glyphs[i]}</span>
+                <span className="badge">{p.badge}</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  <h3>{p.title}</h3>
+                  <p>{p.body}</p>
+                </div>
+                {hasEvidence ? (
+                  <span className="evidence-cue" aria-hidden="true">
+                    <Icon name="arrow-up-right" size={12} />
+                    <span>View evidence</span>
+                  </span>
+                ) : null}
+              </>
+            );
+            if (hasEvidence && p.evidenceImage) {
+              return (
+                <button
+                  type="button"
+                  key={p.n}
+                  className={className}
+                  style={style}
+                  onClick={() =>
+                    onOpenEvidence(p.evidenceImage!, p.evidenceAlt ?? p.title)
+                  }
+                  aria-label={`${p.title} — view evidence image`}
+                >
+                  {content}
+                </button>
+              );
+            }
+            return (
+              <div key={p.n} className={className} style={style}>
+                {content}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
+  );
+}
+
+// ============================================================================
+// Evidence image modal (full-screen, dark backdrop, click-outside / Esc close)
+// ============================================================================
+function EvidenceModal({
+  src,
+  alt,
+  onClose,
+}: {
+  src: string | null;
+  alt: string;
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    if (!src) return;
+    const h = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [src, onClose]);
+
+  useEffect(() => {
+    if (!src) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [src]);
+
+  if (!src) return null;
+
+  return (
+    <div
+      className="tir-evidence-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-label={alt}
+      onClick={onClose}
+    >
+      <button
+        type="button"
+        className="tir-evidence-close"
+        onClick={onClose}
+        aria-label="Close evidence image"
+      >
+        <Icon name="close" size={18} />
+      </button>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={alt}
+        className="tir-evidence-img"
+        onClick={(e) => e.stopPropagation()}
+      />
+    </div>
   );
 }
 
@@ -1051,6 +1142,9 @@ function StoryDrawer({
 // ============================================================================
 export function TwilioInterviewClient() {
   const [openStory, setOpenStory] = useState<string | null>(null);
+  const [evidence, setEvidence] = useState<{ src: string; alt: string } | null>(
+    null,
+  );
   const sectionIds = useMemo(() => interviewSections.map((s) => s.id), []);
   const active = useActiveSection(sectionIds);
 
@@ -1067,7 +1161,9 @@ export function TwilioInterviewClient() {
       <main>
         <Hero onJump={jump} />
         <Why />
-        <Proud />
+        <Proud
+          onOpenEvidence={(src, alt) => setEvidence({ src, alt })}
+        />
         <Stories onOpen={setOpenStory} />
         <Leadership />
 
@@ -1089,6 +1185,12 @@ export function TwilioInterviewClient() {
         openId={openStory}
         onClose={() => setOpenStory(null)}
         onNavigate={(id) => setOpenStory(id)}
+      />
+
+      <EvidenceModal
+        src={evidence?.src ?? null}
+        alt={evidence?.alt ?? ''}
+        onClose={() => setEvidence(null)}
       />
     </div>
   );

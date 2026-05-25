@@ -568,6 +568,83 @@
 }
 .tir-root .proud-tile.has-photo .glyph-bg { display: none; }
 
+/* Clickable proud tile (has evidence image). Reset native <button> styling
+   so it looks identical to the non-clickable tiles. */
+.tir-root button.proud-tile {
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+  width: 100%;
+}
+.tir-root .proud-tile.has-evidence:hover { transform: translateY(-4px); }
+.tir-root .proud-tile.has-evidence:focus-visible {
+  outline: 2px solid rgba(255,255,255,0.55);
+  outline-offset: 3px;
+}
+.tir-root .proud-tile .evidence-cue {
+  position: absolute;
+  right: 16px; bottom: 14px;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(255,255,255,0.78);
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.14);
+  backdrop-filter: blur(6px);
+  transition: background 200ms var(--ease-soft), color 200ms var(--ease-soft);
+  pointer-events: none;
+}
+.tir-root .proud-tile.has-evidence:hover .evidence-cue {
+  background: rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.95);
+}
+
+/* ===== Evidence image modal ============================================ */
+.tir-evidence-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  padding: 32px;
+  background: rgba(0,0,0,0.82);
+  backdrop-filter: blur(6px);
+  animation: tir-evidence-fade 180ms var(--ease-soft);
+  cursor: zoom-out;
+}
+@keyframes tir-evidence-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.tir-evidence-img {
+  max-width: min(1200px, 94vw);
+  max-height: 90vh;
+  width: auto; height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  cursor: default;
+}
+.tir-evidence-close {
+  position: fixed;
+  top: 20px; right: 20px;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: white;
+  cursor: pointer;
+  transition: background 200ms var(--ease-soft);
+}
+.tir-evidence-close:hover { background: rgba(255,255,255,0.18); }
+.tir-evidence-close:focus-visible {
+  outline: 2px solid rgba(255,255,255,0.6);
+  outline-offset: 2px;
+}
+
 /* ===== Drawer (story detail) ============================================ */
 .tir-drawer-scrim {
   position: fixed; inset: 0; z-index: 100;
