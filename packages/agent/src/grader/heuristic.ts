@@ -1,6 +1,4 @@
-import type { RetrievedChunk } from "@portfolio/contracts/knowledge";
-
-import type { ContextGrader, ContextVerdict } from "./types";
+import type { ContextGrader, ContextVerdict, GradeInput } from "./types";
 
 export interface HeuristicGraderOptions {
   scoreFloor?: number;
@@ -28,7 +26,7 @@ export function createHeuristicGrader(
     options.minAcceptedCount ?? DEFAULTS.minAcceptedCount;
 
   return {
-    grade(chunks: RetrievedChunk[]): ContextVerdict {
+    grade({ chunks }: GradeInput): ContextVerdict {
       if (chunks.length === 0) {
         return {
           label: "none",
