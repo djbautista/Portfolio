@@ -4,6 +4,8 @@ import './globals.css';
 import { twMerge } from 'tailwind-merge';
 import { siteMetadata } from '@portfolio/content';
 
+import { DavidAgentWidget } from '@/components/agent/DavidAgentWidget';
+
 const poppins = Poppins({
   subsets: ['latin'],
   weight: ['200', '300', '400', '500', '700'],
@@ -23,6 +25,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={twMerge(poppins.className, ['bg-black'])}>
         {children}
+        <DavidAgentWidget />
       </body>
     </html>
   );
