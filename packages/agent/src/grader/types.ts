@@ -2,6 +2,11 @@ import type { RetrievedChunk } from "@portfolio/contracts/knowledge";
 
 export type RelevanceLabel = "good" | "weak" | "none";
 
+export interface GradeInput {
+  query: string;
+  chunks: RetrievedChunk[];
+}
+
 export interface ContextVerdict {
   label: RelevanceLabel;
   accepted: RetrievedChunk[];
@@ -11,5 +16,5 @@ export interface ContextVerdict {
 }
 
 export interface ContextGrader {
-  grade(chunks: RetrievedChunk[]): ContextVerdict | Promise<ContextVerdict>;
+  grade(input: GradeInput): ContextVerdict | Promise<ContextVerdict>;
 }

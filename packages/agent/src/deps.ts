@@ -2,7 +2,7 @@ import { prisma, retrieveChunks } from "@portfolio/db";
 import type { PrismaClient } from "@portfolio/db";
 import type { RetrievedChunk } from "@portfolio/contracts/knowledge";
 
-import { createHeuristicGrader } from "#grader/heuristic";
+import { createLLMGrader } from "#grader/llm";
 import type { ContextGrader } from "#grader/types";
 import { getChatProvider } from "#llm/index";
 import type { ChatProvider } from "#llm/types";
@@ -22,10 +22,11 @@ export interface AgentDeps {
 }
 
 export function resolveDeps(overrides: Partial<AgentDeps> = {}): AgentDeps {
+  const chatProvider = overrides.chatProvider ?? getChatProvider();
   return {
     prisma: overrides.prisma ?? prisma,
-    chatProvider: overrides.chatProvider ?? getChatProvider(),
-    grader: overrides.grader ?? createHeuristicGrader(),
+    chatProvider,
+    grader: overrides.grader ?? createLLMGrader({ chatProvider }),
     retrieve:
       overrides.retrieve ??
       ((input) =>
