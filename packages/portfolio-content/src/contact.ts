@@ -14,4 +14,6 @@ export const contact = {
     handle: 'djbautista10',
   },
   resumePath: '/davidbautista.pdf',
+  whatsappNumber:
+    process.env.NEXT_PUBLIC_PORTFOLIO_WHATSAPP_NUMBER ?? '+15551234567',
 } as const;

@@ -60,6 +60,9 @@ importers:
       '@portfolio/content':
         specifier: workspace:*
         version: link:../../packages/portfolio-content
+      '@portfolio/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
       '@radix-ui/react-dialog':
         specifier: ^1.1.1
         version: 1.1.15(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
