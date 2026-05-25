@@ -173,6 +173,7 @@
   color: white;
   text-transform: uppercase;
   margin: 18px 0 0;
+  min-width: fit-content;
 }
 .tir-root .hero-title .row { display: block; }
 .tir-root .hero-title .row.muted { color: var(--color-neutral-700); }
