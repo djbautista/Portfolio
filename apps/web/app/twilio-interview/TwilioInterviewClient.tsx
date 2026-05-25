@@ -17,7 +17,6 @@ import {
   interviewStories,
   leadershipRows,
   proudMoments,
-  visualResources,
   whyStrip,
   type InterviewStory,
   type StoryDiagramKind,
@@ -692,14 +691,14 @@ function Hero({ onJump }: { onJump: (id: string) => void }) {
                 <Icon name="arrow" size={14} />
               </a>
               <a
-                href="#resources"
+                href="#why"
                 className="retro-btn retro-btn-ghost"
                 onClick={(e) => {
                   e.preventDefault();
-                  onJump('resources');
+                  onJump('why');
                 }}
               >
-                <span>Visual resources</span>
+                <span>Why Twilio</span>
               </a>
             </div>
           </div>
@@ -726,13 +725,11 @@ function Why() {
       <div className="page">
         <SectionHead
           n="01"
-          eyebrow="Why this conversation"
+          eyebrow="Why Twilio"
           title={
             <>
-              How my profile maps onto where Twilio is going next —{' '}
-              <span className="hl-primary">
-                applied AI, messaging, and developer experience
-              </span>
+              Four traits I bring to every team —{' '}
+              <span className="hl-primary">the kind of teammate I&apos;d be at Twilio</span>
               .
             </>
           }
@@ -880,64 +877,6 @@ function Proud() {
               </div>
             </div>
           ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ============================================================================
-// Visual Resources
-// ============================================================================
-function Resources() {
-  return (
-    <section id="resources" className="section">
-      <div className="page">
-        <SectionHead
-          n="05"
-          eyebrow="Visual resources"
-          title={<>Screenshots, diagrams, and the links you&apos;d want after the call.</>}
-          lede="Things I might pull up live during our chat — and the public surfaces of my work afterward."
-        />
-        <div className="gallery">
-          {visualResources.map((r, i) => {
-            if (r.kind === 'img') {
-              return (
-                <div key={i} className={`tile t-${r.span}`}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={r.src} alt={r.label} />
-                  <div className="label">
-                    <span className="t">{r.label}</span>
-                    <span className="k">{r.tag}</span>
-                  </div>
-                </div>
-              );
-            }
-            return (
-              <a
-                key={i}
-                className="tile-link"
-                href={r.href}
-                target={r.external ? '_blank' : undefined}
-                rel={r.external ? 'noopener noreferrer' : undefined}
-              >
-                <span className="k">{r.k}</span>
-                <span
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'flex-end',
-                    gap: 8,
-                  }}
-                >
-                  <span className="ttl">{r.label}</span>
-                  <span className="arrow">
-                    <Icon name="arrow-up-right" size={14} />
-                  </span>
-                </span>
-              </a>
-            );
-          })}
         </div>
       </div>
     </section>
@@ -1128,7 +1067,6 @@ export function TwilioInterviewClient() {
         <Stories onOpen={setOpenStory} />
         <Leadership />
         <Proud />
-        <Resources />
 
         <footer className="page foot">
           <div className="left">

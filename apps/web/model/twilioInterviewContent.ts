@@ -42,61 +42,40 @@ export interface ProudTile {
   badge: string;
 }
 
-export type ResourceSpan = 'wide' | 'tall' | 'sq' | 'flat' | 'narrow';
-
-export interface ResourceImageTile {
-  kind: 'img';
-  span: ResourceSpan;
-  label: string;
-  tag: string;
-  src: string;
-}
-
-export interface ResourceLinkTile {
-  kind: 'link';
-  label: string;
-  k: string;
-  href: string;
-  external?: boolean;
-}
-
-export type ResourceTile = ResourceImageTile | ResourceLinkTile;
-
 export interface InterviewSection {
-  id: 'hero' | 'why' | 'stories' | 'leadership' | 'proud' | 'resources';
+  id: 'hero' | 'why' | 'stories' | 'leadership' | 'proud';
   n: string;
   label: string;
 }
 
 export const interviewSections: InterviewSection[] = [
   { id: 'hero', n: '00', label: 'Welcome' },
-  { id: 'why', n: '01', label: 'Why this conversation' },
+  { id: 'why', n: '01', label: 'Why Twilio' },
   { id: 'stories', n: '02', label: 'Technical stories' },
   { id: 'leadership', n: '03', label: 'Leadership' },
   { id: 'proud', n: '04', label: 'Proud moments' },
-  { id: 'resources', n: '05', label: 'Resources' },
 ];
 
 export const whyStrip: WhyCard[] = [
   {
-    icon: 'wave',
-    title: 'Messaging & event-driven systems',
-    body: 'Webhook-heavy architectures, retries, idempotency, fan-out — the kind of plumbing Twilio is built around.',
-  },
-  {
     icon: 'cube',
-    title: 'Applied AI, end-to-end',
-    body: 'RAG, agentic workflows, real product AI features — not demos, but live systems shipped to users.',
-  },
-  {
-    icon: 'plug',
-    title: 'APIs & developer experience',
-    body: 'Years of building integrations and SDK-shaped surfaces. I care about the DX a Twilio user feels.',
+    title: "I'm Builder",
+    body: 'Obsession to achieve and succeed at challenges.',
   },
   {
     icon: 'spark',
-    title: 'Product engineering instinct',
-    body: 'Comfortable owning a feature from contract design to billing to telemetry. Communication is the next chapter.',
+    title: "I'm Owner",
+    body: "Outcomes > outputs. I'm a product engineer focused on impact, not tickets.",
+  },
+  {
+    icon: 'wave',
+    title: "I'm Positron",
+    body: 'Assertive and precise communication.',
+  },
+  {
+    icon: 'plug',
+    title: "I'm Curious",
+    body: 'Always learning, always improving, and enjoying the process.',
   },
 ];
 
@@ -306,71 +285,6 @@ export const proudMoments: ProudTile[] = [
     title: 'Career growth through ownership',
     body: 'I have never had to ask for the next role. The work asked for it on my behalf — by being legible, finished, and useful to the people around me.',
     badge: 'Through-line',
-  },
-];
-
-export const visualResources: ResourceTile[] = [
-  {
-    kind: 'img',
-    span: 'wide',
-    label: 'Genie creator surface',
-    tag: 'Screenshot · 2025',
-    src: '/twilio-interview/img-1.png',
-  },
-  {
-    kind: 'img',
-    span: 'tall',
-    label: 'Multipart upload — architecture',
-    tag: 'Diagram',
-    src: '/twilio-interview/img-2.png',
-  },
-  {
-    kind: 'img',
-    span: 'sq',
-    label: 'Hackathon team',
-    tag: 'Photo',
-    src: '/twilio-interview/img-3.png',
-  },
-  {
-    kind: 'img',
-    span: 'flat',
-    label: 'RAG pipeline overview',
-    tag: 'Diagram',
-    src: '/twilio-interview/img-4.png',
-  },
-  {
-    kind: 'img',
-    span: 'narrow',
-    label: 'Torre performance dashboard',
-    tag: 'Screenshot',
-    src: '/twilio-interview/infinity-bg.jpg',
-  },
-  {
-    kind: 'link',
-    label: 'Download resume',
-    k: 'PDF',
-    href: '/davidbautista.pdf',
-  },
-  {
-    kind: 'link',
-    label: 'github.com/djbautista',
-    k: 'GitHub',
-    href: 'https://github.com/djbautista',
-    external: true,
-  },
-  {
-    kind: 'link',
-    label: 'linkedin / davidjoelbautista',
-    k: 'LinkedIn',
-    href: 'https://www.linkedin.com/in/davidjoelbautista/',
-    external: true,
-  },
-  {
-    kind: 'link',
-    label: 'davidbautista.co',
-    k: 'Site',
-    href: 'https://davidbautista.co',
-    external: true,
   },
 ];
 
