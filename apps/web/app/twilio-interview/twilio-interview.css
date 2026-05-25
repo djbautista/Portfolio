@@ -563,7 +563,7 @@
 }
 .tir-root .proud-tile.has-photo .wash {
   background:
-    linear-gradient(180deg, rgba(0,0,0,0.18) 30%, rgba(0,0,0,0.78) 100%),
+    linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.9) 100%),
     radial-gradient(ellipse at 0% 100%, rgba(217,70,239,0.18), transparent 60%);
 }
 .tir-root .proud-tile.has-photo .glyph-bg { display: none; }
