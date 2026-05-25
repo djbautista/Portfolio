@@ -10,6 +10,10 @@ import { useCallback, useRef, useState } from 'react';
 
 import { contact } from '@portfolio/content';
 
+import {
+  isHiddenCommand,
+  tryHandleHiddenCommand,
+} from '@/model/hiddenChatCommands';
 import type { SlashCommand } from '@/model/slashCommands';
 import { AgentClientError, sendAgentMessage } from '@/utils/agentClient';
 
@@ -45,6 +49,18 @@ export function DavidAgentWidget() {
   const conversationIdRef = useRef<string | undefined>(undefined);
   const inflightRef = useRef(false);
 
+  const appendAssistantMessage = useCallback((text: string) => {
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: nextId(),
+        role: 'assistant',
+        text,
+        createdAt: new Date().toISOString(),
+      },
+    ]);
+  }, []);
+
   // Optimistic user append + agent round-trip. On `conversation_not_found`,
   // silently drops the stale id and retries once — the user's intent was to
   // keep talking, not to see a server-truth error. The in-flight guard is
@@ -68,6 +84,22 @@ export function DavidAgentWidget() {
           },
         ]);
       }
+
+      // Hidden keyword (e.g. `/twilio`): echo user, append polished assistant
+      // reply, close panel, navigate. Never reaches the agent API.
+      if (attempt === 0 && isHiddenCommand(trimmed)) {
+        const handled = tryHandleHiddenCommand(trimmed, {
+          router,
+          appendAssistantMessage,
+          closePanel: () => setOpen(false),
+        });
+        if (handled) {
+          setStatus('idle');
+          inflightRef.current = false;
+          return;
+        }
+      }
+
       setStatus('sending');
 
       try {
@@ -102,7 +134,7 @@ export function DavidAgentWidget() {
         if (attempt === 0) inflightRef.current = false;
       }
     },
-    [],
+    [router, appendAssistantMessage],
   );
 
   const closePanel = useCallback(() => setOpen(false), []);
