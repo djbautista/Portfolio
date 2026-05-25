@@ -11,6 +11,7 @@ export const AgentSourceSchema = RetrievedChunkSchema;
 
 export const AgentRequestSchema = z.object({
   conversationId: NonEmptyStringSchema.optional(),
+  userMessageId: NonEmptyStringSchema.optional(),
   userId: NonEmptyStringSchema.optional(),
   message: NonEmptyStringSchema,
   channel: ChannelSchema,

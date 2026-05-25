@@ -1,5 +1,5 @@
-import type { AgentDeps } from "@/deps";
-import type { GraphState } from "@/graph/state";
+import type { AgentDeps } from "#deps";
+import type { GraphState } from "#graph/state";
 
 import { withStep } from "./step";
 

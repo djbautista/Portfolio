@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 
-import { getChatEnv } from "@/env";
+import { getChatEnv } from "#env";
 import type { ChatProvider } from "./types";
 
 export interface OpenAIChatProviderOptions {

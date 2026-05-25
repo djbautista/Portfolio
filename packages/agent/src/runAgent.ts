@@ -7,15 +7,15 @@ import {
   type AgentResponse,
 } from "@portfolio/contracts/agent";
 
-import { resolveDeps, type AgentDeps } from "@/deps";
-import { buildAgentGraph, computeRecursionLimit } from "@/graph/index";
-import type { GraphState } from "@/graph/state";
+import { resolveDeps, type AgentDeps } from "#deps";
+import { buildAgentGraph, computeRecursionLimit } from "#graph/index";
+import type { GraphState } from "#graph/state";
 import {
   finalizeTrace,
   flushSteps,
   openTrace,
   writeRetrievedContexts,
-} from "@/persistence/trace";
+} from "#persistence/trace";
 
 export async function runAgent(
   rawRequest: unknown,

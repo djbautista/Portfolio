@@ -1,7 +1,7 @@
 import { Annotation } from "@langchain/langgraph";
 import type { RetrievedChunk } from "@portfolio/contracts/knowledge";
 
-import type { RelevanceLabel } from "@/grader/types";
+import type { RelevanceLabel } from "#grader/types";
 
 export type StepStatus = "success" | "error" | "skipped";
 

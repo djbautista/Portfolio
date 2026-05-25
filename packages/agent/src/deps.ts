@@ -2,10 +2,10 @@ import { prisma, retrieveChunks } from "@portfolio/db";
 import type { PrismaClient } from "@portfolio/db";
 import type { RetrievedChunk } from "@portfolio/contracts/knowledge";
 
-import { createHeuristicGrader } from "@/grader/heuristic";
-import type { ContextGrader } from "@/grader/types";
-import { getChatProvider } from "@/llm/index";
-import type { ChatProvider } from "@/llm/types";
+import { createHeuristicGrader } from "#grader/heuristic";
+import type { ContextGrader } from "#grader/types";
+import { getChatProvider } from "#llm/index";
+import type { ChatProvider } from "#llm/types";
 
 export interface RetrieveInput {
   query: string;

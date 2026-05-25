@@ -1,6 +1,6 @@
 import { END, START, StateGraph } from "@langchain/langgraph";
 
-import type { AgentDeps } from "@/deps";
+import type { AgentDeps } from "#deps";
 
 import { makeAnalyzeIntent } from "./nodes/analyzeIntent";
 import { makeFallback } from "./nodes/fallback";
