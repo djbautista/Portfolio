@@ -2,7 +2,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Send, Terminal } from 'react-feather';
 
-import { contact, fullName, greeting, tagline } from '@portfolio/content';
+import {
+  contact,
+  fullName,
+  greeting,
+  heroBlurb,
+  tagline,
+} from '@portfolio/content';
 import { Button, Navigation, Section, Typography } from '@/components/common';
 import { AboutSection } from '@/components/AboutSection';
 import { ContactSection } from '@/components/ContactSection';
@@ -33,9 +39,12 @@ export default function Home() {
                   {fullName.last.toUpperCase()}
                 </Typography>
               </div>
-              <h2 className="text-xl font-extralight lg:text-2xl xl:text-3xl">
-                {tagline.toUpperCase()}
+              <h2 className="max-w-xl text-base font-light leading-relaxed text-neutral-200 md:text-lg lg:text-xl">
+                {tagline}
               </h2>
+              <p className="max-w-xl text-sm font-extralight leading-relaxed text-neutral-300 md:text-base">
+                {heroBlurb}
+              </p>
             </div>
             <div className="flex gap-8">
               <Link href="#contact">

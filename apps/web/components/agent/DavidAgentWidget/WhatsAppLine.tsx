@@ -6,13 +6,16 @@ import { WhatsAppGlyph } from './WhatsAppGlyph';
 
 interface WhatsAppLineProps {
   hasMessages: boolean;
-  href: string;
+  href: string | undefined;
 }
 
 // Persistent side-door between scroll region and composer. Always visible
 // regardless of state so reach-the-human is one click away without competing
 // with the composer for attention.
+//
+// Returns null when no WhatsApp number is configured — see contact.ts.
 export function WhatsAppLine({ hasMessages, href }: WhatsAppLineProps) {
+  if (!href) return null;
   return (
     <div
       style={{

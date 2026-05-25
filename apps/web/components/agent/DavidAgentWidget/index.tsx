@@ -19,7 +19,12 @@ import { dispatchSlashCommand } from './dispatchSlashCommand';
 import { useGlobalSlashShortcut } from './useGlobalSlashShortcut';
 import type { ChatMessage } from './types';
 
-const WA_HREF = `https://wa.me/${contact.whatsappNumber.replace(/^\+/, '')}`;
+// `undefined` when NEXT_PUBLIC_PORTFOLIO_WHATSAPP_NUMBER is unset — consumers
+// (ChatHeader, WhatsAppLine, slash command list) skip rendering the
+// affordance entirely in that case so we never advertise a broken link.
+const WA_HREF: string | undefined = contact.whatsapp.enabled
+  ? `https://wa.me/${contact.whatsapp.number.replace(/^\+/, '')}`
+  : undefined;
 
 function nextId(): string {
   if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {

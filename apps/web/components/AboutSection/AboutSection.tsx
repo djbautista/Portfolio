@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link, { LinkProps } from 'next/link';
 import React from 'react';
-import { FaGithubSquare, FaLinkedin, FaTwitterSquare } from 'react-icons/fa';
+import { FaGithubSquare, FaLinkedin } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import { twMerge } from 'tailwind-merge';
 
@@ -11,6 +11,7 @@ import {
   fullName,
   projects,
   roleTitle,
+  skillGroups,
 } from '@portfolio/content';
 import { Box, Highlight, Section } from '@/components/common';
 
@@ -72,9 +73,6 @@ export function AboutSection() {
               <SocialLink href={contact.github.url}>
                 <FaGithubSquare />
               </SocialLink>
-              <SocialLink href={contact.twitter.url}>
-                <FaTwitterSquare />
-              </SocialLink>
             </span>
           </div>
         </div>
@@ -89,6 +87,37 @@ export function AboutSection() {
           {bioParagraphs.map((paragraph, index) => (
             <ReactMarkdown key={index}>{paragraph}</ReactMarkdown>
           ))}
+        </div>
+        <div id="skills" className="flex w-full scroll-mt-24 flex-col gap-8">
+          <h3 className="text-center text-2xl font-medium">— Stack & toolbox —</h3>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {skillGroups.map((group) => (
+              <div
+                key={group.category}
+                className={twMerge([
+                  'flex flex-col gap-3 rounded-2xl border border-neutral-800/60 p-5',
+                  'bg-gradient-to-br from-neutral-900/40 to-transparent',
+                ])}
+              >
+                <h4 className="text-sm font-semibold uppercase tracking-wider text-secondary-200/80">
+                  {group.category}
+                </h4>
+                <ul className="flex flex-wrap gap-2">
+                  {group.items.map((item) => (
+                    <li
+                      key={item}
+                      className={twMerge([
+                        'rounded-full px-3 py-1 text-xs font-light',
+                        'border border-neutral-700/70 bg-neutral-800/40 text-neutral-200',
+                      ])}
+                    >
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
       </Section>
       <Section id="projects" className="block scroll-mt-24 text-center">
