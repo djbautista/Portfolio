@@ -21,6 +21,14 @@
     "./agent": {
       "types": "./src/agent.ts",
       "default": "./src/agent.ts"
+    },
+    "./chat": {
+      "types": "./src/chat.ts",
+      "default": "./src/chat.ts"
+    },
+    "./errors": {
+      "types": "./src/errors.ts",
+      "default": "./src/errors.ts"
     }
   },
   "scripts": {

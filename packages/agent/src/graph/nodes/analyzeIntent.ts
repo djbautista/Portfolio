@@ -1,4 +1,4 @@
-import type { GraphState } from "@/graph/state";
+import type { GraphState } from "#graph/state";
 import { withStep } from "./step";
 
 export function makeAnalyzeIntent() {

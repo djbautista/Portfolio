@@ -2,7 +2,7 @@ import { Prisma, type PrismaClient } from "@portfolio/db";
 import type { AgentRequest } from "@portfolio/contracts/agent";
 import type { RetrievedChunk } from "@portfolio/contracts/knowledge";
 
-import type { StepRecord, StepStatus } from "@/graph/state";
+import type { StepRecord, StepStatus } from "#graph/state";
 
 export interface OpenTraceInput {
   prisma: PrismaClient;
@@ -22,6 +22,7 @@ export async function openTrace({
       id: traceId,
       input: request.message,
       conversationId: request.conversationId ?? null,
+      userMessageId: request.userMessageId ?? null,
       model,
       shouldEscalate: false,
     },

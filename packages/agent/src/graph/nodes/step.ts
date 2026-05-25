@@ -1,4 +1,4 @@
-import type { StepRecord } from "@/graph/state";
+import type { StepRecord } from "#graph/state";
 
 export interface StepBody<T> {
   result: T;

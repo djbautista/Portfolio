@@ -1,7 +1,7 @@
 import { prisma } from "@portfolio/db";
 import type { AgentResponse } from "@portfolio/contracts/agent";
 
-import { runAgent } from "@/runAgent";
+import { runAgent } from "#runAgent";
 
 interface SmokeCase {
   label: string;

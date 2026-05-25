@@ -1,6 +1,6 @@
-import type { AgentDeps } from "@/deps";
-import type { GraphState } from "@/graph/state";
-import { buildRewritePrompt } from "@/prompts/rewriteQuery";
+import type { AgentDeps } from "#deps";
+import type { GraphState } from "#graph/state";
+import { buildRewritePrompt } from "#prompts/rewriteQuery";
 
 import { withStep } from "./step";
 

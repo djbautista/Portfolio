@@ -1,6 +1,6 @@
-import type { AgentDeps } from "@/deps";
-import type { GraphState } from "@/graph/state";
-import { buildSystemPrompt } from "@/prompts/systemPrompt";
+import type { AgentDeps } from "#deps";
+import type { GraphState } from "#graph/state";
+import { buildSystemPrompt } from "#prompts/systemPrompt";
 
 import { withStep } from "./step";
 
