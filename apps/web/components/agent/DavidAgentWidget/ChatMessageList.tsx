@@ -15,6 +15,20 @@ interface ChatMessageListProps {
   emptyState: ReactNode;
 }
 
+// Inline visually-hidden style — avoids a Tailwind dependency on this one
+// span and keeps the component self-contained.
+const srOnlyStyle = {
+  position: 'absolute',
+  width: 1,
+  height: 1,
+  padding: 0,
+  margin: -1,
+  overflow: 'hidden',
+  clip: 'rect(0,0,0,0)',
+  whiteSpace: 'nowrap',
+  border: 0,
+} as const;
+
 export function ChatMessageList({
   messages,
   sending,
@@ -32,35 +46,49 @@ export function ChatMessageList({
   const empty = messages.length === 0 && !sending && !error;
 
   return (
-    <div
-      ref={scrollRef}
-      style={{
-        flex: '1 1 auto',
-        overflowY: 'auto',
-        overflowX: 'hidden',
-        padding: '18px 16px 16px',
-      }}
-    >
-      {empty ? (
-        emptyState
-      ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {messages.map((m, i) => {
-            const prev = messages[i - 1];
-            const firstOfRun = !prev || prev.role !== m.role;
-            return (
-              <ChatMessageBubble
-                key={m.id}
-                role={m.role}
-                text={m.text}
-                first={firstOfRun}
-              />
-            );
-          })}
-          {sending && <TypingBubble />}
-          {error && <ErrorBubble onRetry={onRetry} />}
-        </div>
-      )}
-    </div>
+    <>
+      {/* Status node lives as a sibling of the log, not inside it — WAI-ARIA
+          authoring practice is to avoid nesting live regions. The typing
+          bubble has no announceable text (it's three dots), so this span
+          carries the "thinking…" announcement in parallel to the visual. */}
+      <span style={srOnlyStyle} role="status">
+        {sending ? 'David Agent is thinking…' : ''}
+      </span>
+      <div
+        ref={scrollRef}
+        role="log"
+        aria-live="polite"
+        aria-relevant="additions"
+        aria-busy={sending || undefined}
+        aria-label="Conversation with David Agent"
+        style={{
+          flex: '1 1 auto',
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          padding: '18px 16px 16px',
+        }}
+      >
+        {empty ? (
+          emptyState
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {messages.map((m, i) => {
+              const prev = messages[i - 1];
+              const firstOfRun = !prev || prev.role !== m.role;
+              return (
+                <ChatMessageBubble
+                  key={m.id}
+                  role={m.role}
+                  text={m.text}
+                  first={firstOfRun}
+                />
+              );
+            })}
+            {sending && <TypingBubble />}
+            {error && <ErrorBubble onRetry={onRetry} />}
+          </div>
+        )}
+      </div>
+    </>
   );
 }

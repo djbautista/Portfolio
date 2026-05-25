@@ -8,9 +8,26 @@ import {
   type SlashCommand,
 } from '@/model/slashCommands';
 
+export function filterSlashCommands(filter: string): SlashCommand[] {
+  const needle = filter.trim().toLowerCase();
+  if (!needle) return [...slashCommands];
+  return slashCommands.filter(
+    (c) =>
+      c.command.toLowerCase().includes(needle) ||
+      c.label.toLowerCase().includes(needle),
+  );
+}
+
+export function optionIdFor(prefix: string, index: number): string {
+  return `${prefix}-option-${index}`;
+}
+
 interface CommandSuggestionsProps {
-  filter: string;
+  filtered: SlashCommand[];
+  highlightedIndex: number;
+  onHighlight: (index: number) => void;
   onSelect: (command: SlashCommand) => void;
+  optionIdPrefix: string;
 }
 
 const itemStyle: CSSProperties = {
@@ -31,24 +48,38 @@ const itemStyle: CSSProperties = {
   transition: 'all 120ms',
 };
 
-function CommandRow({
-  command,
-  onSelect,
-}: {
+interface CommandRowProps {
+  id: string;
   command: SlashCommand;
+  highlighted: boolean;
   onSelect: (c: SlashCommand) => void;
-}) {
+  onHover: () => void;
+}
+
+function CommandRow({
+  id,
+  command,
+  highlighted,
+  onSelect,
+  onHover,
+}: CommandRowProps) {
   const [hover, setHover] = useState(false);
+  const active = hover || highlighted;
   return (
-    <button
-      type="button"
+    <div
+      id={id}
+      role="option"
+      aria-selected={highlighted}
       onClick={() => onSelect(command)}
-      onMouseEnter={() => setHover(true)}
+      onMouseEnter={() => {
+        setHover(true);
+        onHover();
+      }}
       onMouseLeave={() => setHover(false)}
       style={{
         ...itemStyle,
-        background: hover ? 'rgba(217,70,239,0.08)' : 'transparent',
-        borderColor: hover ? 'var(--color-secondary-700)' : 'transparent',
+        background: active ? 'rgba(217,70,239,0.08)' : 'transparent',
+        borderColor: active ? 'var(--color-secondary-700)' : 'transparent',
       }}
     >
       <code
@@ -76,27 +107,22 @@ function CommandRow({
       >
         {command.kind}
       </span>
-    </button>
+    </div>
   );
 }
 
 export function CommandSuggestions({
-  filter,
+  filtered,
+  highlightedIndex,
+  onHighlight,
   onSelect,
+  optionIdPrefix,
 }: CommandSuggestionsProps) {
-  const needle = filter.trim().toLowerCase();
-  const filtered = needle
-    ? slashCommands.filter(
-        (c) =>
-          c.command.toLowerCase().includes(needle) ||
-          c.label.toLowerCase().includes(needle),
-      )
-    : slashCommands;
-
   if (filtered.length === 0) return null;
 
   return (
     <div
+      id={`${optionIdPrefix}-listbox`}
       role="listbox"
       aria-label="Slash commands"
       style={{
@@ -117,6 +143,7 @@ export function CommandSuggestions({
       }}
     >
       <div
+        aria-hidden="true"
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -133,8 +160,15 @@ export function CommandSuggestions({
         <Slash size={12} strokeWidth={1.75} />
         <span>Skills · pick one to run a command</span>
       </div>
-      {filtered.map((c) => (
-        <CommandRow key={c.command} command={c} onSelect={onSelect} />
+      {filtered.map((c, i) => (
+        <CommandRow
+          key={c.command}
+          id={optionIdFor(optionIdPrefix, i)}
+          command={c}
+          highlighted={i === highlightedIndex}
+          onSelect={onSelect}
+          onHover={() => onHighlight(i)}
+        />
       ))}
     </div>
   );

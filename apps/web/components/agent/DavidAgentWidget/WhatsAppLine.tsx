@@ -50,6 +50,7 @@ export function WhatsAppLine({ hasMessages, href }: WhatsAppLineProps) {
             ? 'Continue this conversation on WhatsApp'
             : 'Open a new WhatsApp conversation with David'
         }
+        className="cw-focus-ring"
         style={{
           display: 'inline-flex',
           alignItems: 'center',
