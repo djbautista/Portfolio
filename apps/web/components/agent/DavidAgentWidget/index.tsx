@@ -33,7 +33,6 @@ export function DavidAgentWidget() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [status, setStatus] = useState<'idle' | 'sending' | 'error'>('idle');
-  const [, setLastError] = useState<AgentClientError | undefined>();
 
   // Refs (not state) for values the send closure needs to read without
   // re-deriving its identity: a fresh conversationId per request, and the
@@ -43,15 +42,17 @@ export function DavidAgentWidget() {
 
   // Optimistic user append + agent round-trip. On `conversation_not_found`,
   // silently drops the stale id and retries once — the user's intent was to
-  // keep talking, not to see a server-truth error.
+  // keep talking, not to see a server-truth error. The in-flight guard is
+  // claimed on the outer call only; the recursive retry runs under the same
+  // claim so a fast second click during the retry can't slip past.
   const send = useCallback(
     async (text: string, attempt = 0): Promise<void> => {
       const trimmed = text.trim();
       if (!trimmed) return;
-      if (inflightRef.current) return;
-      inflightRef.current = true;
 
       if (attempt === 0) {
+        if (inflightRef.current) return;
+        inflightRef.current = true;
         setMessages((prev) => [
           ...prev,
           {
@@ -63,7 +64,6 @@ export function DavidAgentWidget() {
         ]);
       }
       setStatus('sending');
-      setLastError(undefined);
 
       try {
         const response = await sendAgentMessage({
@@ -86,23 +86,15 @@ export function DavidAgentWidget() {
         if (err instanceof AgentClientError) {
           if (err.code === 'conversation_not_found' && attempt === 0) {
             conversationIdRef.current = undefined;
-            inflightRef.current = false;
             await send(trimmed, attempt + 1);
             return;
           }
           setStatus('error');
-          setLastError(err);
         } else {
           setStatus('error');
-          setLastError(
-            new AgentClientError(
-              { code: 'internal_error', message: 'Unexpected client error.' },
-              { cause: err },
-            ),
-          );
         }
       } finally {
-        inflightRef.current = false;
+        if (attempt === 0) inflightRef.current = false;
       }
     },
     [],
@@ -125,7 +117,6 @@ export function DavidAgentWidget() {
 
   const retry = useCallback(() => {
     setStatus('idle');
-    setLastError(undefined);
     const lastUser = [...messages].reverse().find((m) => m.role === 'user');
     if (lastUser) void send(lastUser.text);
   }, [messages, send]);
@@ -134,20 +125,25 @@ export function DavidAgentWidget() {
 
   return (
     <DialogRoot open={open} onOpenChange={setOpen}>
-      {!open && (
-        <div
-          style={{
-            position: 'fixed',
-            right: 24,
-            bottom: 24,
-            zIndex: 50,
-          }}
-        >
-          <DialogTrigger asChild>
-            <ChatLauncher />
-          </DialogTrigger>
-        </div>
-      )}
+      {/* Trigger stays mounted across open/closed so Radix can restore focus
+          to it when the dialog closes. Visibility/pointer-events are toggled
+          instead of unmount; aria-hidden keeps it off the a11y tree while the
+          panel is showing. */}
+      <div
+        aria-hidden={open ? 'true' : undefined}
+        style={{
+          position: 'fixed',
+          right: 24,
+          bottom: 24,
+          zIndex: 50,
+          visibility: open ? 'hidden' : 'visible',
+          pointerEvents: open ? 'none' : 'auto',
+        }}
+      >
+        <DialogTrigger asChild>
+          <ChatLauncher />
+        </DialogTrigger>
+      </div>
       <DialogPortal>
         <ChatPanel
           messages={messages}

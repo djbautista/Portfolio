@@ -6,15 +6,15 @@ import { forwardRef, useState, type CSSProperties } from 'react';
 import { silkscreen } from '@/utils/fonts';
 
 interface ChatLauncherProps {
-  onClick?: () => void;
   mobile?: boolean;
 }
 
 // Literal port of cwStyles.trigger family from the design (chat-widget.jsx:113).
-// Hover state lives here so the trigger renders correctly whether it's an
-// independent button or asChild via Radix Dialog.Trigger.
+// Always rendered via <DialogTrigger asChild>; the click handler arrives via
+// Radix's cloneElement (captured by `...rest`). Hover state lives here so the
+// pill animates correctly regardless of who owns the click.
 export const ChatLauncher = forwardRef<HTMLButtonElement, ChatLauncherProps>(
-  function ChatLauncher({ onClick, mobile = false, ...rest }, ref) {
+  function ChatLauncher({ mobile = false, ...rest }, ref) {
     const [hover, setHover] = useState(false);
 
     const triggerStyle: CSSProperties = {
@@ -45,7 +45,6 @@ export const ChatLauncher = forwardRef<HTMLButtonElement, ChatLauncherProps>(
         ref={ref}
         type="button"
         aria-label="Open David Agent — Ask David anything about David Bautista"
-        onClick={onClick}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
         style={triggerStyle}

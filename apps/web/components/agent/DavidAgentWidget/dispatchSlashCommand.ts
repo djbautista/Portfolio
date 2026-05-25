@@ -1,9 +1,9 @@
-import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import type { useRouter } from 'next/navigation';
 
 import type { SlashCommand } from '@/model/slashCommands';
 
 export interface DispatchContext {
-  router: AppRouterInstance;
+  router: ReturnType<typeof useRouter>;
   send: (text: string) => void;
   closePanel: () => void;
 }
