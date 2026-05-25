@@ -10,7 +10,9 @@
     "CHAT_MODEL",
     "CHAT_TIMEOUT_MS",
     "CHAT_MAX_TOKENS",
-    "NODE_ENV"
+    "NODE_ENV",
+    "AGENT_API_URL",
+    "NEXT_PUBLIC_PORTFOLIO_WHATSAPP_NUMBER"
   ],
   "tasks": {
     "build": {

@@ -95,7 +95,7 @@ export default function AboutMePage() {
             ))}
           </div>
         </Section>
-        <Section className="block text-center">
+        <Section id="projects" className="block text-center">
           <h3 className="mb-12 text-2xl font-medium">— I&apos;m proud of —</h3>
           <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-12 md:grid-cols-6">
             {projects.map(
