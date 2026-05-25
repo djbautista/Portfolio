@@ -111,12 +111,6 @@
   outline: 2px solid var(--color-secondary-400);
   outline-offset: 2px;
 }
-/* Inset variant for the composer textarea — outline-offset on the textarea
-   would push the ring outside the composer's rounded container. */
-.cw-focus-ring-inset:focus-visible {
-  outline: none;
-  box-shadow: inset 0 0 0 1px var(--color-secondary-500);
-}
 
 /* iOS Safari auto-zooms into a form control when its computed font-size is
    less than 16px on focus. The composer's design font-size is 13.5px, which

@@ -206,7 +206,7 @@ export const ChatComposer = forwardRef<HTMLTextAreaElement, ChatComposerProps>(
             aria-activedescendant={activeOptionId}
             disabled={disabled}
             rows={1}
-            className="cw-focus-ring-inset cw-composer-textarea"
+            className="cw-composer-textarea"
             style={{
               flex: 1,
               minWidth: 0,

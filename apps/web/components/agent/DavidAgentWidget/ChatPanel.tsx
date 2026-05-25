@@ -138,11 +138,12 @@ export function ChatPanel({
       <Content
         onOpenAutoFocus={(e) => {
           // Default Radix focus would land on the first focusable child
-          // (the WhatsApp icon in the header). For a chat widget the
-          // composer is the obvious primary action — match Modal.tsx's
-          // intent of overriding initial focus.
+          // (the WhatsApp icon in the header). On desktop, redirect to the
+          // composer — it's the obvious primary action. On mobile, skip
+          // auto-focus entirely so iOS/Android don't pop the soft keyboard
+          // the instant the bottom sheet opens.
           e.preventDefault();
-          composerRef.current?.focus();
+          if (!isMobile) composerRef.current?.focus();
         }}
         style={isMobile ? mobileFrameStyle : desktopFrameStyle}
       >
