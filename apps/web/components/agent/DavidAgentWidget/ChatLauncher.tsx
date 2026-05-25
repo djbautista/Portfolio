@@ -1,15 +1,25 @@
 'use client';
 
 import Image from 'next/image';
-import { forwardRef, useState, type CSSProperties } from 'react';
+import {
+  forwardRef,
+  useState,
+  type ComponentPropsWithoutRef,
+  type CSSProperties,
+} from 'react';
 
 import { silkscreen } from '@/utils/fonts';
 
+type ChatLauncherProps = ComponentPropsWithoutRef<'button'>;
+
 // Literal port of cwStyles.trigger family from the design (chat-widget.jsx:113).
-// Always rendered via <DialogTrigger asChild>; the click handler arrives via
-// Radix's cloneElement (captured by `...rest`). Hover state lives here so the
-// pill animates correctly regardless of who owns the click.
-export const ChatLauncher = forwardRef<HTMLButtonElement>(
+// Always rendered via <DialogTrigger asChild>; click handler + ARIA state
+// (aria-haspopup, aria-expanded, data-state, …) arrive via Radix's
+// cloneElement and flow through `...rest`. Typed as button props so callers
+// (including Radix's runtime injection) line up with the type system. Hover
+// state lives here so the pill animates correctly regardless of who owns
+// the click.
+export const ChatLauncher = forwardRef<HTMLButtonElement, ChatLauncherProps>(
   function ChatLauncher(rest, ref) {
     const [hover, setHover] = useState(false);
 

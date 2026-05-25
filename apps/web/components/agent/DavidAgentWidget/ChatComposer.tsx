@@ -52,12 +52,11 @@ export const ChatComposer = forwardRef<HTMLTextAreaElement, ChatComposerProps>(
     const filtered = useMemo(() => filterSlashCommands(filter), [filter]);
 
     // Keep the highlight in-range when the filtered list shrinks (e.g. user
-    // narrows from `/` to `/wha`).
+    // narrows from `/` to `/wha`). Functional setter so the effect only
+    // depends on the length, not the index it might overwrite.
     useEffect(() => {
-      if (highlightedIndex >= filtered.length) {
-        setHighlightedIndex(0);
-      }
-    }, [filtered.length, highlightedIndex]);
+      setHighlightedIndex((i) => (i >= filtered.length ? 0 : i));
+    }, [filtered.length]);
 
     // Auto-grow textarea between 1 and MAX_ROWS rows.
     useLayoutEffect(() => {
