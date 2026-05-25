@@ -604,6 +604,8 @@
 .tir-drawer .drawer-cover {
   position: relative;
   aspect-ratio: 16 / 7;
+  min-height: 220px;
+  flex-shrink: 0;
   margin: 0 28px;
   border-radius: 14px;
   overflow: hidden;
