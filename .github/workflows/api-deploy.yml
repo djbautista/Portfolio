@@ -77,23 +77,39 @@ jobs:
           cache: pnpm
 
       - name: Install workspace deps (db only)
-        # We only need @portfolio/db and its workspace deps to run prisma migrate deploy.
+        # @portfolio/db plus its workspace deps (incl. @portfolio/content) is
+        # all we need to run migrate + seed.
         run: pnpm install --frozen-lockfile --filter @portfolio/db...
 
-      - name: Fetch DATABASE_URL from Secrets Manager
-        id: dburl
+      - name: Fetch secrets from Secrets Manager
+        id: secrets
         run: |
-          URL=$(aws secretsmanager get-secret-value \
-            --secret-id "$DB_URL_SECRET" \
-            --query SecretString --output text)
-          # Mask before exposing as output
-          echo "::add-mask::$URL"
-          echo "url=$URL" >> "$GITHUB_OUTPUT"
+          DB_URL=$(aws secretsmanager get-secret-value --secret-id portfolio/database_url --query SecretString --output text)
+          OPENAI=$(aws secretsmanager get-secret-value --secret-id portfolio/openai_api_key --query SecretString --output text)
+          echo "::add-mask::$DB_URL"
+          echo "::add-mask::$OPENAI"
+          echo "database_url=$DB_URL" >> "$GITHUB_OUTPUT"
+          echo "openai_api_key=$OPENAI" >> "$GITHUB_OUTPUT"
+
+      - name: Generate Prisma client
+        run: pnpm --filter @portfolio/db exec prisma generate
+        env:
+          # Placeholder satisfies prisma.config.ts validation; generate never connects.
+          DATABASE_URL: postgresql://placeholder:placeholder@localhost:5432/placeholder
 
       - name: Apply Prisma migrations
         env:
-          DATABASE_URL: ${{ steps.dburl.outputs.url }}
+          DATABASE_URL: ${{ steps.secrets.outputs.database_url }}
         run: pnpm --filter @portfolio/db exec prisma migrate deploy
+
+      - name: Seed knowledge corpus
+        # Content-hash dedup makes unchanged docs free (no re-embedding).
+        # Bypasses the package script (which hardcodes --env-file=../../.env)
+        # and runs tsx directly with env vars from the workflow.
+        env:
+          DATABASE_URL: ${{ steps.secrets.outputs.database_url }}
+          OPENAI_API_KEY: ${{ steps.secrets.outputs.openai_api_key }}
+        run: pnpm --filter @portfolio/db exec tsx scripts/seed-knowledge.ts
 
       - name: Redeploy container on EC2 via SSM
         env:
