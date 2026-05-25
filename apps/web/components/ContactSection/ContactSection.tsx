@@ -77,14 +77,6 @@ export function ContactSection() {
                 <FileText className="ml-2 h-4 w-4" />
               </Button>
             </Link>
-
-            <Button
-              className="pointer-events-none opacity-50 demoted"
-              variant="primary"
-            >
-              View Projects
-              <span className="text-xs opacity-50">(soon)</span>
-            </Button>
           </div>
           <p className="hidden px-2 text-sm text-neutral-300 md:block">
             Prefer to share your email? Fill out the form and I&apos;ll get

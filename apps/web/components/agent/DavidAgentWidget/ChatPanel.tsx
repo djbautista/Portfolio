@@ -22,7 +22,7 @@ interface ChatPanelProps {
   messages: ChatMessage[];
   sending: boolean;
   error: boolean;
-  whatsappHref: string;
+  whatsappHref: string | undefined;
   onSendText: (text: string) => void;
   onSelectCommand: (command: SlashCommand) => void;
   onRetry: () => void;

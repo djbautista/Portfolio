@@ -10,7 +10,7 @@ import { WhatsAppGlyph } from './WhatsAppGlyph';
 
 interface ChatHeaderProps {
   hasMessages: boolean;
-  whatsappHref: string;
+  whatsappHref: string | undefined;
   onClose: () => void;
 }
 
@@ -146,21 +146,23 @@ export function ChatHeader({
           flex: '0 0 auto',
         }}
       >
-        <a
-          href={whatsappHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={
-            hasMessages
-              ? 'Continue this conversation on WhatsApp'
-              : 'Start this conversation on WhatsApp'
-          }
-          title="Continue on WhatsApp"
-          className="cw-focus-ring"
-          style={iconButtonStyle}
-        >
-          <WhatsAppGlyph size={14} />
-        </a>
+        {whatsappHref && (
+          <a
+            href={whatsappHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={
+              hasMessages
+                ? 'Continue this conversation on WhatsApp'
+                : 'Start this conversation on WhatsApp'
+            }
+            title="Continue on WhatsApp"
+            className="cw-focus-ring"
+            style={iconButtonStyle}
+          >
+            <WhatsAppGlyph size={14} />
+          </a>
+        )}
         <button
           type="button"
           aria-label="Close chat"

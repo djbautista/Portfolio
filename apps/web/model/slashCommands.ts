@@ -25,7 +25,11 @@ export type SlashCommand =
 
 // UI-only affordance. Never sent to the API in any form (not even metadata).
 // `command` is the unique key — no separate id field.
-export const slashCommands: readonly SlashCommand[] = [
+//
+// `/whatsapp` is only included when a WhatsApp number is actually configured
+// (NEXT_PUBLIC_PORTFOLIO_WHATSAPP_NUMBER). Otherwise we drop the entry so the
+// command list never advertises a broken affordance.
+const baseCommands: readonly SlashCommand[] = [
   {
     command: '/projects',
     label: 'Projects',
@@ -41,9 +45,16 @@ export const slashCommands: readonly SlashCommand[] = [
     prompt: "What is David's technical stack?",
   },
   {
+    command: '/ai',
+    label: 'AI Engineering',
+    description: 'Applied AI, RAG, agentic workflows',
+    kind: 'prompt',
+    prompt: 'What AI systems has David worked on?',
+  },
+  {
     command: '/leadership',
     label: 'Leadership',
-    description: '3+ years leading Front-End teams',
+    description: '3+ years leading engineering teams',
     kind: 'prompt',
     prompt: "Tell me about David's leadership experience.",
   },
@@ -54,11 +65,18 @@ export const slashCommands: readonly SlashCommand[] = [
     kind: 'navigate',
     href: '/#contact',
   },
-  {
-    command: '/whatsapp',
-    label: 'WhatsApp',
-    description: 'Continue this chat on WhatsApp',
-    kind: 'external',
-    href: `https://wa.me/${contact.whatsappNumber.replace(/^\+/, '')}`,
-  },
 ];
+
+const whatsappCommand: SlashCommand | null = contact.whatsapp.enabled
+  ? {
+      command: '/whatsapp',
+      label: 'WhatsApp',
+      description: 'Continue this chat on WhatsApp',
+      kind: 'external',
+      href: `https://wa.me/${contact.whatsapp.number.replace(/^\+/, '')}`,
+    }
+  : null;
+
+export const slashCommands: readonly SlashCommand[] = whatsappCommand
+  ? [...baseCommands, whatsappCommand]
+  : baseCommands;
