@@ -7,6 +7,8 @@ export const ErrorCodeSchema = z.enum([
   "conversation_not_found",
   "agent_failure",
   "internal_error",
+  "twilio_not_configured",
+  "twilio_signature_invalid",
 ]);
 
 export const ErrorResponseSchema = z.object({

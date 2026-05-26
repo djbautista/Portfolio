@@ -16,19 +16,13 @@ import {
 } from '@/model/hiddenChatCommands';
 import type { SlashCommand } from '@/model/slashCommands';
 import { AgentClientError, sendAgentMessage } from '@/utils/agentClient';
+import { buildWhatsAppHref } from '@/utils/whatsapp';
 
 import { ChatLauncher } from './ChatLauncher';
 import { ChatPanel } from './ChatPanel';
 import { dispatchSlashCommand } from './dispatchSlashCommand';
 import { useGlobalSlashShortcut } from './useGlobalSlashShortcut';
 import type { ChatMessage } from './types';
-
-// `undefined` when NEXT_PUBLIC_PORTFOLIO_WHATSAPP_NUMBER is unset — consumers
-// (ChatHeader, WhatsAppLine, slash command list) skip rendering the
-// affordance entirely in that case so we never advertise a broken link.
-const WA_HREF: string | undefined = contact.whatsapp.enabled
-  ? `https://wa.me/${contact.whatsapp.number.replace(/^\+/, '')}`
-  : undefined;
 
 function nextId(): string {
   if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
@@ -48,6 +42,14 @@ export function DavidAgentWidget() {
   // in-flight guard against double sends.
   const conversationIdRef = useRef<string | undefined>(undefined);
   const inflightRef = useRef(false);
+
+  // Mirror of conversationIdRef as state. The ref keeps the send closure
+  // stable; the state drives UI surfaces that need to react to the id
+  // (WhatsApp deep link prefill, slash command dispatch). Both are written
+  // together so they never disagree.
+  const [conversationId, setConversationId] = useState<string | undefined>(
+    undefined,
+  );
 
   const appendAssistantMessage = useCallback((text: string) => {
     setMessages((prev) => [
@@ -109,6 +111,7 @@ export function DavidAgentWidget() {
           conversationId: conversationIdRef.current,
         });
         conversationIdRef.current = response.conversationId;
+        setConversationId(response.conversationId);
         setMessages((prev) => [
           ...prev,
           {
@@ -123,6 +126,7 @@ export function DavidAgentWidget() {
         if (err instanceof AgentClientError) {
           if (err.code === 'conversation_not_found' && attempt === 0) {
             conversationIdRef.current = undefined;
+            setConversationId(undefined);
             await send(trimmed, attempt + 1);
             return;
           }
@@ -147,6 +151,10 @@ export function DavidAgentWidget() {
           void send(text);
         },
         closePanel,
+        // Pulled from the ref (not state) so /whatsapp picks up the freshest
+        // value even if the user clicks while a setConversationId render is
+        // still flushing.
+        getConversationId: () => conversationIdRef.current,
       });
     },
     [router, send, closePanel],
@@ -159,6 +167,14 @@ export function DavidAgentWidget() {
   }, [messages, send]);
 
   useGlobalSlashShortcut(useCallback(() => setOpen(true), []));
+
+  // `undefined` when NEXT_PUBLIC_PORTFOLIO_WHATSAPP_NUMBER is unset — consumers
+  // (ChatHeader, WhatsAppLine) skip rendering the affordance entirely in that
+  // case so we never advertise a broken link. Rebuilt per render so the
+  // prefill picks up the latest conversationId for the cross-channel handoff.
+  const waHref = contact.whatsapp.enabled
+    ? buildWhatsAppHref(contact.whatsapp.number, { conversationId })
+    : undefined;
 
   return (
     <DialogRoot open={open} onOpenChange={setOpen}>
@@ -186,7 +202,7 @@ export function DavidAgentWidget() {
           messages={messages}
           sending={status === 'sending'}
           error={status === 'error'}
-          whatsappHref={WA_HREF}
+          whatsappHref={waHref}
           onSendText={(text) => {
             void send(text);
           }}

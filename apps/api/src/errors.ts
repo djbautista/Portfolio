@@ -41,3 +41,19 @@ export class AgentFailureError extends HttpError {
     this.cause = cause;
   }
 }
+
+export class TwilioNotConfiguredError extends HttpError {
+  constructor() {
+    super(
+      503,
+      "twilio_not_configured",
+      "Twilio integration is not configured on this environment.",
+    );
+  }
+}
+
+export class TwilioSignatureError extends HttpError {
+  constructor() {
+    super(403, "twilio_signature_invalid", "Twilio request signature is invalid.");
+  }
+}

@@ -5,6 +5,11 @@ import type { RelevanceLabel } from "#grader/types";
 
 export type StepStatus = "success" | "error" | "skipped";
 
+export interface PriorTurn {
+  role: "user" | "assistant";
+  content: string;
+}
+
 export interface StepRecord {
   stepName: string;
   status: StepStatus;
@@ -71,6 +76,12 @@ export const AgentStateAnnotation = Annotation.Root({
   traceId: Annotation<string>({
     reducer: (_prev, next) => next,
     default: () => "",
+  }),
+  // Loaded by runAgent before invoke, excludes the current user message.
+  // Empty for fresh conversations or when no conversationId is provided.
+  priorMessages: Annotation<PriorTurn[]>({
+    reducer: (_prev, next) => next,
+    default: () => [],
   }),
 });
 

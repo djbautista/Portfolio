@@ -1,4 +1,5 @@
 import cors from "@fastify/cors";
+import formbody from "@fastify/formbody";
 import {
   ErrorResponseSchema,
   type ErrorResponse,
@@ -10,6 +11,8 @@ import { getApiEnv, parseCorsOrigins } from "#env";
 import { HttpError, ValidationError } from "#errors";
 import { registerChatRoutes } from "#routes/chat";
 import { registerHealthRoutes } from "#routes/health";
+import { registerTwilioRoutes } from "#routes/twilio";
+import { isTwilioConfigured } from "#services/twilioService";
 
 export async function buildApp(): Promise<FastifyInstance> {
   const env = getApiEnv();
@@ -23,6 +26,11 @@ export async function buildApp(): Promise<FastifyInstance> {
   const corsOrigin =
     origins ?? (env.NODE_ENV === "production" ? false : true);
   await app.register(cors, { origin: corsOrigin });
+
+  // Twilio posts application/x-www-form-urlencoded — Fastify's built-in
+  // parsers only cover JSON + text/plain, so register formbody globally
+  // (cheap, doesn't affect existing JSON routes).
+  await app.register(formbody);
 
   app.setErrorHandler((err, req, reply) => {
     const payload = toErrorResponse(err);
@@ -42,6 +50,13 @@ export async function buildApp(): Promise<FastifyInstance> {
 
   await registerHealthRoutes(app);
   await registerChatRoutes(app);
+  await registerTwilioRoutes(app);
+
+  if (env.NODE_ENV === "production" && !isTwilioConfigured()) {
+    app.log.warn(
+      "twilio.not_configured: WhatsApp webhook will return 503 until TWILIO_* env vars are set",
+    );
+  }
 
   return app;
 }

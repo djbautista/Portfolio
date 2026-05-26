@@ -1,11 +1,15 @@
 import type { useRouter } from 'next/navigation';
 
 import type { SlashCommand } from '@/model/slashCommands';
+import { buildWhatsAppHref } from '@/utils/whatsapp';
 
 export interface DispatchContext {
   router: ReturnType<typeof useRouter>;
   send: (text: string) => void;
   closePanel: () => void;
+  // Read at dispatch time (not at module load) so /whatsapp picks up the
+  // current conversationId for the cross-channel handoff.
+  getConversationId: () => string | undefined;
 }
 
 // Translates a SlashCommand into a side effect. Kept out of components so the
@@ -26,5 +30,12 @@ export function dispatchSlashCommand(
     case 'external':
       window.open(command.href, '_blank', 'noopener,noreferrer');
       return;
+    case 'whatsapp': {
+      const href = buildWhatsAppHref(command.number, {
+        conversationId: ctx.getConversationId(),
+      });
+      window.open(href, '_blank', 'noopener,noreferrer');
+      return;
+    }
   }
 }
