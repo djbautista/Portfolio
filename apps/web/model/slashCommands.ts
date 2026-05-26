@@ -21,6 +21,16 @@ export type SlashCommand =
       description: string;
       kind: 'external';
       href: string;
+    }
+  | {
+      // Special-cased external link: the href is built at dispatch time so
+      // it can include the current conversationId (lets the webhook reuse
+      // the existing web conversation). See dispatchSlashCommand.
+      command: string;
+      label: string;
+      description: string;
+      kind: 'whatsapp';
+      number: string;
     };
 
 // UI-only affordance. Never sent to the API in any form (not even metadata).
@@ -72,8 +82,8 @@ const whatsappCommand: SlashCommand | null = contact.whatsapp.enabled
       command: '/whatsapp',
       label: 'WhatsApp',
       description: 'Continue this chat on WhatsApp',
-      kind: 'external',
-      href: `https://wa.me/${contact.whatsapp.number.replace(/^\+/, '')}`,
+      kind: 'whatsapp',
+      number: contact.whatsapp.number,
     }
   : null;
 

@@ -9,13 +9,20 @@ import {
 
 import { resolveDeps, type AgentDeps } from "#deps";
 import { buildAgentGraph, computeRecursionLimit } from "#graph/index";
-import type { GraphState } from "#graph/state";
+import type { GraphState, PriorTurn } from "#graph/state";
 import {
   finalizeTrace,
   flushSteps,
   openTrace,
   writeRetrievedContexts,
 } from "#persistence/trace";
+
+// Cap on the number of prior turns folded into the LLM prompt. Each turn
+// is one Message row (user or assistant), so 10 ≈ 5 round-trips. The cap
+// is intentionally modest — most followups only need the last few — and
+// keeps the prompt well inside the gpt-4o-mini context window without a
+// token counter. Bump when conversations get longer in practice.
+const PRIOR_TURNS_LIMIT = 10;
 
 export async function runAgent(
   rawRequest: unknown,
@@ -35,6 +42,12 @@ export async function runAgent(
     model: null,
   });
 
+  const priorMessages = await loadPriorMessages({
+    prisma: deps.prisma,
+    conversationId: request.conversationId,
+    excludeMessageId: request.userMessageId,
+  });
+
   const { graph } = buildAgentGraph(deps);
   const recursionLimit = computeRecursionLimit(maxRetries);
 
@@ -50,6 +63,7 @@ export async function runAgent(
         topK: request.topK,
         metadata: request.metadata,
         traceId,
+        priorMessages,
       },
       { recursionLimit },
     );
@@ -133,4 +147,34 @@ function shouldEscalateFor(
 ): boolean {
   if (thrown !== undefined) return true;
   return confidenceFor(state) === "low";
+}
+
+async function loadPriorMessages(args: {
+  prisma: AgentDeps["prisma"];
+  conversationId: string | undefined;
+  excludeMessageId: string | undefined;
+}): Promise<PriorTurn[]> {
+  if (!args.conversationId) return [];
+
+  // Fetch the most recent N+1, then drop the current user message (or the
+  // single newest row if no id was provided) and return in chronological
+  // order. Roles other than "user"/"assistant" are filtered out so a stray
+  // value can't widen the LLM message shape.
+  const rows = await args.prisma.message.findMany({
+    where: {
+      conversationId: args.conversationId,
+      ...(args.excludeMessageId
+        ? { id: { not: args.excludeMessageId } }
+        : {}),
+    },
+    orderBy: { createdAt: "desc" },
+    take: PRIOR_TURNS_LIMIT,
+    select: { role: true, content: true },
+  });
+
+  return rows
+    .reverse()
+    .filter((m): m is { role: "user" | "assistant"; content: string } =>
+      m.role === "user" || m.role === "assistant",
+    );
 }

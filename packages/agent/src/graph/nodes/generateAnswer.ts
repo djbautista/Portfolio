@@ -12,6 +12,10 @@ export function makeGenerateAnswer(deps: AgentDeps) {
       const chatResult = await deps.chatProvider.chat({
         messages: [
           { role: "system", content: system },
+          ...state.priorMessages.map((m) => ({
+            role: m.role,
+            content: m.content,
+          })),
           { role: "user", content: state.originalQuery },
         ],
       });
@@ -22,6 +26,7 @@ export function makeGenerateAnswer(deps: AgentDeps) {
           finishReason: chatResult.finishReason,
           usage: chatResult.usage,
           acceptedChunkCount: state.acceptedChunks.length,
+          priorTurns: state.priorMessages.length,
         },
       };
     });
