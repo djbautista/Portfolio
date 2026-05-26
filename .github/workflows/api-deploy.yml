@@ -128,6 +128,10 @@ jobs:
           docker pull "$IMAGE_URI"
           DATABASE_URL=$(aws secretsmanager get-secret-value --region "$AWS_REGION" --secret-id portfolio/database_url --query SecretString --output text)
           OPENAI_API_KEY=$(aws secretsmanager get-secret-value --region "$AWS_REGION" --secret-id portfolio/openai_api_key --query SecretString --output text)
+          TWILIO_ACCOUNT_SID=$(aws secretsmanager get-secret-value --region "$AWS_REGION" --secret-id portfolio/twilio_account_sid --query SecretString --output text)
+          TWILIO_AUTH_TOKEN=$(aws secretsmanager get-secret-value --region "$AWS_REGION" --secret-id portfolio/twilio_auth_token --query SecretString --output text)
+          TWILIO_WHATSAPP_NUMBER=$(aws secretsmanager get-secret-value --region "$AWS_REGION" --secret-id portfolio/twilio_whatsapp_number --query SecretString --output text)
+          TWILIO_WEBHOOK_PUBLIC_URL=$(aws secretsmanager get-secret-value --region "$AWS_REGION" --secret-id portfolio/twilio_webhook_public_url --query SecretString --output text)
           docker rm -f portfolio-api 2>/dev/null || true
           docker run -d \
             --name portfolio-api \
@@ -139,6 +143,10 @@ jobs:
             -e API_CORS_ORIGINS="https://davidbautista.co,https://www.davidbautista.co" \
             -e DATABASE_URL="$DATABASE_URL" \
             -e OPENAI_API_KEY="$OPENAI_API_KEY" \
+            -e TWILIO_ACCOUNT_SID="$TWILIO_ACCOUNT_SID" \
+            -e TWILIO_AUTH_TOKEN="$TWILIO_AUTH_TOKEN" \
+            -e TWILIO_WHATSAPP_NUMBER="$TWILIO_WHATSAPP_NUMBER" \
+            -e TWILIO_WEBHOOK_PUBLIC_URL="$TWILIO_WEBHOOK_PUBLIC_URL" \
             "$IMAGE_URI"
           docker image prune -af --filter "until=24h" || true
           EOS
