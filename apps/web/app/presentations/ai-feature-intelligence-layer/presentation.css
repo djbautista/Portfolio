@@ -1,0 +1,1158 @@
+/* =========================================================================
+   AI Feature Intelligence Layer — presentation deck styles
+   Imported only by this route. Every selector is namespaced under `.afil-root`
+   so the deck's generic class names (.eyebrow, .footer, .title …) cannot leak
+   into or collide with the rest of the app. Design tokens are lifted verbatim
+   from the prototype's :root and kept local to the deck (not in globals.css).
+   ========================================================================= */
+
+.afil-root {
+  --bg: #0a0c10;
+  --ink-1: #f4f6fa;
+  --ink-2: #aeb4c0;
+  --ink-3: #6e7787;
+  --line: #232834;
+  --line-bright: #333b49;
+  --red: #f22f46;
+  --red-soft: rgba(242, 47, 70, 0.55);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --font-display: var(--font-space-grotesk), "Space Grotesk", sans-serif;
+  --font-body: var(--font-manrope), "Manrope", system-ui, sans-serif;
+
+  position: fixed;
+  inset: 0;
+  background: #000;
+  color: var(--ink-1);
+  font-family: var(--font-body);
+  overflow: hidden;
+}
+
+.afil-root * {
+  box-sizing: border-box;
+}
+
+/* ---- scaling stage: a fixed 1920×1080 plane scaled to fit the viewport ---- */
+.afil-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.afil-scaler {
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+  flex: none;
+  transform: scale(var(--afil-scale, 1));
+  transform-origin: center center;
+}
+
+.afil-canvas {
+  position: absolute;
+  inset: 0;
+  width: 1920px;
+  height: 1080px;
+}
+
+/* per-slide background washes (each slide keeps its own radial gradient combo) */
+.afil-slide {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.afil-slide.title {
+  background:
+    radial-gradient(120% 95% at 72% 46%, rgba(242, 47, 70, 0.07) 0%, rgba(242, 47, 70, 0) 46%),
+    radial-gradient(100% 100% at 50% 0%, #0e1117 0%, var(--bg) 60%);
+}
+.afil-slide.about {
+  background:
+    radial-gradient(85% 80% at 22% 50%, rgba(242, 47, 70, 0.08) 0%, rgba(242, 47, 70, 0) 50%),
+    radial-gradient(100% 100% at 50% 0%, #0e1117 0%, var(--bg) 60%);
+}
+.afil-slide.persona {
+  background:
+    radial-gradient(70% 60% at 50% 8%, rgba(242, 47, 70, 0.06) 0%, rgba(242, 47, 70, 0) 55%),
+    radial-gradient(100% 100% at 50% 0%, #0e1117 0%, var(--bg) 60%);
+}
+.afil-slide.insight {
+  background:
+    radial-gradient(58% 50% at 50% 46%, rgba(242, 47, 70, 0.09) 0%, rgba(242, 47, 70, 0) 56%),
+    radial-gradient(100% 100% at 50% 0%, #0e1117 0%, var(--bg) 60%);
+}
+.afil-slide.solution {
+  background:
+    radial-gradient(48% 56% at 50% 52%, rgba(242, 47, 70, 0.1) 0%, rgba(242, 47, 70, 0) 56%),
+    radial-gradient(100% 100% at 50% 0%, #0e1117 0%, var(--bg) 60%);
+}
+
+/* =========================================================================
+   SLIDE 1 — TITLE
+   ========================================================================= */
+.afil-title .header {
+  position: absolute;
+  left: 150px;
+  top: 130px;
+  width: 1180px;
+}
+.afil-title .eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 0 0 30px;
+  white-space: nowrap;
+}
+.afil-root .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 14px 2px var(--red-soft);
+  flex: none;
+}
+.afil-title .title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 86px;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: var(--ink-1);
+  margin: 0 0 28px;
+}
+.afil-title .title .accent {
+  color: var(--red);
+}
+.afil-title .subtitle {
+  font-size: 36px;
+  font-weight: 300;
+  line-height: 1.35;
+  color: var(--ink-2);
+  margin: 0;
+  max-width: 880px;
+}
+
+.afil-title .footer {
+  position: absolute;
+  left: 150px;
+  bottom: 78px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 25px;
+  font-weight: 300;
+  color: var(--ink-3);
+}
+.afil-root .footer .bar {
+  width: 46px;
+  height: 2px;
+  background: var(--red);
+  flex: none;
+}
+
+/* ---- diagram (faint teaser) ---- */
+.afil-title .graph {
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+  filter: brightness(0.5);
+}
+.afil-title .lbl {
+  position: absolute;
+  font-family: var(--font-body);
+  white-space: nowrap;
+}
+.afil-title .stage-lbl {
+  font-size: 26px;
+  font-weight: 500;
+  color: var(--ink-2);
+  transform: translateX(-50%);
+  text-align: center;
+  letter-spacing: 0.01em;
+}
+.afil-title .stage-lbl.release {
+  color: var(--ink-1);
+  font-weight: 600;
+}
+.afil-title .node-lbl {
+  font-size: 27px;
+  font-weight: 400;
+  color: var(--ink-2);
+  transform: translateY(-50%);
+  letter-spacing: 0.005em;
+}
+.afil-title .axis-tag {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.afil-title .axis-tag.pre {
+  transform: translateX(-50%);
+}
+.afil-title .layer-cap {
+  position: absolute;
+  left: 1082px;
+  top: 600px;
+  transform: translate(-100%, -50%) rotate(-90deg);
+  transform-origin: right center;
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--red);
+  opacity: 0.95;
+  white-space: nowrap;
+}
+
+/* =========================================================================
+   SLIDE 2 — ABOUT
+   ========================================================================= */
+.afil-about .portrait {
+  position: absolute;
+  left: 140px;
+  top: 130px;
+  width: 580px;
+  height: 820px;
+}
+.afil-about .portrait .halo {
+  position: absolute;
+  left: -70px;
+  bottom: -60px;
+  width: 480px;
+  height: 580px;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(242, 47, 70, 0.3) 0%, rgba(242, 47, 70, 0) 72%);
+  z-index: 0;
+}
+.afil-about .portrait .frame {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border: 1px solid var(--line-bright);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #06080c;
+  box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.8);
+}
+.afil-about .portrait .frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.afil-about .portrait .scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(6, 8, 12, 0) 58%, rgba(6, 8, 12, 0.55) 100%);
+  border-radius: 6px;
+}
+.afil-about .portrait .base {
+  position: absolute;
+  left: 0;
+  bottom: -26px;
+  width: 200px;
+  height: 3px;
+  background: var(--red);
+  box-shadow: 0 0 16px 1px var(--red-soft);
+  z-index: 1;
+}
+
+.afil-about .divider-v {
+  position: absolute;
+  left: 812px;
+  top: 250px;
+  width: 1px;
+  height: 580px;
+  background: linear-gradient(180deg, rgba(51, 59, 73, 0) 0%, var(--line-bright) 18%, var(--line-bright) 82%, rgba(51, 59, 73, 0) 100%);
+}
+.afil-about .divider-v .tick {
+  position: absolute;
+  left: -1px;
+  top: 50%;
+  width: 3px;
+  height: 54px;
+  transform: translateY(-50%);
+  background: var(--red);
+  box-shadow: 0 0 14px 1px var(--red-soft);
+}
+
+.afil-about .identity {
+  position: absolute;
+  left: 904px;
+  top: 0;
+  height: 1080px;
+  width: 850px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.afil-about .eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 0 0 40px;
+  white-space: nowrap;
+}
+.afil-about .name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 92px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--ink-1);
+  margin: 0 0 26px;
+}
+.afil-about .role {
+  display: flex;
+  align-items: baseline;
+  gap: 0.32em;
+  font-size: 44px;
+  font-weight: 300;
+  line-height: 1.1;
+  color: var(--ink-2);
+  margin: 0;
+}
+.afil-about .role .swap {
+  display: inline-grid;
+  position: relative;
+}
+.afil-about .role .swap .word {
+  grid-area: 1 / 1;
+  white-space: nowrap;
+}
+.afil-about .role .swap .prod {
+  color: var(--red);
+  font-weight: 400;
+}
+.afil-about .rule {
+  display: flex;
+  align-items: center;
+  margin: 48px 0 42px;
+  width: 360px;
+}
+.afil-about .rule .seg {
+  width: 44px;
+  height: 2px;
+  background: var(--red);
+  flex: none;
+}
+.afil-about .rule .line {
+  height: 1px;
+  flex: 1;
+  background: var(--line-bright);
+}
+.afil-about .statement {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 40px;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--ink-1);
+  margin: 0 0 30px;
+}
+.afil-about .statement .hl {
+  color: var(--red);
+}
+.afil-about .formula {
+  font-size: 29px;
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--ink-1);
+}
+.afil-about .formula .inputs,
+.afil-about .formula .output {
+  display: flex;
+  align-items: baseline;
+  gap: 0.42em;
+  flex-wrap: wrap;
+}
+.afil-about .formula .op {
+  color: var(--red);
+  font-weight: 400;
+}
+.afil-about .formula .arrow {
+  color: var(--red);
+  font-weight: 400;
+  font-size: 32px;
+}
+.afil-about .formula .great {
+  color: var(--red);
+  font-weight: 500;
+  letter-spacing: 0.005em;
+}
+.afil-about .footer {
+  position: absolute;
+  left: 140px;
+  bottom: 70px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+}
+
+/* =========================================================================
+   SLIDE 3 — PERSONA JOURNEYS
+   ========================================================================= */
+.afil-persona .p-eyebrow {
+  position: absolute;
+  left: 140px;
+  top: 66px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 0;
+  white-space: nowrap;
+}
+.afil-persona .p-title {
+  position: absolute;
+  left: 140px;
+  top: 104px;
+  margin: 0;
+  max-width: 1200px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 60px;
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  color: var(--ink-1);
+}
+.afil-persona .p-title .hl {
+  color: var(--red);
+}
+
+.afil-persona .p-row {
+  position: absolute;
+  left: 140px;
+  width: 1640px;
+  height: 176px;
+  display: flex;
+  align-items: center;
+}
+.afil-persona .p-row.r0 {
+  top: 286px;
+}
+.afil-persona .p-row.r1 {
+  top: 532px;
+}
+.afil-persona .p-row.r2 {
+  top: 778px;
+}
+
+.afil-persona .p-bar {
+  position: absolute;
+  left: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 104px;
+  background: var(--red);
+  border-radius: 2px;
+  opacity: 0;
+  box-shadow: 0 0 16px 1px var(--red-soft);
+  transition: opacity 0.5s var(--ease);
+}
+.afil-persona .p-row.focus .p-bar {
+  opacity: 1;
+}
+
+.afil-persona .p-persona {
+  flex: none;
+  width: 430px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.afil-persona .p-avatar {
+  position: relative;
+  flex: none;
+  width: 124px;
+  height: 124px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--line-bright);
+  background: #06080c;
+}
+.afil-persona .p-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 22%;
+  display: block;
+}
+.afil-persona .p-avatar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+.afil-persona .p-id {
+  min-width: 0;
+}
+.afil-persona .p-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 34px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ink-1);
+  margin: 0 0 10px;
+}
+.afil-persona .p-role {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  margin: 0;
+  white-space: nowrap;
+}
+.afil-persona .p-role .tick {
+  width: 18px;
+  height: 2px;
+  background: var(--red);
+  flex: none;
+}
+.afil-persona .p-sub {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--ink-3);
+  margin: 9px 0 0;
+  letter-spacing: 0.01em;
+}
+
+.afil-persona .p-track {
+  flex: 1;
+  position: relative;
+  height: 176px;
+  margin: 0 26px;
+  min-width: 0;
+}
+.afil-persona .p-track .line {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  top: 77px;
+  height: 2px;
+  background: var(--line-bright);
+}
+.afil-persona .p-track .fill {
+  position: absolute;
+  left: 10%;
+  width: 80%;
+  top: 77px;
+  height: 2px;
+  background: var(--red);
+  transform-origin: left center;
+  box-shadow: 0 0 10px 0 var(--red-soft);
+}
+.afil-persona .p-nodes {
+  position: absolute;
+  inset: 0;
+  display: flex;
+}
+.afil-persona .p-node {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 8px;
+}
+.afil-persona .p-dot {
+  width: 14px;
+  height: 14px;
+  margin-top: 71px;
+  border-radius: 50%;
+  background: #0a0c10;
+  border: 2px solid var(--ink-2);
+}
+.afil-persona .p-node.end .p-dot {
+  background: var(--red);
+  border-color: var(--red);
+  box-shadow: 0 0 12px 1px var(--red-soft);
+}
+.afil-persona .p-step {
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--ink-2);
+  text-align: center;
+  text-wrap: balance;
+}
+.afil-persona .p-node.end .p-step {
+  color: var(--ink-1);
+  font-weight: 500;
+}
+
+.afil-persona .p-metric {
+  flex: none;
+  width: 248px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-left: 8px;
+}
+.afil-persona .p-metric .arr {
+  font-size: 26px;
+  color: var(--red);
+  line-height: 1;
+}
+.afil-persona .p-metric .m-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 0 0 6px;
+}
+.afil-persona .p-metric .m-value {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--red);
+  text-shadow: 0 0 22px rgba(242, 47, 70, 0.35);
+  margin: 0;
+}
+.afil-persona .p-metric .m-cap {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ink-3);
+  margin: 8px 0 0;
+}
+
+/* in-slide 1/3 → 3/3 progress control */
+.afil-persona .p-progress {
+  position: absolute;
+  right: 140px;
+  bottom: 72px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.afil-persona .p-nav {
+  appearance: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--line-bright);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--ink-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease,
+    background 0.15s ease;
+}
+.afil-persona .p-nav:hover:not(:disabled) {
+  border-color: var(--red);
+  color: var(--red);
+  background: rgba(242, 47, 70, 0.06);
+}
+.afil-persona .p-nav:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.afil-persona .p-nav svg {
+  width: 16px;
+  height: 16px;
+}
+.afil-persona .p-segs {
+  display: flex;
+  gap: 8px;
+}
+.afil-persona .p-seg {
+  width: 34px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--line-bright);
+  transition: background 0.45s var(--ease);
+}
+.afil-persona .p-seg.on {
+  background: var(--red);
+}
+.afil-persona .p-count {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 18px;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  min-width: 48px;
+}
+.afil-persona .p-count .now {
+  color: var(--ink-1);
+}
+.afil-persona .p-count .tot {
+  color: var(--ink-3);
+}
+
+.afil-persona .p-footer {
+  position: absolute;
+  left: 140px;
+  bottom: 74px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+}
+
+/* ---- staged reveal (driven by React state toggling classes) ----
+   Base state shows every row; while `.staged` is on, hide the not-yet-revealed
+   rows/elements until React adds `.revealed`. Mirrors the prototype's timing. */
+.afil-persona.staged .p-row {
+  opacity: 0;
+  transition: opacity 0.6s var(--ease);
+}
+.afil-persona.staged .p-row.revealed {
+  opacity: 1;
+}
+.afil-persona.staged .p-row.revealed.dim {
+  opacity: 0.2;
+}
+.afil-persona.staged .p-row .p-avatar {
+  opacity: 0;
+  transform: scale(0.85) translateX(-14px);
+}
+.afil-persona.staged .p-row .p-id {
+  opacity: 0;
+  transform: translateX(-12px);
+}
+.afil-persona.staged .p-row .p-dot {
+  opacity: 0;
+  transform: scale(0.4);
+}
+.afil-persona.staged .p-row .p-step {
+  opacity: 0;
+  transform: translateY(8px);
+}
+.afil-persona.staged .p-row .p-metric {
+  opacity: 0;
+  transform: translateX(14px);
+}
+.afil-persona.staged .p-row .fill {
+  transform: scaleX(0);
+}
+.afil-persona.staged .p-avatar,
+.afil-persona.staged .p-id,
+.afil-persona.staged .p-dot,
+.afil-persona.staged .p-step,
+.afil-persona.staged .p-metric {
+  transition:
+    opacity 0.6s var(--ease),
+    transform 0.6s var(--ease);
+}
+.afil-persona.staged .fill {
+  transition: transform 1s var(--ease);
+}
+.afil-persona.staged .p-row.revealed .p-avatar {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.05s;
+}
+.afil-persona.staged .p-row.revealed .p-id {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.2s;
+}
+.afil-persona.staged .p-row.revealed .fill {
+  transform: scaleX(1);
+  transition-delay: 0.45s;
+}
+.afil-persona.staged .p-row.revealed .p-metric {
+  opacity: 1;
+  transform: none;
+  transition-delay: 1.75s;
+}
+.afil-persona.staged .p-row.revealed .p-dot,
+.afil-persona.staged .p-row.revealed .p-step {
+  opacity: 1;
+  transform: none;
+}
+.afil-persona.staged .p-row.revealed .n0 .p-dot {
+  transition-delay: 0.55s;
+}
+.afil-persona.staged .p-row.revealed .n1 .p-dot {
+  transition-delay: 0.73s;
+}
+.afil-persona.staged .p-row.revealed .n2 .p-dot {
+  transition-delay: 0.91s;
+}
+.afil-persona.staged .p-row.revealed .n3 .p-dot {
+  transition-delay: 1.09s;
+}
+.afil-persona.staged .p-row.revealed .n4 .p-dot {
+  transition-delay: 1.27s;
+}
+.afil-persona.staged .p-row.revealed .n0 .p-step {
+  transition-delay: 0.66s;
+}
+.afil-persona.staged .p-row.revealed .n1 .p-step {
+  transition-delay: 0.84s;
+}
+.afil-persona.staged .p-row.revealed .n2 .p-step {
+  transition-delay: 1.02s;
+}
+.afil-persona.staged .p-row.revealed .n3 .p-step {
+  transition-delay: 1.2s;
+}
+.afil-persona.staged .p-row.revealed .n4 .p-step {
+  transition-delay: 1.38s;
+}
+
+/* =========================================================================
+   SLIDE 4 — INSIGHT
+   ========================================================================= */
+.afil-insight .i-eyebrow {
+  position: absolute;
+  left: 140px;
+  top: 66px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 0;
+  white-space: nowrap;
+}
+.afil-insight .i-title {
+  position: absolute;
+  left: 140px;
+  top: 104px;
+  margin: 0;
+  max-width: 1200px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 60px;
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  color: var(--ink-1);
+}
+.afil-insight .i-title .hl {
+  color: var(--red);
+}
+.afil-insight .i-core {
+  position: absolute;
+  left: 960px;
+  top: 540px;
+  transform: translate(-50%, -50%);
+  width: 1040px;
+  text-align: center;
+}
+.afil-insight .i-main {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 47px;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  color: var(--ink-1);
+  margin: 0;
+  text-wrap: balance;
+}
+.afil-insight .i-main .hl {
+  color: var(--red);
+}
+.afil-insight .i-support {
+  font-size: 25px;
+  font-weight: 300;
+  line-height: 1.58;
+  color: var(--ink-2);
+  margin: 74px auto 0;
+  max-width: 860px;
+  text-wrap: pretty;
+}
+.afil-insight .i-q {
+  position: absolute;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-size: 22px;
+  font-weight: 300;
+  letter-spacing: 0.005em;
+  color: var(--ink-3);
+  white-space: nowrap;
+  opacity: 0.3;
+}
+.afil-insight .i-q .qd {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--red);
+  flex: none;
+  box-shadow: 0 0 8px 1px var(--red-soft);
+}
+.afil-insight .i-footer {
+  position: absolute;
+  left: 140px;
+  bottom: 74px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+}
+
+/* =========================================================================
+   SLIDE 5 — SYSTEMATIC SOLUTION
+   Fragmented SDLC artifacts funnel through the AI layer and fan out as
+   reusable operational knowledge. Reuses the shared .dot and .footer .bar.
+   ========================================================================= */
+.afil-solution .eyebrow {
+  position: absolute;
+  left: 140px;
+  top: 66px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 0;
+  white-space: nowrap;
+}
+.afil-solution .title {
+  position: absolute;
+  left: 140px;
+  top: 104px;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 60px;
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  color: var(--ink-1);
+}
+.afil-solution .title .hl {
+  color: var(--red);
+}
+.afil-solution .thesis {
+  position: absolute;
+  left: 140px;
+  top: 214px;
+  width: 1580px;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 45px;
+  line-height: 1.28;
+  letter-spacing: -0.015em;
+  color: var(--ink-1);
+  text-wrap: balance;
+}
+.afil-solution .thesis .hl {
+  color: var(--red);
+}
+
+/* ---- diagram: halo, wires, node labels, transformation row ---- */
+.afil-solution .core-halo {
+  position: absolute;
+  left: 960px;
+  top: 640px;
+  width: 460px;
+  height: 520px;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(46% 50% at 50% 50%, rgba(242, 47, 70, 0.16) 0%, rgba(242, 47, 70, 0) 70%);
+}
+.afil-solution .wires {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+.afil-solution .input-label {
+  position: absolute;
+  transform: translate(-100%, -50%);
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: 0.005em;
+  color: var(--ink-3);
+  white-space: nowrap;
+  z-index: 2;
+}
+.afil-solution .output-label {
+  position: absolute;
+  transform: translateY(-50%);
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  color: var(--ink-1);
+  white-space: nowrap;
+  z-index: 2;
+}
+.afil-solution .zone-caption {
+  position: absolute;
+  top: 928px;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  white-space: nowrap;
+  z-index: 2;
+}
+.afil-solution .zone-caption.layer {
+  font-family: var(--font-display);
+  font-size: 24px;
+  letter-spacing: 0.14em;
+  color: var(--red);
+  text-shadow: 0 0 26px rgba(242, 47, 70, 0.32);
+}
+.afil-solution .zone-arrow {
+  position: absolute;
+  top: 928px;
+  transform: translate(-50%, -50%);
+  font-size: 26px;
+  color: var(--red);
+  z-index: 2;
+}
+.afil-solution .footer {
+  position: absolute;
+  left: 140px;
+  bottom: 74px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+}
+
+/* =========================================================================
+   DECK NAVIGATION (prev / next + slide indicator), bottom-center
+   ========================================================================= */
+.afil-nav {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle, #262626);
+  background: rgba(10, 12, 16, 0.72);
+  backdrop-filter: blur(8px);
+  font-family: var(--font-display);
+}
+.afil-nav-btn {
+  appearance: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--line-bright);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--ink-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease,
+    background 0.15s ease;
+}
+.afil-nav-btn:hover:not(:disabled) {
+  border-color: var(--red);
+  color: var(--red);
+  background: rgba(242, 47, 70, 0.06);
+}
+.afil-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.afil-nav-btn svg {
+  width: 16px;
+  height: 16px;
+}
+.afil-nav-count {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+  min-width: 64px;
+  text-align: center;
+}
+.afil-nav-count .now {
+  color: var(--ink-1);
+}
+.afil-nav-count .tot {
+  color: var(--ink-3);
+}
+.afil-nav-dots {
+  display: flex;
+  gap: 8px;
+}
+.afil-nav-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 0;
+  padding: 0;
+  background: var(--line-bright);
+  cursor: pointer;
+  transition:
+    background 0.25s var(--ease),
+    transform 0.25s var(--ease);
+}
+.afil-nav-dot.on {
+  background: var(--red);
+  transform: scale(1.15);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .afil-root *,
+  .afil-persona.staged * {
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
+  }
+}
