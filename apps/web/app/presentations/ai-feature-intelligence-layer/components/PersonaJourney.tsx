@@ -9,14 +9,25 @@ interface PersonaJourneyProps {
   rowClass: string;
   /** staged-reveal state classes (e.g. `revealed dim` / `revealed focus`) */
   stateClass: string;
+  /** how many timeline steps are currently revealed (0..steps.length) */
+  revealedSteps: number;
+  /** progress-line fill fraction (0..1) up to the latest revealed step */
+  fillFrac: number;
 }
 
 /**
  * One horizontal persona journey: avatar + identity, a five-step timeline, and
- * (Peter only) a trailing metric callout. Staged-reveal classes are supplied by
- * the parent slide so the 1/3 → 3/3 progression stays a single source of truth.
+ * (Peter only) a trailing metric callout. The parent slide drives the reveal —
+ * identity via `revealed`, then each step in turn via `revealedSteps` — so the
+ * beat sequence stays a single source of truth.
  */
-export function PersonaJourney({ persona, rowClass, stateClass }: PersonaJourneyProps) {
+export function PersonaJourney({
+  persona,
+  rowClass,
+  stateClass,
+  revealedSteps,
+  fillFrac,
+}: PersonaJourneyProps) {
   const lastIndex = persona.steps.length - 1;
 
   return (
@@ -38,15 +49,20 @@ export function PersonaJourney({ persona, rowClass, stateClass }: PersonaJourney
       </div>
 
       <div className="p-track">
-        <div className="line" />
-        <div className="fill" />
+        <div className="line" style={{ transform: `scaleX(${fillFrac})` }} />
+        <div className="fill" style={{ transform: `scaleX(${fillFrac})` }} />
         <div className="p-nodes">
-          {persona.steps.map((step, i) => (
-            <div key={step} className={`p-node n${i}${i === lastIndex ? ' end' : ''}`}>
-              <span className="p-dot" />
-              <span className="p-step">{step}</span>
-            </div>
-          ))}
+          {persona.steps.map((step, i) => {
+            const cls = `p-node n${i}${i === lastIndex ? ' end' : ''}${
+              i < revealedSteps ? ' shown' : ''
+            }`;
+            return (
+              <div key={step} className={cls}>
+                <span className="p-dot" />
+                <span className="p-step">{step}</span>
+              </div>
+            );
+          })}
         </div>
       </div>
 

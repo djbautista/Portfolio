@@ -1,11 +1,11 @@
 'use client';
 
 import { useCallback, useEffect, useState, type CSSProperties } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 
 import { manrope, spaceGrotesk } from '@/utils/fonts';
 
-import { SLIDE_COUNT, personas } from './data';
+import { SLIDE_COUNT, personaStageCount } from './data';
 import { SlideNavigation } from './SlideNavigation';
 import { useDeckScale } from './useDeckScale';
 import { TitleSlide } from './slides/TitleSlide';
@@ -13,11 +13,42 @@ import { AboutSlide } from './slides/AboutSlide';
 import { PersonaJourneysSlide } from './slides/PersonaJourneysSlide';
 import { InsightSlide } from './slides/InsightSlide';
 import { SystematicSolutionSlide } from './slides/SystematicSolutionSlide';
+import { ArchitectureSlide, MAX_ARCH_STAGE } from './slides/ArchitectureSlide';
+import { PayoffSlide } from './slides/PayoffSlide';
+import { DemoSlide } from './slides/DemoSlide';
 
 import './presentation.css';
 
+const TITLE_INDEX = 0;
+// 0 resting · 1 focus diagram · 2–9 spotlight each of the 8 post-release bullets
+// one at a time · 10 restore all bullets to normal · 11 reveal the AI layer
+// (caption + spine + red release).
+const MAX_TITLE_STAGE = 11;
+const ABOUT_INDEX = 1;
+// 0 centered · 1 swap role Software→Product · 2 column home + right column reveal.
+const MAX_ABOUT_STAGE = 2;
 const PERSONA_INDEX = 2;
-const MAX_STAGE = personas.length - 1;
+// Each persona reveals its identity, then its steps one at a time (see
+// personaStageCount); the final beat (personaStageCount) is the synthesis
+// moment — profiles recenter, journeys fade, the anonymous crowd appears.
+const MAX_STAGE = personaStageCount;
+const INSIGHT_INDEX = 3;
+// 0 resting (main insight prominent, questions dim) · 1 bring the scattered
+// questions forward and dim the central insight behind them · 2 fade the
+// questions out and restore the central insight, clean on its own.
+const MAX_INSIGHT_STAGE = 2;
+const SOLUTION_INDEX = 4;
+// 0 thesis sentence alone, centered in the window · 1 thesis settles into its
+// header slot and the diagram + chrome reveal.
+const MAX_SOLUTION_STAGE = 1;
+const ARCH_INDEX = 5;
+const PAYOFF_INDEX = 6;
+// 0 the "Before" section alone · 1 crossfade to the "After" section · 2 slide
+// "After" into the left half (compact card) + fade the SDLC diagram in on the right.
+const MAX_PAYOFF_STAGE = 2;
+// Closing interstitial — no internal stages; navigate() falls straight through
+// to slide change at both ends.
+const DEMO_INDEX = 7;
 
 type Direction = 'next' | 'prev';
 
@@ -31,18 +62,57 @@ type Direction = 'next' | 'prev';
  */
 export function PresentationDeck() {
   const [index, setIndex] = useState(0);
+  const [titleStage, setTitleStage] = useState(0);
+  const [aboutStage, setAboutStage] = useState(0);
   const [personaStage, setPersonaStage] = useState(0);
+  const [insightStage, setInsightStage] = useState(0);
+  const [solutionStage, setSolutionStage] = useState(0);
+  const [archStage, setArchStage] = useState(0);
+  const [payoffStage, setPayoffStage] = useState(0);
   const scale = useDeckScale();
   const reduceMotion = useReducedMotion();
 
-  const goToSlide = useCallback((target: number) => {
-    const clamped = Math.max(0, Math.min(SLIDE_COUNT - 1, target));
-    setIndex(clamped);
-    if (clamped === PERSONA_INDEX) setPersonaStage(0); // re-entering resets the reveal
-  }, []);
+  const goToSlide = useCallback(
+    (target: number) => {
+      const clamped = Math.max(0, Math.min(SLIDE_COUNT - 1, target));
+      if (clamped !== index) {
+        // re-entering an interactive slide restarts its reveal; staying put
+        // (e.g. ArrowRight past the deck's end clamping back) must not
+        if (clamped === TITLE_INDEX) setTitleStage(0);
+        if (clamped === ABOUT_INDEX) setAboutStage(0);
+        if (clamped === PERSONA_INDEX) setPersonaStage(0);
+        if (clamped === INSIGHT_INDEX) setInsightStage(0);
+        if (clamped === SOLUTION_INDEX) setSolutionStage(0);
+        if (clamped === ARCH_INDEX) setArchStage(0);
+        if (clamped === PAYOFF_INDEX) setPayoffStage(0);
+      }
+      setIndex(clamped);
+    },
+    [index],
+  );
 
   const navigate = useCallback(
     (dir: Direction) => {
+      if (index === TITLE_INDEX) {
+        if (dir === 'next' && titleStage < MAX_TITLE_STAGE) {
+          setTitleStage((s) => s + 1);
+          return;
+        }
+        if (dir === 'prev' && titleStage > 0) {
+          setTitleStage((s) => s - 1);
+          return;
+        }
+      }
+      if (index === ABOUT_INDEX) {
+        if (dir === 'next' && aboutStage < MAX_ABOUT_STAGE) {
+          setAboutStage((s) => s + 1);
+          return;
+        }
+        if (dir === 'prev' && aboutStage > 0) {
+          setAboutStage((s) => s - 1);
+          return;
+        }
+      }
       if (index === PERSONA_INDEX) {
         if (dir === 'next' && personaStage < MAX_STAGE) {
           setPersonaStage((s) => s + 1);
@@ -53,9 +123,49 @@ export function PresentationDeck() {
           return;
         }
       }
+      if (index === INSIGHT_INDEX) {
+        if (dir === 'next' && insightStage < MAX_INSIGHT_STAGE) {
+          setInsightStage((s) => s + 1);
+          return;
+        }
+        if (dir === 'prev' && insightStage > 0) {
+          setInsightStage((s) => s - 1);
+          return;
+        }
+      }
+      if (index === SOLUTION_INDEX) {
+        if (dir === 'next' && solutionStage < MAX_SOLUTION_STAGE) {
+          setSolutionStage((s) => s + 1);
+          return;
+        }
+        if (dir === 'prev' && solutionStage > 0) {
+          setSolutionStage((s) => s - 1);
+          return;
+        }
+      }
+      if (index === ARCH_INDEX) {
+        if (dir === 'next' && archStage < MAX_ARCH_STAGE) {
+          setArchStage((s) => s + 1);
+          return;
+        }
+        if (dir === 'prev' && archStage > 0) {
+          setArchStage((s) => s - 1);
+          return;
+        }
+      }
+      if (index === PAYOFF_INDEX) {
+        if (dir === 'next' && payoffStage < MAX_PAYOFF_STAGE) {
+          setPayoffStage((s) => s + 1);
+          return;
+        }
+        if (dir === 'prev' && payoffStage > 0) {
+          setPayoffStage((s) => s - 1);
+          return;
+        }
+      }
       goToSlide(index + (dir === 'next' ? 1 : -1));
     },
-    [index, personaStage, goToSlide],
+    [index, titleStage, aboutStage, personaStage, insightStage, solutionStage, archStage, payoffStage, goToSlide],
   );
 
   useEffect(() => {
@@ -83,9 +193,9 @@ export function PresentationDeck() {
   const renderSlide = () => {
     switch (index) {
       case 0:
-        return <TitleSlide />;
-      case 1:
-        return <AboutSlide />;
+        return <TitleSlide stage={titleStage} />;
+      case ABOUT_INDEX:
+        return <AboutSlide stage={aboutStage} />;
       case PERSONA_INDEX:
         return (
           <PersonaJourneysSlide
@@ -94,10 +204,16 @@ export function PresentationDeck() {
             onStageNext={() => setPersonaStage((s) => Math.min(MAX_STAGE, s + 1))}
           />
         );
-      case 3:
-        return <InsightSlide />;
-      case 4:
-        return <SystematicSolutionSlide />;
+      case INSIGHT_INDEX:
+        return <InsightSlide stage={insightStage} />;
+      case SOLUTION_INDEX:
+        return <SystematicSolutionSlide stage={solutionStage} />;
+      case ARCH_INDEX:
+        return <ArchitectureSlide stage={archStage} />;
+      case PAYOFF_INDEX:
+        return <PayoffSlide stage={payoffStage} />;
+      case DEMO_INDEX:
+        return <DemoSlide />;
       default:
         return null;
     }
@@ -110,15 +226,23 @@ export function PresentationDeck() {
     >
       <div className="afil-stage">
         <div className="afil-scaler">
-          <motion.div
-            key={index}
-            className="afil-canvas"
-            initial={reduceMotion ? false : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          >
-            {renderSlide()}
-          </motion.div>
+          {/* True crossfade: the outgoing slide stays mounted and fades out while
+              the incoming one fades in (both `.afil-canvas` fill the plane and
+              overlap), so the center is never blank between slides — the cause of
+              the dark gap on entry to slides that open with empty space (e.g. the
+              Solution slide's emerging statement). Reduced motion swaps instantly. */}
+          <AnimatePresence>
+            <motion.div
+              key={index}
+              className="afil-canvas"
+              initial={reduceMotion ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: reduceMotion ? 0 : 0.4, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {renderSlide()}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
 

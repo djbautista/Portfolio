@@ -6,7 +6,12 @@ import { postReleaseNodes, sdlcStages } from '@/app/presentations/ai-feature-int
  * of the deck to come, exactly as the prototype composes it. All geometry is
  * driven by the `sdlcStages` / `postReleaseNodes` data, not hand-repeated nodes.
  */
-export function SDLCFlow() {
+interface SDLCFlowProps {
+  /** Index of the post-release node to spotlight (-1 = none / not walking). */
+  activeNode?: number;
+}
+
+export function SDLCFlow({ activeNode = -1 }: SDLCFlowProps) {
   return (
     <div className="graph">
       <svg
@@ -31,15 +36,19 @@ export function SDLCFlow() {
           </linearGradient>
         </defs>
 
-        {/* pipeline baseline + release→layer connector */}
+        {/* pipeline baseline + release→layer connector. The connector is neutral
+            until stage 2 (.reveal-layer) recolors it to its original red. */}
         <line x1="170" y1="600" x2="960" y2="600" stroke="var(--line-bright)" strokeWidth="2" />
-        <line x1="960" y1="600" x2="1130" y2="600" stroke="var(--red)" strokeWidth="2" strokeOpacity="0.7" />
+        <line className="release-link" x1="960" y1="600" x2="1130" y2="600" strokeWidth="2" />
 
-        {/* AI-layer spine: soft glow from a wide low-opacity stroke + a crisp core */}
-        <line x1="1130" y1="306" x2="1130" y2="894" stroke="url(#afilSpineGrad)" strokeWidth="12" strokeOpacity="0.3" />
-        <line x1="1130" y1="306" x2="1130" y2="894" stroke="url(#afilSpineGrad)" strokeWidth="3" />
+        {/* AI-layer spine: soft glow from a wide low-opacity stroke + a crisp core.
+            Hidden until stage 2 reveals it alongside the "AI Layer" caption. */}
+        <g className="spine">
+          <line x1="1130" y1="306" x2="1130" y2="894" stroke="url(#afilSpineGrad)" strokeWidth="12" strokeOpacity="0.3" />
+          <line x1="1130" y1="306" x2="1130" y2="894" stroke="url(#afilSpineGrad)" strokeWidth="3" />
+        </g>
 
-        {/* branch curves to each post-release node */}
+        {/* branch curves to each post-release node (static — not part of the walk) */}
         {postReleaseNodes.map((node) => (
           <path key={node.id} d={node.branch} stroke="var(--line-bright)" strokeWidth="2" />
         ))}
@@ -47,16 +56,16 @@ export function SDLCFlow() {
         {/* pre-release pipeline nodes */}
         {sdlcStages.map((stage) =>
           stage.emphasized ? (
-            <g key={stage.id}>
-              <circle cx={stage.cx} cy="600" r="20" fill="rgba(242,47,70,0.12)" stroke="var(--red)" strokeWidth="2" />
-              <circle cx={stage.cx} cy="600" r="8" fill="var(--red)" />
+            <g key={stage.id} className="release-node">
+              <circle className="ring" cx={stage.cx} cy="600" r="20" strokeWidth="2" />
+              <circle className="core" cx={stage.cx} cy="600" r="8" />
             </g>
           ) : (
             <circle key={stage.id} cx={stage.cx} cy="600" r="7" fill="#0A0C10" stroke="var(--ink-2)" strokeWidth="2" />
           ),
         )}
 
-        {/* post-release nodes */}
+        {/* post-release nodes (static dots — not part of the walk) */}
         {postReleaseNodes.map((node) => (
           <circle key={node.id} cx="1300" cy={node.cy} r="5.5" fill="#0A0C10" stroke="var(--ink-2)" strokeWidth="2" />
         ))}
@@ -85,8 +94,12 @@ export function SDLCFlow() {
       <div className="layer-cap">AI Layer</div>
 
       {/* post-release node labels */}
-      {postReleaseNodes.map((node) => (
-        <div key={node.id} className="lbl node-lbl" style={{ left: 1326, top: node.cy }}>
+      {postReleaseNodes.map((node, i) => (
+        <div
+          key={node.id}
+          className={`lbl node-lbl${i === activeNode ? ' active' : ''}`}
+          style={{ left: 1326, top: node.cy }}
+        >
           {node.label}
         </div>
       ))}

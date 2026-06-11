@@ -2,9 +2,18 @@ import { SlideFrame } from '@/app/presentations/ai-feature-intelligence-layer/Sl
 import { FadeIn } from '@/app/presentations/ai-feature-intelligence-layer/components/FadeIn';
 import { insightQuestions, insightSlide } from '@/app/presentations/ai-feature-intelligence-layer/data';
 
-export function InsightSlide() {
+/**
+ * stage 0 — resting: the central insight reads first, questions sit dim around it.
+ * stage 1 — `questions` modifier brings the scattered question symptoms forward
+ * (full opacity, a touch larger) and dims the central insight + support behind
+ * them, so they can be talked through.
+ * stage 2 — `focus` modifier fades the questions out entirely and restores the
+ * central insight + support, clean on its own, before advancing to the next slide.
+ */
+export function InsightSlide({ stage }: { stage: number }) {
+  const className = stage >= 2 ? 'focus' : stage >= 1 ? 'questions' : undefined;
   return (
-    <SlideFrame variant="insight">
+    <SlideFrame variant="insight" className={className}>
       <FadeIn>
         <p className="i-eyebrow">
           <span className="dot" />

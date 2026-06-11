@@ -1,6 +1,14 @@
 import type { ReactNode } from 'react';
 
-export type SlideVariant = 'title' | 'about' | 'persona' | 'insight' | 'solution';
+export type SlideVariant =
+  | 'title'
+  | 'about'
+  | 'persona'
+  | 'insight'
+  | 'solution'
+  | 'architecture'
+  | 'payoff'
+  | 'demo';
 
 interface SlideFrameProps {
   variant: SlideVariant;

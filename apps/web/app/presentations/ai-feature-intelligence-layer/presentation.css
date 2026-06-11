@@ -15,6 +15,7 @@
   --line-bright: #333b49;
   --red: #f22f46;
   --red-soft: rgba(242, 47, 70, 0.55);
+  --twilio-blue: #0b1b46;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
 
   --font-display: var(--font-space-grotesk), "Space Grotesk", sans-serif;
@@ -87,6 +88,19 @@
     radial-gradient(48% 56% at 50% 52%, rgba(242, 47, 70, 0.1) 0%, rgba(242, 47, 70, 0) 56%),
     radial-gradient(100% 100% at 50% 0%, #0e1117 0%, var(--bg) 60%);
 }
+.afil-slide.architecture {
+  background:
+    radial-gradient(60% 52% at 50% 50%, rgba(242, 47, 70, 0.06) 0%, rgba(242, 47, 70, 0) 58%),
+    radial-gradient(100% 100% at 50% 0%, #0e1117 0%, var(--bg) 60%);
+}
+.afil-slide.payoff {
+  background: radial-gradient(100% 100% at 50% 0%, #0e1117 0%, #0d1017 62%);
+}
+.afil-slide.demo {
+  background:
+    radial-gradient(58% 58% at 50% 50%, rgba(242, 47, 70, 0.13) 0%, rgba(242, 47, 70, 0) 60%),
+    radial-gradient(100% 100% at 50% 0%, #0e1117 0%, var(--bg) 60%);
+}
 
 /* =========================================================================
    SLIDE 1 — TITLE
@@ -96,6 +110,9 @@
   left: 150px;
   top: 130px;
   width: 1180px;
+  transition:
+    opacity 0.55s var(--ease),
+    filter 0.55s var(--ease);
 }
 .afil-title .eyebrow {
   display: flex;
@@ -162,6 +179,19 @@
   inset: 0;
   opacity: 0.5;
   filter: brightness(0.5);
+  transition:
+    opacity 0.55s var(--ease),
+    filter 0.55s var(--ease);
+}
+
+/* ---- sub-step (right arrow): focus the diagram, dim the header ---- */
+.afil-title.focus-graph .header {
+  opacity: 0.18;
+  filter: blur(1.5px);
+}
+.afil-title.focus-graph .graph {
+  opacity: 1;
+  filter: brightness(1);
 }
 .afil-title .lbl {
   position: absolute;
@@ -209,26 +239,105 @@
   letter-spacing: 0.42em;
   text-transform: uppercase;
   color: var(--red);
-  opacity: 0.95;
   white-space: nowrap;
+  /* hidden until the second sub-step (.reveal-layer) reveals it */
+  opacity: 0;
+  transition: opacity 0.55s var(--ease);
+}
+.afil-title.reveal-layer .layer-cap {
+  opacity: 0.95;
+}
+
+/* the red AI-layer spine is hidden until stage 2 reveals it with the caption */
+.afil-title .spine {
+  opacity: 0;
+  transition: opacity 0.55s var(--ease);
+}
+.afil-title.reveal-layer .spine {
+  opacity: 1;
+}
+
+/* the release node + its connector start neutral (like every other node/line)
+   and only light up in their original red at stage 2, with the AI layer */
+.afil-title .release-link {
+  stroke: var(--line-bright);
+  transition:
+    stroke 0.55s var(--ease),
+    stroke-opacity 0.55s var(--ease);
+}
+.afil-title .release-node .ring {
+  fill: #0a0c10;
+  stroke: var(--ink-2);
+  transition:
+    fill 0.55s var(--ease),
+    stroke 0.55s var(--ease);
+}
+.afil-title .release-node .core {
+  fill: var(--ink-2);
+  transition: fill 0.55s var(--ease);
+}
+.afil-title.reveal-layer .release-link {
+  stroke: var(--red);
+  stroke-opacity: 0.7;
+}
+.afil-title.reveal-layer .release-node .ring {
+  fill: rgba(242, 47, 70, 0.12);
+  stroke: var(--red);
+}
+.afil-title.reveal-layer .release-node .core {
+  fill: var(--red);
+}
+
+/* ---- post-release bullet walk (stages 2–9): spotlight one wording at a time.
+   Only the label text changes — the dots and branch curves are left untouched. ---- */
+.afil-title .node-lbl {
+  transition:
+    opacity 0.55s var(--ease),
+    color 0.55s var(--ease);
+}
+/* while walking, fade the labels back... */
+.afil-title.walking .node-lbl {
+  opacity: 0.16;
+}
+/* ...and bring just the active wording forward in white */
+.afil-title.walking .node-lbl.active {
+  opacity: 1;
+  color: var(--ink-1);
 }
 
 /* =========================================================================
    SLIDE 2 — ABOUT
    ========================================================================= */
+.afil-about .eyebrow {
+  position: absolute;
+  left: 140px;
+  top: 120px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* ---- portrait (horizontal) ---- */
 .afil-about .portrait {
   position: absolute;
   left: 140px;
-  top: 130px;
-  width: 580px;
-  height: 820px;
+  top: 222px;
+  width: 720px;
+  height: 506px;
 }
 .afil-about .portrait .halo {
   position: absolute;
-  left: -70px;
-  bottom: -60px;
-  width: 480px;
-  height: 580px;
+  left: -90px;
+  bottom: -70px;
+  width: 560px;
+  height: 460px;
   background: radial-gradient(50% 50% at 50% 50%, rgba(242, 47, 70, 0.3) 0%, rgba(242, 47, 70, 0) 72%);
   z-index: 0;
 }
@@ -253,7 +362,7 @@
   inset: 0;
   z-index: 2;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(6, 8, 12, 0) 58%, rgba(6, 8, 12, 0.55) 100%);
+  background: linear-gradient(180deg, rgba(6, 8, 12, 0) 60%, rgba(6, 8, 12, 0.5) 100%);
   border-radius: 6px;
 }
 .afil-about .portrait .base {
@@ -267,12 +376,82 @@
   z-index: 1;
 }
 
+/* ---- name + role (below the portrait, left) ---- */
+.afil-about .identity {
+  position: absolute;
+  left: 140px;
+  top: 790px;
+  width: 720px;
+}
+.afil-about .name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 80px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--ink-1);
+  margin: 0 0 22px;
+}
+.afil-about .role {
+  display: flex;
+  align-items: baseline;
+  gap: 0.32em;
+  font-size: 40px;
+  font-weight: 300;
+  line-height: 1.1;
+  color: var(--ink-2);
+  margin: 0;
+}
+.afil-about .role .swap {
+  display: inline-grid;
+  position: relative;
+  /* size each word to its own content (not stretched to the cell) so "Product"
+     can be measured against "Software" to compute the gap to close. */
+  justify-items: start;
+}
+/* both words share one grid cell so the trailing "Engineer" never shifts; the
+   sub-step (.swapped) cross-fades "Software" up and out, "Product" up and in. */
+.afil-about .role .swap .word {
+  grid-area: 1 / 1;
+  white-space: nowrap;
+  transition:
+    opacity 0.45s var(--ease),
+    transform 0.45s var(--ease);
+}
+.afil-about .role .swap .soft {
+  opacity: 1;
+  transform: translateY(0);
+}
+.afil-about .role .swap .prod {
+  color: var(--red);
+  font-weight: 400;
+  opacity: 0;
+  transform: translateY(0.4em);
+}
+.afil-about.swapped .role .swap .soft {
+  opacity: 0;
+  transform: translateY(-0.4em);
+}
+.afil-about.swapped .role .swap .prod {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* the swap cell stays as wide as "Software"; once "Product" shows, slide the
+   trailing word left by the measured width difference to close the gap. */
+.afil-about .role .trail {
+  transition: transform 0.45s var(--ease);
+}
+.afil-about.swapped .role .trail {
+  transform: translateX(calc(-1 * var(--role-gap-close, 0px)));
+}
+
+/* ---- vertical divider between portrait column and emphasis ---- */
 .afil-about .divider-v {
   position: absolute;
-  left: 812px;
-  top: 250px;
+  left: 930px;
+  top: 230px;
   width: 1px;
-  height: 580px;
+  height: 620px;
   background: linear-gradient(180deg, rgba(51, 59, 73, 0) 0%, var(--line-bright) 18%, var(--line-bright) 82%, rgba(51, 59, 73, 0) 100%);
 }
 .afil-about .divider-v .tick {
@@ -286,67 +465,37 @@
   box-shadow: 0 0 14px 1px var(--red-soft);
 }
 
-.afil-about .identity {
+/* ---- emphasis (right): statement + formula ---- */
+.afil-about .emphasis {
   position: absolute;
-  left: 904px;
+  left: 1020px;
   top: 0;
   height: 1080px;
-  width: 850px;
+  width: 760px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
-.afil-about .eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  font-size: 24px;
-  font-weight: 500;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-  margin: 0 0 40px;
-  white-space: nowrap;
-}
-.afil-about .name {
+.afil-about .statement {
   font-family: var(--font-display);
   font-weight: 600;
   font-size: 92px;
-  line-height: 1;
-  letter-spacing: -0.03em;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
   color: var(--ink-1);
-  margin: 0 0 26px;
-}
-.afil-about .role {
-  display: flex;
-  align-items: baseline;
-  gap: 0.32em;
-  font-size: 44px;
-  font-weight: 300;
-  line-height: 1.1;
-  color: var(--ink-2);
   margin: 0;
 }
-.afil-about .role .swap {
-  display: inline-grid;
-  position: relative;
-}
-.afil-about .role .swap .word {
-  grid-area: 1 / 1;
-  white-space: nowrap;
-}
-.afil-about .role .swap .prod {
+.afil-about .statement .hl {
   color: var(--red);
-  font-weight: 400;
 }
 .afil-about .rule {
   display: flex;
   align-items: center;
-  margin: 48px 0 42px;
-  width: 360px;
+  margin: 58px 0 56px;
+  width: 460px;
 }
 .afil-about .rule .seg {
-  width: 44px;
+  width: 56px;
   height: 2px;
   background: var(--red);
   flex: none;
@@ -356,43 +505,39 @@
   flex: 1;
   background: var(--line-bright);
 }
-.afil-about .statement {
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: 40px;
-  line-height: 1.1;
-  letter-spacing: -0.01em;
-  color: var(--ink-1);
-  margin: 0 0 30px;
-}
-.afil-about .statement .hl {
-  color: var(--red);
-}
+/* the formula reads as a stacked arithmetic sum: an operator column (right-
+   aligned so the +/= line up) and a term column (left-aligned so the operands
+   start on a shared edge). */
 .afil-about .formula {
-  font-size: 29px;
-  font-weight: 300;
-  line-height: 1.5;
-  color: var(--ink-1);
-}
-.afil-about .formula .inputs,
-.afil-about .formula .output {
-  display: flex;
+  display: grid;
+  grid-template-columns: 0.8em auto;
+  column-gap: 0.36em;
+  row-gap: 0.3em;
+  justify-content: start;
   align-items: baseline;
-  gap: 0.42em;
-  flex-wrap: wrap;
+  font-family: var(--font-display);
+  font-size: 42px;
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--ink-1);
 }
 .afil-about .formula .op {
-  color: var(--red);
-  font-weight: 400;
-}
-.afil-about .formula .arrow {
-  color: var(--red);
-  font-weight: 400;
-  font-size: 32px;
-}
-.afil-about .formula .great {
+  text-align: right;
   color: var(--red);
   font-weight: 500;
+}
+.afil-about .formula .term {
+  color: var(--ink-1);
+  white-space: nowrap;
+}
+/* the total ("= Great Products") sits a touch lower, set off from the addends */
+.afil-about .formula .op.sum,
+.afil-about .formula .term.great {
+  margin-top: 0.22em;
+}
+.afil-about .formula .term.great {
+  color: var(--red);
+  font-weight: 600;
   letter-spacing: 0.005em;
 }
 .afil-about .footer {
@@ -406,6 +551,76 @@
   font-weight: 400;
   letter-spacing: 0.04em;
   color: var(--ink-3);
+}
+
+/* ---- staged reveal (right arrow) -----------------------------------------
+   Stage 0 (resting): the portrait + name/role column sits centered on the
+   1920 plane (shifted +460px so its 720px width centers at x=960), and the
+   right column is held offstage. Stage 1 (.revealed): the column glides back
+   to its home on the left and the right column arrives with a staggered
+   flourish. Transforms only move the absolutely-positioned column elements
+   themselves (and the right column's normal-flow children), so no wrapper
+   captures a canvas-positioned child — the one ANIMATIONS.md trap. */
+.afil-about .portrait,
+.afil-about .identity {
+  transform: translateX(460px);
+  transition: transform 0.75s var(--ease);
+}
+.afil-about.revealed .portrait,
+.afil-about.revealed .identity {
+  transform: translateX(0);
+}
+
+/* divider draws downward */
+.afil-about .divider-v {
+  opacity: 0;
+  transform: scaleY(0.12);
+  transform-origin: top center;
+  transition:
+    opacity 0.5s var(--ease) 0.28s,
+    transform 0.7s var(--ease) 0.28s;
+}
+.afil-about.revealed .divider-v {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+/* right column cascades in: statement → rule → formula */
+.afil-about .emphasis .statement,
+.afil-about .emphasis .rule,
+.afil-about .emphasis .formula {
+  opacity: 0;
+}
+.afil-about .emphasis .statement {
+  transform: translateX(54px);
+  transition:
+    opacity 0.6s var(--ease) 0.34s,
+    transform 0.75s var(--ease) 0.34s;
+}
+.afil-about .emphasis .rule {
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition:
+    opacity 0.4s var(--ease) 0.54s,
+    transform 0.6s var(--ease) 0.54s;
+}
+.afil-about .emphasis .formula {
+  transform: translateY(26px);
+  transition:
+    opacity 0.6s var(--ease) 0.64s,
+    transform 0.75s var(--ease) 0.64s;
+}
+.afil-about.revealed .emphasis .statement {
+  opacity: 1;
+  transform: translateX(0);
+}
+.afil-about.revealed .emphasis .rule {
+  opacity: 1;
+  transform: scaleX(1);
+}
+.afil-about.revealed .emphasis .formula {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* =========================================================================
@@ -450,6 +665,8 @@
   height: 176px;
   display: flex;
   align-items: center;
+  /* sit above the anonymous-crowd backdrop */
+  z-index: 1;
 }
 .afil-persona .p-row.r0 {
   top: 286px;
@@ -484,6 +701,8 @@
   display: flex;
   align-items: center;
   gap: 24px;
+  /* recenters horizontally on the synthesis beat */
+  transition: transform 0.65s var(--ease);
 }
 .afil-persona .p-avatar {
   position: relative;
@@ -525,7 +744,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -540,7 +759,7 @@
   flex: none;
 }
 .afil-persona .p-sub {
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 400;
   color: var(--ink-3);
   margin: 9px 0 0;
@@ -553,14 +772,17 @@
   height: 176px;
   margin: 0 26px;
   min-width: 0;
+  /* fades out on the synthesis beat */
+  transition: opacity 0.5s var(--ease);
 }
 .afil-persona .p-track .line {
   position: absolute;
   left: 10%;
-  right: 10%;
+  width: 80%;
   top: 77px;
   height: 2px;
   background: var(--line-bright);
+  transform-origin: left center;
 }
 .afil-persona .p-track .fill {
   position: absolute;
@@ -599,7 +821,7 @@
 }
 .afil-persona .p-step {
   margin-top: 20px;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 400;
   line-height: 1.25;
   color: var(--ink-2);
@@ -765,9 +987,6 @@
   opacity: 0;
   transform: translateX(14px);
 }
-.afil-persona.staged .p-row .fill {
-  transform: scaleX(0);
-}
 .afil-persona.staged .p-avatar,
 .afil-persona.staged .p-id,
 .afil-persona.staged .p-dot,
@@ -777,8 +996,9 @@
     opacity 0.6s var(--ease),
     transform 0.6s var(--ease);
 }
-.afil-persona.staged .fill {
-  transition: transform 1s var(--ease);
+.afil-persona.staged .fill,
+.afil-persona.staged .line {
+  transition: transform 0.6s var(--ease);
 }
 .afil-persona.staged .p-row.revealed .p-avatar {
   opacity: 1;
@@ -790,49 +1010,90 @@
   transform: none;
   transition-delay: 0.2s;
 }
-.afil-persona.staged .p-row.revealed .fill {
-  transform: scaleX(1);
-  transition-delay: 0.45s;
-}
-.afil-persona.staged .p-row.revealed .p-metric {
+/* The progress-line fill is driven per-step via an inline scaleX (set from
+   revealedSteps); only its transition lives here. */
+.afil-persona.staged .p-row.show-metric .p-metric {
   opacity: 1;
   transform: none;
-  transition-delay: 1.75s;
+  transition-delay: 0.15s;
 }
-.afil-persona.staged .p-row.revealed .p-dot,
-.afil-persona.staged .p-row.revealed .p-step {
+/* Each node reveals on its own beat once the slide marks it `.shown`, so the
+   dot + label land one step at a time rather than auto-staggering. */
+.afil-persona.staged .p-node.shown .p-dot {
   opacity: 1;
   transform: none;
+  transition-delay: 0.02s;
 }
-.afil-persona.staged .p-row.revealed .n0 .p-dot {
-  transition-delay: 0.55s;
+.afil-persona.staged .p-node.shown .p-step {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.1s;
 }
-.afil-persona.staged .p-row.revealed .n1 .p-dot {
-  transition-delay: 0.73s;
+
+/* ---- Synthesis beat: after all three journeys land, fade the timelines (and
+   Peter's M.T.T.R callout) out, slide the profiles to center, and surface the
+   anonymous crowd behind them — "these three are just a sample." ---- */
+.afil-persona.synthesis .p-track {
+  opacity: 0;
 }
-.afil-persona.staged .p-row.revealed .n2 .p-dot {
-  transition-delay: 0.91s;
+/* outranks `.p-row.show-metric .p-metric` so the callout fades with the rest */
+.afil-persona.synthesis .p-row.show-metric .p-metric {
+  opacity: 0;
+  transform: translateX(14px);
 }
-.afil-persona.staged .p-row.revealed .n3 .p-dot {
-  transition-delay: 1.09s;
+/* the three profiles become vertical cards, enlarged, and line up side by side
+   across the center of the slide (centers x 520 / 960 / 1400, all at y 540).
+   The per-row transforms move each card's center from its row to its slot and
+   scale it up; the layout switch snaps but the glide carries the eye. */
+.afil-persona.synthesis .p-persona {
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 320px;
+  text-align: center;
 }
-.afil-persona.staged .p-row.revealed .n4 .p-dot {
-  transition-delay: 1.27s;
+.afil-persona.synthesis .p-role {
+  justify-content: center;
 }
-.afil-persona.staged .p-row.revealed .n0 .p-step {
-  transition-delay: 0.66s;
+.afil-persona.synthesis .p-row.r0 .p-persona {
+  transform: translate(220px, 166px) scale(1.18);
 }
-.afil-persona.staged .p-row.revealed .n1 .p-step {
-  transition-delay: 0.84s;
+.afil-persona.synthesis .p-row.r1 .p-persona {
+  transform: translate(660px, -80px) scale(1.18);
 }
-.afil-persona.staged .p-row.revealed .n2 .p-step {
-  transition-delay: 1.02s;
+.afil-persona.synthesis .p-row.r2 .p-persona {
+  transform: translate(1100px, -326px) scale(1.18);
 }
-.afil-persona.staged .p-row.revealed .n3 .p-step {
-  transition-delay: 1.2s;
+
+/* anonymous-crowd backdrop: hidden until `.synthesis`, then dimmed + staggered */
+.afil-persona .p-ghosts {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
 }
-.afil-persona.staged .p-row.revealed .n4 .p-step {
-  transition-delay: 1.38s;
+.afil-persona .p-ghost {
+  position: absolute;
+  transform: translate(-50%, -50%) scale(0.9);
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: #0e1117;
+  opacity: 0;
+  transition:
+    opacity 0.7s var(--ease),
+    transform 0.7s var(--ease);
+  transition-delay: var(--gd, 0s);
+}
+.afil-persona.synthesis .p-ghost {
+  opacity: var(--gop, 0.15);
+  transform: translate(-50%, -50%) scale(1);
+}
+.afil-persona .p-ghost-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  fill: var(--ink-2);
 }
 
 /* =========================================================================
@@ -876,6 +1137,10 @@
   transform: translate(-50%, -50%);
   width: 1040px;
   text-align: center;
+  z-index: 1;
+  transition:
+    opacity 0.6s var(--ease),
+    transform 0.6s var(--ease);
 }
 .afil-insight .i-main {
   font-family: var(--font-display);
@@ -911,6 +1176,11 @@
   color: var(--ink-3);
   white-space: nowrap;
   opacity: 0.3;
+  z-index: 2;
+  transition:
+    opacity 0.6s var(--ease),
+    color 0.6s var(--ease),
+    transform 0.6s var(--ease);
 }
 .afil-insight .i-q .qd {
   width: 5px;
@@ -919,6 +1189,30 @@
   background: var(--red);
   flex: none;
   box-shadow: 0 0 8px 1px var(--red-soft);
+  transition: box-shadow 0.6s var(--ease);
+}
+
+/* Sub-step (stage 1): bring the scattered question symptoms to the front
+   (full opacity, a touch larger) and dim the central insight behind them. */
+.afil-insight.questions .i-core {
+  opacity: 0.16;
+  transform: translate(-50%, -50%) scale(0.94);
+}
+.afil-insight.questions .i-q {
+  opacity: 1;
+  color: var(--ink-1);
+  transform: translateX(-50%) scale(1.18);
+}
+.afil-insight.questions .i-q .qd {
+  box-shadow: 0 0 12px 2px var(--red-soft);
+}
+
+/* Sub-step (stage 2): fade the questions out and let the central insight return
+   to its full resting prominence (base `.i-core`), clean on its own. The scale
+   is held while fading so it reads as a pure fade-out, not a shrink. */
+.afil-insight.focus .i-q {
+  opacity: 0;
+  transform: translateX(-50%) scale(1.18);
 }
 .afil-insight .i-footer {
   position: absolute;
@@ -981,9 +1275,129 @@
   letter-spacing: -0.015em;
   color: var(--ink-1);
   text-wrap: balance;
+  z-index: 3;
+  transition:
+    left 0.7s var(--ease),
+    top 0.7s var(--ease),
+    width 0.7s var(--ease),
+    font-size 0.7s var(--ease),
+    transform 0.7s var(--ease);
 }
 .afil-solution .thesis .hl {
   color: var(--red);
+}
+
+/* ---- sub-step (stage 0 `lead`): the thesis sits centered in the window over the
+   slide's standing chrome (eyebrow, title, footer), with only the diagram held
+   back. Advancing to stage 1 drops `.lead`: the thesis glides into its header slot
+   and the diagram fades in. Opacity transitions live on the base rules above so
+   the reveal eases in both directions. ---- */
+.afil-solution.lead .thesis {
+  left: 50%;
+  top: 50%;
+  width: 1360px;
+  font-size: 64px;
+  line-height: 1.24;
+  text-align: center;
+  /* pre-entrance resting state: the statement waits here — blurred, scaled
+     down, wide-tracked, invisible — until the slide adds `.enter` on the frame
+     after mount, which fires the wow below. Keeping it hidden here (rather than
+     leaning on the keyframe's backwards-fill) means it can never get stranded at
+     an invisible 0% frame if the animation doesn't auto-start on the deck's
+     crossfade remount — the real cause of the "empty slide" bug. */
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.7);
+  filter: blur(22px);
+  letter-spacing: 0.34em;
+}
+/* wow entrance: the statement focuses in from the haze and settles sharp.
+   `.enter` is toggled on in JS the frame after the slide mounts, so the
+   animation reliably (re)starts on every entry. `forwards` holds the resting
+   (visible, sharp) frame afterwards; under reduced motion the global rule zeroes
+   the duration, so it lands there instantly. */
+.afil-solution.lead.enter .thesis {
+  animation: afil-solution-emerge 1.15s var(--ease) forwards;
+}
+/* the red words flare as the statement sharpens, then the glow dissipates */
+.afil-solution.lead.enter .thesis .hl {
+  animation: afil-solution-hl-glow 1.4s var(--ease) 0.12s both;
+}
+/* a radial burst of red light blooms behind the statement and fades out */
+.afil-solution.lead.enter .thesis::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1200px;
+  height: 1200px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(242, 47, 70, 0.22) 0%, rgba(242, 47, 70, 0) 70%);
+  z-index: -1;
+  pointer-events: none;
+  animation: afil-solution-bloom 1.5s var(--ease) both;
+}
+
+@keyframes afil-solution-emerge {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.7);
+    filter: blur(22px);
+    letter-spacing: 0.34em;
+  }
+  55% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    filter: blur(0);
+    letter-spacing: -0.015em;
+  }
+}
+@keyframes afil-solution-hl-glow {
+  0% {
+    text-shadow: 0 0 0 rgba(242, 47, 70, 0);
+  }
+  55% {
+    text-shadow: 0 0 46px rgba(242, 47, 70, 0.65);
+  }
+  100% {
+    text-shadow: 0 0 0 rgba(242, 47, 70, 0);
+  }
+}
+@keyframes afil-solution-bloom {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.4);
+  }
+  45% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.15);
+  }
+}
+/* Only the diagram is hidden in the lead state — the slide's standing chrome
+   (eyebrow, title, footer) stays put. */
+.afil-solution .core-halo,
+.afil-solution .wires,
+.afil-solution .input-label,
+.afil-solution .output-label,
+.afil-solution .zone-caption,
+.afil-solution .zone-arrow {
+  transition: opacity 0.6s var(--ease);
+}
+.afil-solution.lead .core-halo,
+.afil-solution.lead .wires,
+.afil-solution.lead .input-label,
+.afil-solution.lead .output-label,
+.afil-solution.lead .zone-caption,
+.afil-solution.lead .zone-arrow {
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* ---- diagram: halo, wires, node labels, transformation row ---- */
@@ -1064,6 +1478,1510 @@
 }
 
 /* =========================================================================
+   SLIDE 6 — ARCHITECTURE
+   Three indexed capability chips organize the canvas into columns; below, a
+   component-level diagram: memory pipeline (left), triage runtime (center),
+   feedback loop (right) closing back to the sources via a dashed red arc.
+   Reuses the shared .dot and .footer .bar.
+   ========================================================================= */
+.afil-architecture .eyebrow {
+  position: absolute;
+  left: 140px;
+  top: 66px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 0;
+  white-space: nowrap;
+}
+.afil-architecture .title {
+  position: absolute;
+  left: 140px;
+  top: 104px;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 60px;
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  color: var(--ink-1);
+  white-space: nowrap;
+}
+.afil-architecture .title .hl {
+  color: var(--red);
+}
+.afil-architecture .note {
+  position: absolute;
+  right: 140px;
+  top: 70px;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+.afil-architecture .note .nd {
+  color: var(--red);
+}
+.afil-architecture .footer {
+  position: absolute;
+  left: 140px;
+  bottom: 74px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+}
+
+/* ---- layers: html groups above the wires; boxes carry their own surface ---- */
+.afil-architecture .arch-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+/* the chip layers ride a block-level transform: centered on the empty canvas
+   at rest (stage 0), lifting to their home position as the diagram reveals.
+   Only the wrapper transforms — the per-chip entrance transforms compose under it. */
+.afil-architecture .arch-reveal {
+  transition: transform 0.7s var(--ease);
+}
+.afil-architecture .wires {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* ---- capability chips + arrows ---- */
+.afil-architecture .cap {
+  position: absolute;
+  top: 142px;
+  width: 520px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  border: 1px solid var(--line-bright);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.02);
+  font-family: var(--font-display);
+  font-size: 25px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink-1);
+  white-space: nowrap;
+}
+.afil-architecture .cap .idx {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--red);
+}
+.afil-architecture .cap-arr {
+  position: absolute;
+  top: 142px;
+  width: 40px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  color: var(--ink-3);
+}
+
+/* ---- phase chips ---- */
+.afil-architecture .phr {
+  position: absolute;
+  top: 214px;
+  width: 520px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+.afil-architecture .phc {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+/* ---- component boxes ---- */
+.afil-architecture .a-box {
+  position: absolute;
+  border: 1px solid var(--line-bright);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.015);
+  padding: 0 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.afil-architecture .a-box.emph {
+  border-color: rgba(242, 47, 70, 0.45);
+  background: rgba(242, 47, 70, 0.045);
+  box-shadow: 0 0 40px -10px rgba(242, 47, 70, 0.28);
+}
+.afil-architecture .a-box.input {
+  border-style: dashed;
+  background: transparent;
+}
+/* the feature knowledge store, drawn as a database icon (a red datastore core,
+   not a "layer"); its label sits as a caption below the figure. The box rect is
+   the icon's bounding box, so the diagram wires stay anchored to the figure. */
+.afil-architecture .a-db {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.afil-architecture .a-db svg {
+  width: 100%;
+  height: 100%;
+  fill: var(--red);
+  fill-opacity: 0.82;
+  filter: drop-shadow(0 0 16px rgba(242, 47, 70, 0.3));
+}
+.afil-architecture .a-db-cap {
+  position: absolute;
+  transform: translateX(-50%);
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.afil-architecture .b-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  color: var(--ink-1);
+  white-space: nowrap;
+}
+.afil-architecture .b-tags {
+  margin: 8px 0 0;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+/* ---- dashed external-systems group (SDLC sources) ---- */
+.afil-architecture .a-grp {
+  position: absolute;
+  border: 1px dashed var(--line-bright);
+  border-radius: 10px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.afil-architecture .g-title {
+  margin: 0 0 11px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  text-align: center;
+}
+.afil-architecture .g-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+.afil-architecture .g-chip {
+  padding: 4px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--ink-2);
+  background: rgba(255, 255, 255, 0.015);
+  white-space: nowrap;
+}
+
+/* ---- connector labels ---- */
+.afil-architecture .c-lbl {
+  position: absolute;
+  transform: translateY(-50%);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+.afil-architecture .c-lbl.on-line {
+  transform: translate(-50%, -50%);
+  background: var(--bg);
+  padding: 3px 12px;
+}
+.afil-architecture .c-lbl.vert {
+  transform: translate(-50%, -50%) rotate(-90deg);
+}
+.afil-architecture .c-lbl.is-red {
+  color: rgba(242, 47, 70, 0.9);
+}
+
+/* ---- staged reveal (deck-owned stage toggles .revealed per layer/group);
+   within a stage, elements stagger via per-order transition delays —
+   mirroring the prototype's cadence. Delays apply on reveal only, so
+   stepping backward hides instantly. SVG wires fade via opacity alone. ---- */
+.afil-architecture.staged .cap,
+.afil-architecture.staged .phr,
+.afil-architecture.staged .a-box,
+.afil-architecture.staged .a-db,
+.afil-architecture.staged .a-grp {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.7s var(--ease),
+    transform 0.7s var(--ease),
+    top 0.7s var(--ease);
+}
+.afil-architecture.staged .cap-arr,
+.afil-architecture.staged .a-db-cap,
+.afil-architecture.staged .c-lbl {
+  opacity: 0;
+  transition:
+    opacity 0.7s var(--ease),
+    top 0.7s var(--ease);
+}
+.afil-architecture.staged .a-ln,
+.afil-architecture.staged .a-loop {
+  opacity: 0;
+  transition: opacity 0.8s var(--ease);
+}
+/* chip layers (stage 0) reveal together via the layer's .revealed class;
+   their left-to-right ripple stays in CSS (r/c/p order classes below) */
+.afil-architecture.staged .arch-reveal.revealed .cap,
+.afil-architecture.staged .arch-reveal.revealed .phr {
+  opacity: 1;
+  transform: none;
+}
+.afil-architecture.staged .arch-reveal.revealed .cap-arr {
+  opacity: 1;
+}
+/* diagram elements (stages 1–3) reveal per-element by capability group; their
+   stagger delay is applied inline (from data) so it fires on show only */
+.afil-architecture.staged .a-box.shown,
+.afil-architecture.staged .a-db.shown,
+.afil-architecture.staged .a-grp.shown {
+  opacity: 1;
+  transform: none;
+}
+.afil-architecture.staged .a-db-cap.shown,
+.afil-architecture.staged .c-lbl.shown,
+.afil-architecture.staged .a-ln.shown,
+.afil-architecture.staged .a-loop.shown {
+  opacity: 1;
+}
+
+/* ---- Prezi camera (the `vectorize` sub-step): the whole diagram is the canvas
+   and the viewport is a fixed camera. At rest the canvas is identity; on the
+   sub-step ArchitectureSlide applies the inverse transform that flies the camera
+   into the database icon (centered + filling the frame). `transform-origin: 0 0`
+   matches the inverse-transform math computed against plane coordinates. ---- */
+.afil-architecture .arch-camera {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 0;
+  /* out (camera pulls back to the diagram): the decelerating curve — fast
+     break, gentle settle into the full view. */
+  transition: transform 1.1s var(--ease);
+  will-change: transform;
+}
+.afil-architecture .arch-camera.zoomed {
+  /* in (camera pushes into the DB): the time-mirror of the out at the same
+     duration — `cubic-bezier(.16,1,.3,1)` reversed is `(.7,0,.84,0)`, a slow
+     gathering lead-in that accelerates into the store, so it no longer lunges. */
+  transition: transform 1.1s cubic-bezier(0.7, 0, 0.84, 0);
+}
+
+/* ---- vectorize sub-slide: the destination the camera lands on. It is the same
+   red as the database icon and fades in over the back half of the push-in, so
+   the textured zoomed icon resolves cleanly into a flat-red sub-slide; the
+   explainer content then fades in. Hidden when inactive so stepping back lets
+   the camera zoom out over the diagram again. ---- */
+.afil-architecture .arch-vectorize {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  background: var(--red);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.45s var(--ease),
+    visibility 0s linear 0.45s;
+}
+.afil-architecture .arch-vectorize.active {
+  opacity: 1;
+  visibility: visible;
+  /* hold through the slow lead-in, then fade the red in over the camera's late
+     acceleration so it lands on flat red just as the push-in arrives (~1.1s) */
+  transition: opacity 0.5s var(--ease) 0.65s;
+}
+/* the overall sub-slide fade: holds through the camera lead-in, then the whole
+   explainer eases up once the push-in lands (~1.2s). Inner beats cross-fade on
+   top of this without re-triggering it (the `active` class stays on). */
+.afil-architecture .vz-content {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(1.06);
+  transition:
+    opacity 0.5s var(--ease),
+    transform 0.5s var(--ease);
+}
+.afil-architecture .arch-vectorize.active .vz-content {
+  opacity: 1;
+  transform: none;
+  transition-delay: 1.2s;
+}
+
+/* per-beat background field. The overlay's base is the landing red (so the
+   camera resolves into flat red); this layer is transparent on red beats and
+   cross-fades to a deep Twilio-blue field on the map beat. */
+.afil-architecture .vz-bg {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.6s var(--ease);
+}
+.afil-architecture .vz-bg.blue {
+  opacity: 1;
+  background: radial-gradient(
+    120% 120% at 50% 0%,
+    #14306e 0%,
+    var(--twilio-blue) 52%,
+    #060f2c 100%
+  );
+}
+/* the RAG pipeline's near-black field: the navy nodes (red/green borders) need a
+   dark ground to read, so the beat darkens off the landing red. */
+.afil-architecture .vz-bg.dark {
+  opacity: 1;
+  background: radial-gradient(125% 130% at 50% 8%, #111a2b 0%, #0a0f1a 52%, #05070d 100%);
+}
+
+/* headers: one per beat, stacked at a fixed top anchor and cross-faded by step */
+.afil-architecture .vz-head {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 104px;
+  padding: 0 220px;
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition:
+    opacity 0.5s var(--ease),
+    transform 0.5s var(--ease),
+    visibility 0s linear 0.5s;
+}
+.afil-architecture .vz-head.is-on {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    opacity 0.5s var(--ease) 0.06s,
+    transform 0.5s var(--ease) 0.06s;
+}
+.afil-architecture .vz-eyebrow {
+  margin: 0 0 16px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.78);
+}
+.afil-architecture .vz-title {
+  margin: 0 auto;
+  max-width: 1280px;
+  font-family: var(--font-display);
+  font-size: 56px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.06;
+  color: #fff;
+}
+
+/* each beat's staging layer cross-fades on the active step */
+.afil-architecture .vz-beat {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.55s var(--ease),
+    visibility 0s linear 0.55s;
+}
+.afil-architecture .vz-beat.is-on {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.6s var(--ease) 0.12s;
+}
+
+/* connector wires (drawn in plane coordinates) */
+.afil-architecture .vz-wires {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.afil-architecture .vz-wires .w {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.5);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.afil-architecture .vz-wires .w.hot {
+  stroke: rgba(255, 255, 255, 0.85);
+  stroke-width: 2.5;
+}
+
+/* cards: questions (italic), the guessed answer (warn), the grounded answer */
+.afil-architecture .vz-card {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px 24px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 24px;
+  line-height: 1.3;
+}
+.afil-architecture .vz-card.vz-q {
+  font-style: italic;
+}
+.afil-architecture .vz-card.vz-stacked {
+  align-items: center;
+  text-align: center;
+}
+.afil-architecture .vz-card.warn {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+.afil-architecture .vz-flag {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.82);
+}
+.afil-architecture .vz-card.answer .vz-answer-h {
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+.afil-architecture .vz-card.answer .vz-cite {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+/* the AI model, drawn as a glowing orb */
+.afil-architecture .vz-orb {
+  position: absolute;
+  width: 188px;
+  height: 188px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  background: radial-gradient(
+    60% 60% at 50% 38%,
+    rgba(255, 255, 255, 0.28),
+    rgba(255, 255, 255, 0.06) 70%
+  );
+  box-shadow:
+    0 0 0 14px rgba(255, 255, 255, 0.06),
+    inset 0 0 30px rgba(255, 255, 255, 0.12);
+}
+.afil-architecture .vz-orb.sm {
+  width: 140px;
+  height: 140px;
+}
+.afil-architecture .vz-orb span {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #fff;
+}
+.afil-architecture .vz-orb.sm span {
+  font-size: 26px;
+}
+
+/* your product, as a neutral graphite panel — a deliberate cool-gray rest from
+   the red field, reading like a stack of internal docs the model never saw */
+.afil-architecture .vz-panel {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 26px 28px;
+  border-radius: 18px;
+  background: #1b1e25;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  /* sits in shadow on the guess sub-step, then comes into the light on the next
+     one — so the point ("it never saw your product") arrives as its own beat */
+  opacity: 0.24;
+  filter: saturate(0.65) brightness(0.7);
+  transition:
+    opacity 0.7s var(--ease),
+    filter 0.7s var(--ease);
+}
+.afil-architecture .vz-panel.lit {
+  opacity: 1;
+  filter: none;
+}
+.afil-architecture .vz-panel-h {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.afil-architecture .vz-panel-docs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.afil-architecture .vz-doc {
+  padding: 12px 18px;
+  border-radius: 10px;
+  border: 1px solid var(--line-bright);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ink-1);
+  font-family: var(--font-body);
+  font-size: 22px;
+  font-weight: 600;
+}
+.afil-architecture .vz-panel-sub {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 20px;
+  color: var(--ink-2);
+}
+
+/* the map of meaning: dots + topic labels */
+.afil-architecture .vz-dot {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  transform: translate(-50%, -50%);
+}
+.afil-architecture .vz-dot.hot {
+  width: 24px;
+  height: 24px;
+  background: #fff;
+  box-shadow:
+    0 0 0 6px rgba(255, 255, 255, 0.18),
+    0 0 22px 4px rgba(255, 255, 255, 0.55);
+}
+.afil-architecture .vz-dot-label {
+  position: absolute;
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.82);
+  white-space: nowrap;
+}
+/* the map beat's hero: the word-embedding diagram, dropped onto the blue field.
+   Transparent PNG, so height auto keeps its aspect against the inline width. */
+.afil-architecture .vz-vectors {
+  position: absolute;
+  height: auto;
+}
+
+/* bottom lines: the turn (beat 0) and the beat captions / payoff */
+.afil-architecture .vz-turn,
+.afil-architecture .vz-note {
+  position: absolute;
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 26px;
+  color: rgba(255, 255, 255, 0.9);
+}
+.afil-architecture .vz-turn .rag {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: #fff;
+}
+.afil-architecture .vz-note strong {
+  font-weight: 700;
+  color: #fff;
+}
+
+/* ============================================================================
+   RAG beat — the pipeline diagram (sources → Vector DB → chunks → LLM → answer).
+   Drawn on the plane inside `.vz-beat`; this stage is its positioned root.
+   ============================================================================ */
+.afil-architecture .rag-stage {
+  position: absolute;
+  inset: 0;
+  --rag-green: #9bd85b;
+  --rag-node: #0e1726;
+  --rag-arrow: rgba(255, 255, 255, 0.5);
+  --rag-divider: rgba(255, 255, 255, 0.08);
+}
+
+/* shared icon wrapper: the glyph inherits its color from these modifiers */
+.afil-architecture .rag-icon {
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+}
+.afil-architecture .rag-icon svg {
+  width: 100%;
+  height: 100%;
+}
+.afil-architecture .rag-icon.red {
+  color: var(--red);
+}
+.afil-architecture .rag-icon.green {
+  color: var(--rag-green);
+}
+
+/* title + red underline */
+.afil-architecture .rag-title {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 70px;
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 64px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+.afil-architecture .rag-underline {
+  position: absolute;
+  left: 50%;
+  top: 162px;
+  width: 64px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--red);
+  transform: translateX(-50%) scaleX(0);
+  transform-origin: center;
+  transition: transform 0.5s var(--ease) 0.12s;
+}
+.afil-architecture .rag-underline.in {
+  transform: translateX(-50%) scaleX(1);
+}
+
+/* left panel: SDLC knowledge sources (tallest element) */
+.afil-architecture .rag-sources {
+  position: absolute;
+  left: 100px;
+  top: 232px;
+  width: 412px;
+  height: 516px;
+  display: flex;
+  flex-direction: column;
+  padding: 26px 28px;
+  border-radius: 22px;
+  background: rgba(15, 23, 38, 0.66);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+}
+.afil-architecture .rag-sources-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 14px;
+  font-family: var(--font-display);
+  font-size: 23px;
+  font-weight: 600;
+  color: #fff;
+}
+.afil-architecture .rag-sources-head .rag-icon {
+  width: 26px;
+  height: 26px;
+}
+.afil-architecture .rag-source-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.afil-architecture .rag-source {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  border-top: 1px solid var(--rag-divider);
+  font-family: var(--font-body);
+  font-size: 21px;
+  color: var(--ink-1);
+}
+.afil-architecture .rag-source .rag-icon {
+  width: 22px;
+  height: 22px;
+  flex: none;
+}
+
+/* connector arrows between stages */
+.afil-architecture .rag-arrow {
+  position: absolute;
+  display: inline-flex;
+  color: var(--rag-arrow);
+}
+
+/* user question → Vector DB */
+.afil-architecture .rag-q-label {
+  position: absolute;
+  left: 556px;
+  top: 198px;
+  width: 280px;
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+  color: #fff;
+}
+.afil-architecture .rag-q-bubble {
+  position: absolute;
+  left: 568px;
+  top: 240px;
+  width: 256px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  padding: 0 18px;
+  border-radius: 12px;
+  background: var(--rag-node);
+  border: 1.6px solid var(--red);
+  box-shadow: 0 0 24px rgba(242, 47, 70, 0.16);
+  font-family: var(--font-body);
+  font-size: 23px;
+  color: #fff;
+}
+.afil-architecture .rag-q-wire {
+  position: absolute;
+  left: 686px;
+  top: 300px;
+  width: 20px;
+  height: 88px;
+  overflow: visible;
+  color: var(--red);
+}
+
+/* shared node boxes: Vector DB, LLM, Grounded response */
+.afil-architecture .rag-box {
+  position: absolute;
+  top: 386px;
+  width: 212px;
+  height: 212px;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 18px;
+  border-radius: 22px;
+  background: var(--rag-node);
+  text-align: center;
+}
+.afil-architecture .rag-box-icon {
+  width: 54px;
+  height: 54px;
+}
+.afil-architecture .rag-box-label {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1.12;
+  color: #fff;
+}
+.afil-architecture .rag-box.vdb {
+  left: 590px;
+  border: 1.6px solid var(--red);
+}
+.afil-architecture .rag-box.llm {
+  left: 1246px;
+  border: 1.6px solid var(--red);
+}
+.afil-architecture .rag-box.response {
+  left: 1542px;
+  border: 1.6px solid var(--rag-green);
+}
+.afil-architecture .rag-box.response .rag-box-label {
+  font-size: 27px;
+}
+
+/* Top-K relevant chunks: label + three evidence pills */
+.afil-architecture .rag-chunks-label {
+  position: absolute;
+  left: 886px;
+  top: 350px;
+  width: 276px;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 23px;
+  font-weight: 600;
+  color: #fff;
+}
+.afil-architecture .rag-chunk {
+  position: absolute;
+  left: 886px;
+  width: 276px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 20px;
+  border-radius: 14px;
+  background: var(--rag-node);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.afil-architecture .rag-chunk .rag-icon {
+  width: 22px;
+  height: 22px;
+  flex: none;
+}
+.afil-architecture .rag-chunk-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.afil-architecture .rag-bar {
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.26);
+}
+.afil-architecture .rag-bar.long {
+  width: 150px;
+}
+.afil-architecture .rag-bar.short {
+  width: 96px;
+}
+
+/* step rail: two horizontal segments with a centered red node + caption */
+.afil-architecture .rag-rail {
+  position: absolute;
+  top: 800px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.16);
+}
+.afil-architecture .rag-rail.s1 {
+  left: 100px;
+  width: 702px;
+}
+.afil-architecture .rag-rail.s2 {
+  left: 886px;
+  width: 868px;
+}
+.afil-architecture .rag-rail-node {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--red);
+  transform: translate(-50%, -50%);
+}
+.afil-architecture .rag-step {
+  position: absolute;
+  top: 832px;
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 27px;
+  color: var(--ink-1);
+}
+.afil-architecture .rag-step.s1 {
+  left: 100px;
+  width: 702px;
+}
+.afil-architecture .rag-step.s2 {
+  left: 886px;
+  width: 868px;
+}
+.afil-architecture .rag-step-prefix {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--red);
+}
+
+/* footer principle */
+.afil-architecture .rag-principle {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 902px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  font-family: var(--font-body);
+  font-size: 26px;
+}
+.afil-architecture .rag-principle .rag-twilio {
+  width: 30px;
+  height: 30px;
+}
+.afil-architecture .rag-principle-text .strong {
+  font-weight: 700;
+  color: #fff;
+}
+.afil-architecture .rag-principle-text .soft {
+  color: var(--ink-2);
+}
+
+/* entrance choreography: each component slides/scales in as its step reveals.
+   Visibility is driven by `.in` (toggled from React state) and the staggered
+   transition-delay is set inline — so the global reduced-motion rule just snaps
+   each element in (durations → 0) and the revealed state is fully visible. */
+.afil-architecture .rag-anim {
+  opacity: 0;
+  transition:
+    opacity 0.5s var(--ease),
+    transform 0.5s var(--ease);
+}
+.afil-architecture .rag-anim:not(.in) {
+  transform: translateY(20px) scale(0.96);
+}
+.afil-architecture .rag-anim.from-l:not(.in) {
+  transform: translateX(-36px);
+}
+.afil-architecture .rag-anim.from-r:not(.in) {
+  transform: translateX(30px);
+}
+.afil-architecture .rag-anim.drop:not(.in) {
+  transform: translateY(-20px);
+}
+.afil-architecture .rag-anim.pop:not(.in) {
+  transform: scale(0.82);
+}
+/* the node boxes + arrows pop in with a slight overshoot for a springier feel */
+.afil-architecture .rag-anim.pop {
+  transition:
+    opacity 0.45s var(--ease),
+    transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.afil-architecture .rag-anim.in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ambient flourishes (frozen under reduced motion) */
+/* the query "flows" down the dashed wire into the Vector DB */
+.afil-architecture .rag-q-wire line {
+  animation: ragDashFlow 0.9s linear infinite;
+}
+@keyframes ragDashFlow {
+  to {
+    stroke-dashoffset: -9;
+  }
+}
+/* the LLM node gently glows, as if thinking */
+.afil-architecture .rag-box.llm {
+  animation: ragLlmPulse 2.8s var(--ease) infinite;
+}
+@keyframes ragLlmPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(242, 47, 70, 0);
+  }
+  50% {
+    box-shadow: 0 0 30px 2px rgba(242, 47, 70, 0.3);
+  }
+}
+
+.afil-architecture.staged .arch-reveal.revealed .r0 {
+  transition-delay: 0.1s;
+}
+.afil-architecture.staged .arch-reveal.revealed .c1 {
+  transition-delay: 0.17s;
+}
+.afil-architecture.staged .arch-reveal.revealed .r1 {
+  transition-delay: 0.27s;
+}
+.afil-architecture.staged .arch-reveal.revealed .c2 {
+  transition-delay: 0.34s;
+}
+.afil-architecture.staged .arch-reveal.revealed .p1 {
+  transition-delay: 0.1s;
+}
+.afil-architecture.staged .arch-reveal.revealed .p2 {
+  transition-delay: 0.2s;
+}
+
+/* =========================================================================
+   SLIDE 7 — THE PAYOFF
+   A before/after thesis revealed in two beats. Both sections are stacked in the
+   center of the plane and crossfade: stage 0 shows BEFORE alone (a ticket drops
+   into the fragmented-sources fog, out to a human-dependent outcome); stage 1
+   fades BEFORE out and fades AFTER in (the ticket enters the Feature
+   Intelligence Layer; out come Answer / Evidence / Next step). Each section is a
+   centered flex column, sized larger than the old side-by-side columns.
+   ========================================================================= */
+
+/* ---- header ---- */
+.afil-payoff .eyebrow {
+  position: absolute;
+  left: 140px;
+  top: 70px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* ---- centered section + before → after crossfade ---- */
+.afil-payoff .payoff-section {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 38px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.6s var(--ease),
+    transform 0.6s var(--ease),
+    visibility 0s linear 0.6s;
+}
+.afil-payoff .payoff-section.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition:
+    opacity 0.6s var(--ease),
+    transform 0.6s var(--ease);
+}
+
+/* ---- last beat: the After section slides into the left half and its layer
+   card shrinks, making room for the SDLC diagram fading in on the right ---- */
+.afil-payoff .payoff-section.after.compact {
+  transform: translateX(-680px) scale(0.68);
+}
+.afil-payoff .layer-card,
+.afil-payoff .layer-card * {
+  transition: all 0.55s var(--ease);
+}
+.afil-payoff .payoff-section.after.compact .layer-card {
+  width: 470px;
+  padding: 26px 30px;
+}
+.afil-payoff .payoff-section.after.compact .layer-header {
+  gap: 16px;
+}
+.afil-payoff .payoff-section.after.compact .layer-mark {
+  width: 52px;
+  height: 52px;
+}
+.afil-payoff .payoff-section.after.compact .layer-mark svg {
+  width: 30px;
+  height: 30px;
+}
+.afil-payoff .payoff-section.after.compact .layer-name {
+  font-size: 25px;
+}
+.afil-payoff .payoff-section.after.compact .layer-rule {
+  margin-top: 20px;
+}
+.afil-payoff .payoff-section.after.compact .layer-outputs {
+  margin-top: 22px;
+}
+.afil-payoff .payoff-section.after.compact .layer-output {
+  gap: 12px;
+}
+.afil-payoff .payoff-section.after.compact .layer-output svg {
+  width: 32px;
+  height: 32px;
+}
+.afil-payoff .payoff-section.after.compact .layer-output span {
+  font-size: 19px;
+}
+
+/* ---- SDLC diagram (reused from the Title slide) on the right of the last beat.
+   The `.afil-title` wrapper re-applies the diagram's own scoped styles; the
+   transform scales the full 1920×1080 graph down into the right half. ---- */
+.afil-payoff .payoff-diagram {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: 0 0;
+  transform: translate(452px, 84px) scale(0.8);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.6s var(--ease),
+    visibility 0s linear 0.6s;
+}
+.afil-payoff .payoff-diagram.is-active {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.6s var(--ease);
+}
+
+/* ---- column heading + support ---- */
+.afil-payoff .column-head {
+  text-align: center;
+}
+.afil-payoff .column-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 58px;
+  letter-spacing: -0.01em;
+}
+.afil-payoff .column-head.before .column-title {
+  color: var(--red);
+}
+.afil-payoff .column-head.after .column-title {
+  color: var(--ink-1);
+}
+.afil-payoff .column-sub {
+  margin: 4px 0 0;
+  font-size: 27px;
+  font-weight: 400;
+  color: var(--ink-3);
+}
+
+/* ---- ticket / question pill ---- */
+.afil-payoff .ticket {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  height: 84px;
+  padding: 0 36px;
+  border: 1px solid var(--line-bright);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.018);
+}
+.afil-payoff .ticket-mark {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 50%;
+  border: 1.5px solid var(--red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 23px;
+  color: var(--red);
+}
+.afil-payoff .ticket-label {
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--ink-1);
+  white-space: nowrap;
+}
+
+/* ---- context image (fragmented sources fog) ---- */
+.afil-payoff .context-image {
+  width: 540px;
+  height: 540px;
+  object-fit: contain;
+}
+
+/* ---- vertical connector arrows (ticket → layer → outcome) ---- */
+.afil-payoff .flow-arrow {
+  color: var(--ink-2);
+}
+.afil-payoff .flow-arrow svg {
+  display: block;
+}
+
+/* ---- Feature Intelligence Layer card ---- */
+.afil-payoff .layer-card {
+  width: 760px;
+  padding: 40px 44px;
+  border: 1.5px solid rgba(242, 47, 70, 0.6);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(242, 47, 70, 0.05), rgba(255, 255, 255, 0.012));
+  box-shadow: 0 0 70px -18px rgba(242, 47, 70, 0.45);
+}
+.afil-payoff .layer-header {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+.afil-payoff .layer-mark {
+  width: 74px;
+  height: 74px;
+  flex: none;
+  border-radius: 50%;
+  border: 2px solid var(--red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--red);
+  box-shadow: 0 0 20px -2px rgba(242, 47, 70, 0.5);
+}
+.afil-payoff .layer-mark svg {
+  width: 42px;
+  height: 42px;
+}
+.afil-payoff .layer-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 38px;
+  letter-spacing: -0.015em;
+  color: var(--ink-1);
+  white-space: nowrap;
+}
+.afil-payoff .layer-rule {
+  height: 1px;
+  margin: 32px 0 0;
+  background: rgba(242, 47, 70, 0.28);
+}
+.afil-payoff .layer-outputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin-top: 36px;
+}
+.afil-payoff .layer-output {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  color: var(--red);
+}
+.afil-payoff .layer-output svg {
+  width: 46px;
+  height: 46px;
+}
+.afil-payoff .layer-output span {
+  font-size: 26px;
+  font-weight: 500;
+  color: var(--ink-1);
+}
+
+/* ---- outcome rows ---- */
+.afil-payoff .outcome {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+.afil-payoff .outcome-icon {
+  width: 60px;
+  height: 60px;
+  flex: none;
+  color: var(--red);
+}
+.afil-payoff .outcome-icon svg {
+  width: 100%;
+  height: 100%;
+}
+.afil-payoff .outcome-text {
+  font-size: 30px;
+  line-height: 1.32;
+  font-weight: 500;
+}
+.afil-payoff .outcome.before .outcome-text {
+  color: var(--red);
+}
+.afil-payoff .outcome.after .outcome-text {
+  color: var(--ink-1);
+}
+
+/* ---- footer ---- */
+.afil-payoff .footer {
+  position: absolute;
+  left: 140px;
+  bottom: 74px;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+}
+
+/* =========================================================================
+   SLIDE 8 — DEMO TIME (closing interstitial)
+   A centered title with a blinking terminal cursor, over a "going live" pulse
+   that radiates from behind it. Both animations are CSS keyframes only, so the
+   global reduced-motion rule freezes them to their resting state (cursor solid,
+   rings invisible).
+   ========================================================================= */
+.afil-demo .d-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1480px;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.afil-demo .d-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  margin: 0 0 46px;
+}
+.afil-demo .d-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 184px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--ink-1);
+  margin: 0;
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+}
+.afil-demo .d-title .accent {
+  color: var(--red);
+}
+.afil-demo .d-cursor {
+  display: inline-block;
+  width: 26px;
+  height: 0.9em;
+  margin-left: 26px;
+  background: var(--red);
+  box-shadow: 0 0 30px 2px var(--red-soft);
+  transform: translateY(0.04em);
+  animation: afil-demo-blink 1.06s steps(1, end) infinite;
+}
+.afil-demo .d-subtitle {
+  font-size: 38px;
+  font-weight: 300;
+  line-height: 1.4;
+  color: var(--ink-2);
+  margin: 54px auto 0;
+  max-width: 1060px;
+}
+.afil-demo .d-footer {
+  position: absolute;
+  left: 150px;
+  bottom: 78px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 25px;
+  font-weight: 300;
+  color: var(--ink-3);
+}
+.afil-demo .d-footer .bar {
+  width: 46px;
+  height: 2px;
+  background: var(--red);
+  flex: none;
+}
+
+/* radiating "going live" pulse — concentric red rings expanding from center */
+.afil-demo .d-pulse {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+}
+.afil-demo .d-pulse .ring {
+  position: absolute;
+  left: -280px;
+  top: -280px;
+  width: 560px;
+  height: 560px;
+  border: 1.5px solid var(--red-soft);
+  border-radius: 50%;
+  opacity: 0;
+  animation: afil-demo-pulse 3.9s var(--ease) infinite;
+}
+.afil-demo .d-pulse .ring:nth-child(2) {
+  animation-delay: 1.3s;
+}
+.afil-demo .d-pulse .ring:nth-child(3) {
+  animation-delay: 2.6s;
+}
+
+@keyframes afil-demo-pulse {
+  0% {
+    transform: scale(0.55);
+    opacity: 0;
+  }
+  16% {
+    opacity: 0.08;
+  }
+  100% {
+    transform: scale(2.3);
+    opacity: 0;
+  }
+}
+@keyframes afil-demo-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  50.01%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* =========================================================================
    DECK NAVIGATION (prev / next + slide indicator), bottom-center
    ========================================================================= */
 .afil-nav {
@@ -1140,9 +3058,14 @@
   padding: 0;
   background: var(--line-bright);
   cursor: pointer;
+  outline: none;
   transition:
     background 0.25s var(--ease),
     transform 0.25s var(--ease);
+}
+.afil-nav-dot:focus,
+.afil-nav-dot:focus-visible {
+  outline: none;
 }
 .afil-nav-dot.on {
   background: var(--red);
