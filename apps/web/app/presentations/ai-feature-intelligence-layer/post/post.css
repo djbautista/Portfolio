@@ -1,0 +1,950 @@
+/* Blog-post view of the deck — route-scoped under `.afil-post` (same manual
+   scoping convention as `.afil-root` / `.afil-notes`). Light, Medium-style
+   reading surface with the deck's red accent + Space Grotesk / Manrope pairing.
+   Mobile-first: base rules target a phone column; `min-width` queries spread the
+   diagrams out on wider screens. All figures are static (no motion). */
+
+.afil-post {
+  --bg: #fbfaf8;
+  --surface: #ffffff;
+  --surface-2: #f4f2ee;
+  --ink-1: #14171c;
+  --ink-2: #444b57;
+  --ink-3: #7a8190;
+  --line: #e6e3dd;
+  --line-2: #d6d2c9;
+  --red: #f22f46;
+  --red-soft: rgba(242, 47, 70, 0.14);
+  --red-tint: #fcebed;
+  --green: #1f9d57;
+  --green-tint: #e7f4ed;
+  --violet: #7c5cff;
+  --purple: #b14be0;
+  --cyan: #1098b8;
+
+  --font-display: var(--font-space-grotesk), "Space Grotesk", system-ui, sans-serif;
+  --font-body: var(--font-manrope), "Manrope", system-ui, sans-serif;
+
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--ink-1);
+  font-family: var(--font-body);
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+.afil-post * {
+  box-sizing: border-box;
+}
+
+/* ---- reading column ---- */
+.afil-post-article {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: clamp(36px, 6vw, 72px) 20px clamp(64px, 10vw, 120px);
+}
+
+/* ---- type ---- */
+.afil-post-eyebrow {
+  margin: 0 0 14px;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+.afil-post-h1 {
+  margin: 0 0 22px;
+  font-family: var(--font-display);
+  font-size: clamp(2.1rem, 7vw, 3.4rem);
+  font-weight: 700;
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+}
+.afil-post-h2 {
+  margin: 0 0 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 4.4vw, 2.1rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+}
+.afil-post-h3 {
+  margin: 40px 0 16px;
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 3.4vw, 1.5rem);
+  font-weight: 600;
+  line-height: 1.2;
+}
+.afil-post-lede {
+  margin: 0 0 20px;
+  font-size: clamp(1.15rem, 2.4vw, 1.4rem);
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.afil-post-byline {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  color: var(--ink-3);
+}
+.afil-post-article p {
+  font-size: clamp(1.02rem, 1.6vw, 1.15rem);
+  line-height: 1.75;
+  color: var(--ink-2);
+  margin: 0 0 1.15em;
+}
+.afil-post-article p strong {
+  color: var(--ink-1);
+  font-weight: 600;
+}
+.afil-post-article p em {
+  font-style: italic;
+}
+.afil-post-section {
+  margin-top: 56px;
+}
+.afil-post-thesis {
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 3vw, 1.7rem) !important;
+  line-height: 1.3 !important;
+  color: var(--ink-1) !important;
+  border-left: 3px solid var(--red);
+  padding-left: 20px;
+}
+.afil-post-thesis strong {
+  color: var(--red) !important;
+}
+/* ---- figures (shared) ---- */
+.afil-post-fig {
+  margin: 30px 0 34px;
+}
+.afil-post-cap {
+  margin: 14px 0 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+.afil-post-cap.is-center {
+  text-align: center;
+}
+.afil-post-cap strong {
+  color: var(--ink-2);
+}
+.afil-post-arrow {
+  color: var(--ink-3);
+  font-size: 1.1rem;
+  flex: none;
+}
+.afil-post-arrow.is-down {
+  display: block;
+  text-align: center;
+  margin: 2px 0;
+}
+
+/* ---- chips (shared base) ---- */
+.afil-post-chip,
+.afil-post-node,
+.afil-post-q,
+.afil-post-fan-item {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--ink-1);
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  padding: 8px 16px;
+}
+
+/* ========================================================================== */
+/* Pipeline fan (Title)                                                        */
+/* ========================================================================== */
+.afil-post-pipeline-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.afil-post-pipeline-stage-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.afil-post-chip.is-release {
+  color: #fff;
+  background: var(--red);
+  border-color: var(--red);
+  box-shadow: 0 6px 18px -8px var(--red);
+}
+.afil-post-pipeline-drop {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 18px 0;
+}
+.afil-post-drop-line {
+  flex: 1;
+  height: 1px;
+  background: var(--line-2);
+}
+.afil-post-drop-label {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.afil-post-fan {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.afil-post-fan-item {
+  justify-content: flex-start;
+  width: 100%;
+  border-radius: 12px;
+  border-left: 3px solid var(--red);
+}
+@media (min-width: 34rem) {
+  .afil-post-fan {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ========================================================================== */
+/* Formula (About)                                                             */
+/* ========================================================================== */
+.afil-post-formula {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 12px;
+  margin: 26px 0;
+  padding: 22px;
+  background: var(--surface-2);
+  border-radius: 16px;
+  text-align: center;
+}
+.afil-post-formula-term-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px 12px;
+}
+.afil-post-formula-term {
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 2.4vw, 1.25rem);
+  font-weight: 500;
+  color: var(--ink-1);
+}
+.afil-post-formula-op {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--red);
+}
+.afil-post-formula-out {
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 2.6vw, 1.35rem);
+  font-weight: 700;
+  color: var(--red);
+}
+
+/* ---- portrait ---- */
+.afil-post-portrait {
+  margin: 30px 0;
+}
+.afil-post-portrait-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+}
+.afil-post img {
+  object-fit: cover;
+}
+
+/* ========================================================================== */
+/* Persona journeys                                                            */
+/* ========================================================================== */
+.afil-post-persona {
+  margin: 24px 0;
+  padding: 22px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+.afil-post-persona-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.afil-post-avatar {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  flex: none;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--line-2);
+  background: var(--surface-2);
+}
+.afil-post-persona-id {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.afil-post-persona-name {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--ink-1);
+}
+.afil-post-persona-role {
+  font-size: 0.9rem;
+  color: var(--ink-3);
+}
+.afil-post-steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.afil-post-step {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 7px 0;
+}
+.afil-post-step-num {
+  position: relative;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--red);
+  background: var(--red-tint);
+}
+/* connecting rail between the numbered steps */
+.afil-post-step:not(:last-child) .afil-post-step-num::after {
+  content: "";
+  position: absolute;
+  top: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 14px;
+  background: var(--line-2);
+}
+.afil-post-step-label {
+  font-size: 1rem;
+  color: var(--ink-1);
+}
+.afil-post-metric {
+  margin-top: 18px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: var(--red-tint);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.afil-post-metric-label {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+.afil-post-metric-value {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--ink-1);
+}
+.afil-post-metric-cap {
+  font-size: 0.88rem;
+  color: var(--ink-2);
+}
+
+/* ========================================================================== */
+/* Question cluster (Insight)                                                  */
+/* ========================================================================== */
+.afil-post-questions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 24px;
+  background: var(--surface-2);
+  border-radius: 16px;
+}
+.afil-post-q {
+  position: relative;
+  padding-left: 30px;
+}
+.afil-post-q::before {
+  content: "";
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--red);
+}
+
+/* ========================================================================== */
+/* Funnel (Solution)                                                           */
+/* ========================================================================== */
+.afil-post-funnel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: stretch;
+}
+.afil-post-funnel-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+.afil-post-funnel-label {
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  text-align: center;
+}
+.afil-post-funnel-label.is-layer {
+  color: var(--red);
+}
+.afil-post-funnel-nodes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.afil-post-node.is-out {
+  border-color: var(--red-soft);
+  background: var(--red-tint);
+}
+.afil-post-funnel-core {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.afil-post-funnel-arrow {
+  color: var(--red);
+  font-size: 1.3rem;
+  transform: rotate(90deg);
+}
+.afil-post-funnel-orb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 0 6px var(--red-soft);
+}
+@media (min-width: 40rem) {
+  .afil-post-funnel {
+    flex-direction: row;
+    align-items: center;
+  }
+  .afil-post-funnel-arrow {
+    transform: none;
+  }
+  .afil-post-funnel-core {
+    flex-direction: column;
+  }
+}
+
+/* ========================================================================== */
+/* Architecture (System design)                                                */
+/* ========================================================================== */
+.afil-post-lanes {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 40rem) {
+  .afil-post-lanes {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+.afil-post-lane {
+  padding: 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+}
+.afil-post-lane-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.afil-post-lane-idx {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--red);
+}
+.afil-post-lane-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ink-1);
+}
+.afil-post-lane-phases {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.afil-post-phase {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.03em;
+  color: var(--ink-3);
+  background: var(--surface-2);
+  border-radius: 6px;
+  padding: 3px 8px;
+}
+.afil-post-lane-flow {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+.afil-post-lane-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 4px 0;
+}
+.afil-post-lane-link-arrow {
+  color: var(--ink-3);
+  font-size: 0.95rem;
+  line-height: 1;
+}
+.afil-post-lane-link-label {
+  font-size: 0.68rem;
+  color: var(--ink-3);
+  text-align: center;
+}
+.afil-post-box {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--line-2);
+}
+.afil-post-box.is-input {
+  background: transparent;
+  border-style: dashed;
+}
+.afil-post-box.is-emph {
+  background: var(--red-tint);
+  border-color: var(--red-soft);
+}
+.afil-post-box.is-db {
+  background: var(--red-tint);
+  border-color: var(--red-soft);
+  border-left: 3px solid var(--red);
+}
+.afil-post-box-label {
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--ink-1);
+}
+.afil-post-box-tags {
+  font-size: 0.78rem;
+  color: var(--ink-3);
+}
+.afil-post-wiring {
+  margin: 18px 0 0;
+  padding: 16px 18px;
+  list-style: none;
+  background: var(--surface-2);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.afil-post-wiring li {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.afil-post-wire-kind {
+  display: inline-block;
+  margin-right: 8px;
+  font-family: var(--font-display);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: 5px;
+  padding: 2px 7px;
+}
+.afil-post-wire-kind.is-bi {
+  color: var(--red);
+  border-color: var(--red-soft);
+  background: var(--red-tint);
+}
+.afil-post-wire-kind.is-loop {
+  color: var(--red);
+  border-style: dashed;
+  border-color: var(--red);
+}
+
+/* ========================================================================== */
+/* RAG flow                                                                    */
+/* ========================================================================== */
+.afil-post-rag {
+  padding: 22px;
+  background: var(--surface-2);
+  border-radius: 16px;
+}
+.afil-post-rag-step {
+  margin-bottom: 22px;
+}
+.afil-post-rag-step:last-of-type {
+  margin-bottom: 0;
+}
+.afil-post-rag-step-label {
+  display: block;
+  margin-bottom: 12px;
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  color: var(--ink-2);
+}
+.afil-post-rag-step-label strong {
+  color: var(--red);
+  font-weight: 700;
+}
+.afil-post-rag-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.afil-post-rag-sources {
+  flex: 1;
+  min-width: 180px;
+}
+.afil-post-rag-cap {
+  display: block;
+  margin-bottom: 6px;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.afil-post-rag-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.afil-post-rag-chip {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  color: var(--ink-1);
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: 6px;
+  padding: 4px 9px;
+}
+.afil-post-rag-db,
+.afil-post-rag-pill {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ink-1);
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+  padding: 12px 14px;
+  text-align: center;
+}
+.afil-post-rag-db {
+  border-left: 3px solid var(--red);
+}
+.afil-post-rag-pill.is-q {
+  border-color: var(--red-soft);
+  background: var(--red-tint);
+  text-align: left;
+}
+.afil-post-rag-pill.is-ai {
+  border-color: var(--red-soft);
+}
+.afil-post-rag-pill.is-out {
+  color: #fff;
+  background: var(--red);
+  border-color: var(--red);
+}
+.afil-post-rag-sub {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--ink-3);
+}
+.afil-post-rag-pill.is-out .afil-post-rag-sub {
+  color: rgba(255, 255, 255, 0.8);
+}
+.afil-post-rag-principle {
+  margin: 22px 0 0 !important;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 3vw, 1.4rem) !important;
+  color: var(--ink-3) !important;
+}
+.afil-post-rag-principle .is-strong {
+  color: var(--red);
+  font-weight: 700;
+}
+
+/* ========================================================================== */
+/* Vector cluster                                                              */
+/* ========================================================================== */
+.afil-post-vectors {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.afil-post-vec-group {
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.afil-post-vec-group.is-cluster {
+  border-style: dashed;
+  border-color: var(--line-2);
+}
+.afil-post-vec-group-label {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.afil-post-vec-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.afil-post-vec-dot {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  margin-top: 3px;
+  border-radius: 50%;
+  background: var(--ink-3);
+}
+.afil-post-vec-item.is-violet .afil-post-vec-dot {
+  background: var(--violet);
+}
+.afil-post-vec-item.is-purple .afil-post-vec-dot {
+  background: var(--purple);
+}
+.afil-post-vec-item.is-cyan .afil-post-vec-dot {
+  background: var(--cyan);
+}
+.afil-post-vec-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.afil-post-vec-phrase {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink-1);
+}
+.afil-post-vec-nums {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.8rem;
+  color: var(--ink-3);
+}
+@media (min-width: 40rem) {
+  .afil-post-vectors {
+    flex-direction: row;
+    align-items: stretch;
+  }
+  .afil-post-vec-group {
+    flex: 1;
+  }
+  .afil-post-vec-group.is-cluster {
+    flex: 1.4;
+  }
+}
+
+/* ========================================================================== */
+/* Before / after (Payoff)                                                     */
+/* ========================================================================== */
+.afil-post-beforeafter {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media (min-width: 40rem) {
+  .afil-post-beforeafter {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+.afil-post-ba-card {
+  padding: 22px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.afil-post-ba-card.is-after {
+  border-color: var(--red-soft);
+}
+.afil-post-ba-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.afil-post-ba-title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--ink-1);
+}
+.afil-post-ba-sub {
+  font-size: 0.9rem;
+  color: var(--ink-3);
+}
+.afil-post-ba-ticket {
+  align-self: flex-start;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ink-1);
+  background: var(--surface-2);
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  padding: 7px 16px;
+}
+.afil-post-ba-fog {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+.afil-post-ba-fog-chip {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  color: var(--ink-3);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 4px 9px;
+}
+.afil-post-ba-layer {
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--red-tint);
+  border: 1px solid var(--red-soft);
+}
+.afil-post-ba-layer-name {
+  display: block;
+  margin-bottom: 10px;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--red);
+}
+.afil-post-ba-outputs {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.afil-post-ba-outputs li {
+  position: relative;
+  padding-left: 22px;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--ink-1);
+}
+.afil-post-ba-outputs li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--red);
+  font-weight: 700;
+}
+.afil-post-ba-outcome {
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  font-weight: 600;
+  padding: 12px 16px;
+  border-radius: 10px;
+}
+.afil-post-ba-outcome.is-bad {
+  color: var(--red);
+  background: var(--red-tint);
+}
+.afil-post-ba-outcome.is-good {
+  color: var(--green);
+  background: var(--green-tint);
+}
+
+/* ---- respect reduced-motion (figures are static, but transitions exist) ---- */
+@media (prefers-reduced-motion: reduce) {
+  .afil-post * {
+    transition-duration: 0s !important;
+  }
+}

@@ -101,9 +101,18 @@ export function VectorizeOverlay({ active, step }: VectorizeOverlayProps) {
             <span className="vz-flag">&#9888; guessed &middot; no sources</span>
           </div>
 
+          {/* above the box, revealed with it: the turn from guessing to RAG */}
+          <p
+            className={`vz-turn${panelLit ? ' lit' : ''}`}
+            style={{ left: 1140, top: 304, width: 520 }}
+          >
+            Don&rsquo;t make it guess &mdash; fetch the answer first.{' '}
+            <span className="rag">That&rsquo;s RAG.</span>
+          </p>
+
           <div
             className={`vz-panel${panelLit ? ' lit' : ''}`}
-            style={{ left: 1140, top: 392, width: 520 }}
+            style={{ left: 1140, top: 500, width: 520 }}
           >
             <p className="vz-panel-h">Your product</p>
             <div className="vz-panel-docs">
@@ -116,9 +125,13 @@ export function VectorizeOverlay({ active, step }: VectorizeOverlayProps) {
             <p className="vz-panel-sub">The model never trained on it.</p>
           </div>
 
-          <p className="vz-turn" style={{ left: 360, top: 936, width: 1200 }}>
-            Don&rsquo;t make it guess &mdash; fetch the answer first.{' '}
-            <span className="rag">That&rsquo;s RAG.</span>
+          {/* below the box: the setup for the map beat — we don't feed it
+              everything, we surface only what's relevant. Fades in with the box. */}
+          <p
+            className={`vz-aside${panelLit ? ' lit' : ''}`}
+            style={{ left: 1140, top: 772, width: 520 }}
+          >
+            First, we find just the pieces that matter.
           </p>
         </div>
 

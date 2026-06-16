@@ -2224,6 +2224,21 @@
   font-size: 20px;
   color: var(--ink-2);
 }
+/* the setup line beneath the "Your product" box — fades in with the lit panel
+   so it lands as part of the same beat, then teed up for the map slide. */
+.afil-architecture .vz-aside {
+  position: absolute;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 22px;
+  line-height: 1.4;
+  color: var(--ink-2);
+  opacity: 0;
+  transition: opacity 0.7s var(--ease);
+}
+.afil-architecture .vz-aside.lit {
+  opacity: 1;
+}
 
 /* the map of meaning: dots + topic labels */
 .afil-architecture .vz-dot {
@@ -2266,6 +2281,16 @@
   font-family: var(--font-body);
   font-size: 26px;
   color: rgba(255, 255, 255, 0.9);
+}
+/* the turn line now sits above the box (left-aligned to its column) and fades
+   in with the lit panel, instead of centered at the foot of the slide. */
+.afil-architecture .vz-turn {
+  text-align: left;
+  opacity: 0;
+  transition: opacity 0.7s var(--ease);
+}
+.afil-architecture .vz-turn.lit {
+  opacity: 1;
 }
 .afil-architecture .vz-turn .rag {
   font-family: var(--font-display);
