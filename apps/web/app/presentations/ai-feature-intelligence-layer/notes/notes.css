@@ -249,6 +249,167 @@
   font-variant-numeric: tabular-nums;
 }
 
+.afil-notes-bar-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  flex: none;
+}
+
+/* ---- buttons (edit affordances) ---- */
+.afil-notes-btn {
+  flex: none;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink-1);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    opacity 0.18s ease;
+}
+.afil-notes-btn:hover:not(:disabled) {
+  border-color: var(--line-bright, #333b49);
+}
+.afil-notes-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.afil-notes-btn.is-primary {
+  color: #fff;
+  background: var(--red);
+  border-color: var(--red);
+}
+.afil-notes-btn.is-primary:hover:not(:disabled) {
+  box-shadow: 0 0 14px 1px var(--red-soft);
+}
+.afil-notes-btn.is-ghost {
+  background: transparent;
+  color: var(--ink-2);
+}
+
+/* a small "edited" pill next to the beat location in edit mode */
+.afil-notes-badge {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--amber);
+  border: 1px solid color-mix(in srgb, var(--amber) 45%, transparent);
+  border-radius: 999px;
+  padding: 2px 9px;
+}
+
+/* ---- edit mode: beat navigation row ---- */
+.afil-notes-editnav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 4px 0 12px;
+}
+.afil-notes-editnav-loc {
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- edit mode: textarea + live preview, side by side ---- */
+.afil-notes-editor {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+}
+.afil-notes-textarea {
+  width: 100%;
+  height: 100%;
+  resize: none;
+  background: var(--panel);
+  color: var(--ink-1);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 18px 20px;
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.55;
+  tab-size: 2;
+}
+.afil-notes-textarea:focus {
+  outline: none;
+  border-color: var(--red-soft);
+}
+.afil-notes-preview {
+  min-height: 0;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 18px 22px;
+  background: rgba(255, 255, 255, 0.015);
+}
+.afil-notes-preview-label {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 16px;
+}
+/* scale the shared NoteBody down a touch inside the preview pane */
+.afil-notes-preview .afil-notes-headline {
+  font-size: clamp(22px, 2.6vw, 30px);
+}
+.afil-notes-preview .afil-notes-say li {
+  font-size: clamp(17px, 2vw, 22px);
+}
+
+/* ---- edit mode: action bar ---- */
+.afil-notes-editbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.afil-notes-hint {
+  font-size: 14px;
+  color: var(--ink-3);
+}
+.afil-notes-hint code {
+  font-family: var(--font-display);
+  color: var(--ink-2);
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+.afil-notes-editbar-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* portrait (iPad held upright): stack textarea above preview */
+@media (orientation: portrait) {
+  .afil-notes-editor {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+}
+
 /* ---- waiting / disconnected screen ---- */
 .afil-notes-wait {
   margin: auto;

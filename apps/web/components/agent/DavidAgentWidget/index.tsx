@@ -5,7 +5,7 @@ import {
   Trigger as DialogTrigger,
   Portal as DialogPortal,
 } from '@radix-ui/react-dialog';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useCallback, useRef, useState } from 'react';
 
 import { contact } from '@portfolio/content';
@@ -33,6 +33,7 @@ function nextId(): string {
 
 export function DavidAgentWidget() {
   const router = useRouter();
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [status, setStatus] = useState<'idle' | 'sending' | 'error'>('idle');
@@ -175,6 +176,11 @@ export function DavidAgentWidget() {
   const waHref = contact.whatsapp.enabled
     ? buildWhatsAppHref(contact.whatsapp.number, { conversationId })
     : undefined;
+
+  // Speaker-notes companion (any deck's `…/notes` route) is a presenter-only,
+  // follow-along surface — the "Ask David" chat bubble has no place there.
+  // Gated after all hooks so the rules of hooks stay satisfied.
+  if (pathname?.endsWith('/notes')) return null;
 
   return (
     <DialogRoot open={open} onOpenChange={setOpen}>

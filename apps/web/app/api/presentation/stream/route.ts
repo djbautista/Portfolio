@@ -1,12 +1,14 @@
 // Speaker-notes SSE stream.
 // A notes view opens an EventSource here; on connect it immediately receives the
-// room's current beat (so a late/reconnecting client snaps into sync), then a
-// `data:` event for every subsequent navigation the presenter broadcasts.
+// room's current beat plus a snapshot of all note overrides (so a late/
+// reconnecting client snaps into sync), then a named event for every subsequent
+// navigation the presenter broadcasts and every note edit anyone saves:
+//   event: beat   data: <DeckState>
+//   event: notes  data: <{ "<slide>:<stage>": SpeakerNote }>   (full snapshot, on connect)
+//   event: note   data: <{ key, note }>                        (single edit/reset; note=null resets)
+import { normalizeRoom } from '@/app/presentations/ai-feature-intelligence-layer/_sync/constants';
 import {
-  normalizeRoom,
-  type DeckState,
-} from '@/app/presentations/ai-feature-intelligence-layer/_sync/constants';
-import {
+  getNotes,
   getState,
   subscribe,
 } from '@/app/presentations/ai-feature-intelligence-layer/_sync/store';
@@ -26,18 +28,28 @@ export async function GET(request: Request) {
 
   const stream = new ReadableStream<Uint8Array>({
     start(controller) {
-      const send = (state: DeckState) => {
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify(state)}\n\n`));
+      const sendEvent = (event: string, data: unknown) => {
+        controller.enqueue(
+          encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`),
+        );
       };
 
       // Opening comment flushes headers so the client fires `onopen` promptly.
       controller.enqueue(encoder.encode(': connected\n\n'));
 
-      // Replay the current beat (if the presenter has already navigated).
+      // Replay the current beat (if the presenter has already navigated) and a
+      // full snapshot of note overrides, so a fresh client is immediately in sync.
       const current = getState(room);
-      if (current) send(current);
+      if (current) sendEvent('beat', current);
+      sendEvent('notes', getNotes(room));
 
-      unsubscribe = subscribe(room, send);
+      unsubscribe = subscribe(room, (message) => {
+        if (message.type === 'beat') {
+          sendEvent('beat', message.state);
+        } else {
+          sendEvent('note', { key: message.key, note: message.note });
+        }
+      });
 
       pingTimer = setInterval(() => {
         try {
