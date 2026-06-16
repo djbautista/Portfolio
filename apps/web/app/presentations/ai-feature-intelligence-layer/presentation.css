@@ -3494,6 +3494,45 @@
   }
 }
 
+/* ---- presenter "live" badge: shown only when the deck is opened with
+   `?present`, signalling that navigation is being broadcast to the notes view. */
+.afil-root .afil-live-badge {
+  position: absolute;
+  top: 22px;
+  right: 24px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--red-soft);
+  background: rgba(10, 12, 16, 0.72);
+  backdrop-filter: blur(8px);
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.afil-root .afil-live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 10px 1px var(--red-soft);
+  animation: afil-live-pulse 1.8s var(--ease) infinite;
+}
+@keyframes afil-live-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .afil-root *,
   .afil-persona.staged * {

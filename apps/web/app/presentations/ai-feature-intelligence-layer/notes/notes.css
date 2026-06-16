@@ -1,0 +1,290 @@
+/* Speaker-notes companion view — route-scoped under `.afil-notes` (mirrors the
+   deck's `.afil-root` scoping convention). Built for a 12" iPad in landscape:
+   dark, large type, no page scroll; the current beat fills the screen and the
+   next beat sits as a quiet footer prompt. */
+
+.afil-notes {
+  --bg: #0a0c10;
+  --panel: #11141b;
+  --ink-1: #f4f6fa;
+  --ink-2: #aeb4c0;
+  --ink-3: #6e7787;
+  --line: #232834;
+  --red: #f22f46;
+  --red-soft: rgba(242, 47, 70, 0.55);
+  --green: #2fd07a;
+  --amber: #f2a72f;
+
+  --font-display: var(--font-space-grotesk), "Space Grotesk", sans-serif;
+  --font-body: var(--font-manrope), "Manrope", system-ui, sans-serif;
+
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--ink-1);
+  font-family: var(--font-body);
+  overflow: hidden;
+  padding: max(20px, env(safe-area-inset-top)) max(28px, env(safe-area-inset-right))
+    max(20px, env(safe-area-inset-bottom)) max(28px, env(safe-area-inset-left));
+  -webkit-text-size-adjust: 100%;
+}
+.afil-notes * {
+  box-sizing: border-box;
+}
+
+/* ---- top bar: where we are + connection status ---- */
+.afil-notes-bar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 12px;
+}
+.afil-notes-loc {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  min-width: 0;
+}
+.afil-notes-slide {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--ink-1);
+}
+.afil-notes-step {
+  font-size: 16px;
+  color: var(--ink-3);
+}
+
+.afil-notes-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.afil-notes-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--ink-3);
+}
+.afil-notes-status.is-live .afil-notes-dot {
+  background: var(--green);
+  box-shadow: 0 0 10px 1px rgba(47, 208, 122, 0.6);
+  animation: afil-notes-pulse 1.8s ease-in-out infinite;
+}
+.afil-notes-status.is-connecting .afil-notes-dot,
+.afil-notes-status.is-reconnecting .afil-notes-dot {
+  background: var(--amber);
+  animation: afil-notes-pulse 1s ease-in-out infinite;
+}
+.afil-notes-status.is-waiting .afil-notes-dot {
+  background: var(--red);
+}
+@keyframes afil-notes-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* ---- progress bar ---- */
+.afil-notes-progress {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--line);
+  overflow: hidden;
+}
+.afil-notes-progress-fill {
+  height: 100%;
+  background: var(--red);
+  box-shadow: 0 0 12px 1px var(--red-soft);
+  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---- current beat: the focus of the screen ---- */
+.afil-notes-current {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 18px;
+  padding: 22px 4px;
+  overflow-y: auto;
+}
+.afil-notes-headline {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4.2vw, 46px);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+.afil-notes-bullets {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+/* each bullet = a key idea (bright, larger) … */
+.afil-notes-bullets > li {
+  position: relative;
+  padding-left: 32px;
+}
+.afil-notes-bullets > li::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 0.5em;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 10px 1px var(--red-soft);
+}
+/* the key idea is a quiet label above the spoken lines … */
+.afil-notes-idea {
+  display: block;
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1.6vw, 18px);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.3;
+  color: var(--ink-3);
+}
+/* … and the few simple ways to say it out loud are the big, weighty lines you
+   actually read aloud. */
+.afil-notes-say {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.afil-notes-say li {
+  position: relative;
+  padding-left: 26px;
+  font-family: var(--font-display);
+  font-size: clamp(21px, 2.9vw, 32px);
+  font-weight: 600;
+  line-height: 1.22;
+  color: var(--ink-1);
+}
+.afil-notes-say li::before {
+  content: "“";
+  position: absolute;
+  left: 0;
+  top: 0.12em;
+  font-size: 1.4em;
+  color: var(--red-soft);
+  font-family: var(--font-display);
+}
+.afil-notes-empty {
+  margin: 0;
+  font-size: 24px;
+  color: var(--ink-3);
+}
+
+/* ---- next beat: quiet footer prompt ---- */
+.afil-notes-next {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-2);
+}
+.afil-notes-next-label {
+  flex: none;
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.afil-notes-next-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.afil-notes-next-loc {
+  font-size: 13px;
+  color: var(--ink-3);
+}
+.afil-notes-next-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 18px;
+  line-height: 1.3;
+  color: var(--ink-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.afil-notes-count {
+  flex: none;
+  font-family: var(--font-display);
+  font-size: 15px;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- waiting / disconnected screen ---- */
+.afil-notes-wait {
+  margin: auto;
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  text-align: center;
+  padding: 0 24px;
+}
+.afil-notes-wait-msg {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.afil-notes-wait-msg code {
+  font-family: var(--font-display);
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  color: var(--ink-1);
+}
+
+/* portrait orientation: a touch tighter, content still centered */
+@media (orientation: portrait) {
+  .afil-notes-current {
+    justify-content: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .afil-notes * {
+    animation-duration: 0s !important;
+    transition-duration: 0s !important;
+  }
+}

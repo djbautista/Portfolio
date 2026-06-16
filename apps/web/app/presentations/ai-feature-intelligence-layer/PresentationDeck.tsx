@@ -5,7 +5,17 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 
 import { manrope, spaceGrotesk } from '@/utils/fonts';
 
-import { SLIDE_COUNT, personaStageCount } from './data';
+import { SLIDE_COUNT } from './data';
+import {
+  MAX_TITLE_STAGE,
+  MAX_ABOUT_STAGE,
+  MAX_PERSONA_STAGE,
+  MAX_INSIGHT_STAGE,
+  MAX_SOLUTION_STAGE,
+  MAX_ARCH_STAGE,
+  MAX_PAYOFF_STAGE,
+} from './steps';
+import { DEFAULT_ROOM, NAVIGATE_PATH, normalizeRoom } from './_sync/constants';
 import { SlideNavigation } from './SlideNavigation';
 import { useDeckScale } from './useDeckScale';
 import { TitleSlide } from './slides/TitleSlide';
@@ -13,39 +23,22 @@ import { AboutSlide } from './slides/AboutSlide';
 import { PersonaJourneysSlide } from './slides/PersonaJourneysSlide';
 import { InsightSlide } from './slides/InsightSlide';
 import { SystematicSolutionSlide } from './slides/SystematicSolutionSlide';
-import { ArchitectureSlide, MAX_ARCH_STAGE } from './slides/ArchitectureSlide';
+import { ArchitectureSlide } from './slides/ArchitectureSlide';
 import { PayoffSlide } from './slides/PayoffSlide';
 import { DemoSlide } from './slides/DemoSlide';
 
 import './presentation.css';
 
+// Per-slide step counts (MAX_* stage constants) are the single source of truth
+// in ./steps.ts, shared with the flattened speaker-notes map. Here we only keep
+// the slide indices used by navigate()'s stage-first traversal.
 const TITLE_INDEX = 0;
-// 0 resting · 1 focus diagram · 2–9 spotlight each of the 8 post-release bullets
-// one at a time · 10 restore all bullets to normal · 11 reveal the AI layer
-// (caption + spine + red release).
-const MAX_TITLE_STAGE = 11;
 const ABOUT_INDEX = 1;
-// 0 centered · 1 swap role Software→Product · 2 column home + right column reveal.
-const MAX_ABOUT_STAGE = 2;
 const PERSONA_INDEX = 2;
-// Each persona reveals its identity, then its steps one at a time (see
-// personaStageCount); the final beat (personaStageCount) is the synthesis
-// moment — profiles recenter, journeys fade, the anonymous crowd appears.
-const MAX_STAGE = personaStageCount;
 const INSIGHT_INDEX = 3;
-// 0 resting (main insight prominent, questions dim) · 1 bring the scattered
-// questions forward and dim the central insight behind them · 2 fade the
-// questions out and restore the central insight, clean on its own.
-const MAX_INSIGHT_STAGE = 2;
 const SOLUTION_INDEX = 4;
-// 0 thesis sentence alone, centered in the window · 1 thesis settles into its
-// header slot and the diagram + chrome reveal.
-const MAX_SOLUTION_STAGE = 1;
 const ARCH_INDEX = 5;
 const PAYOFF_INDEX = 6;
-// 0 the "Before" section alone · 1 crossfade to the "After" section · 2 slide
-// "After" into the left half (compact card) + fade the SDLC diagram in on the right.
-const MAX_PAYOFF_STAGE = 2;
 // Closing interstitial — no internal stages; navigate() falls straight through
 // to slide change at both ends.
 const DEMO_INDEX = 7;
@@ -71,6 +64,47 @@ export function PresentationDeck() {
   const [payoffStage, setPayoffStage] = useState(0);
   const scale = useDeckScale();
   const reduceMotion = useReducedMotion();
+
+  // Presenter mode: only a deck opened with `?present` broadcasts its position
+  // to the speaker-notes view, so casual visitors never drive a listener. Read
+  // from the URL on the client (avoids a Suspense boundary for useSearchParams).
+  const [presenter, setPresenter] = useState<{ on: boolean; room: string }>({
+    on: false,
+    room: DEFAULT_ROOM,
+  });
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setPresenter({
+      on: params.has('present'),
+      room: normalizeRoom(params.get('room')),
+    });
+  }, []);
+
+  // The active slide's current stage, selected by slide index (Demo has none).
+  const currentStage = [
+    titleStage,
+    aboutStage,
+    personaStage,
+    insightStage,
+    solutionStage,
+    archStage,
+    payoffStage,
+    0,
+  ][index] ?? 0;
+
+  // Broadcast every beat change to the notes view (fire-and-forget). `keepalive`
+  // lets the final POST survive a tab closing on the last slide.
+  useEffect(() => {
+    if (!presenter.on) return;
+    void fetch(NAVIGATE_PATH, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ room: presenter.room, slide: index, stage: currentStage }),
+      keepalive: true,
+    }).catch(() => {
+      // best-effort sync; a dropped beat self-heals on the next navigation
+    });
+  }, [presenter.on, presenter.room, index, currentStage]);
 
   const goToSlide = useCallback(
     (target: number) => {
@@ -114,7 +148,7 @@ export function PresentationDeck() {
         }
       }
       if (index === PERSONA_INDEX) {
-        if (dir === 'next' && personaStage < MAX_STAGE) {
+        if (dir === 'next' && personaStage < MAX_PERSONA_STAGE) {
           setPersonaStage((s) => s + 1);
           return;
         }
@@ -213,7 +247,7 @@ export function PresentationDeck() {
           <PersonaJourneysSlide
             stage={personaStage}
             onStagePrev={() => setPersonaStage((s) => Math.max(0, s - 1))}
-            onStageNext={() => setPersonaStage((s) => Math.min(MAX_STAGE, s + 1))}
+            onStageNext={() => setPersonaStage((s) => Math.min(MAX_PERSONA_STAGE, s + 1))}
           />
         );
       case INSIGHT_INDEX:
@@ -257,6 +291,13 @@ export function PresentationDeck() {
           </AnimatePresence>
         </div>
       </div>
+
+      {presenter.on && (
+        <div className="afil-live-badge" aria-hidden>
+          <span className="afil-live-dot" />
+          live
+        </div>
+      )}
 
       <SlideNavigation
         index={index}
