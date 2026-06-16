@@ -14,7 +14,7 @@ interface AboutSlideProps {
 }
 
 export function AboutSlide({ stage = 0 }: AboutSlideProps) {
-  const { role, formulaInputs } = aboutSlide;
+  const { role, formulaInputs, portrait } = aboutSlide;
   const canvasClass = [stage >= 1 ? 'swapped' : '', stage >= 2 ? 'revealed' : '']
     .filter(Boolean)
     .join(' ');
@@ -48,18 +48,31 @@ export function AboutSlide({ stage = 0 }: AboutSlideProps) {
       </p>
 
       {/* portrait + identity (left) */}
-      <div className="portrait">
+      <div
+        className="portrait"
+        tabIndex={0}
+        aria-label={`${portrait.alt}. ${portrait.caption.detail}`}
+      >
         <div className="halo" />
         <div className="frame">
           <Image
-            src={aboutSlide.portrait.src}
-            alt={aboutSlide.portrait.alt}
+            src={portrait.src}
+            alt={portrait.alt}
             width={720}
             height={506}
             priority
           />
         </div>
         <div className="scrim" />
+        {/* photo caption: date · context always reads; ECHO detail fades in on hover/focus */}
+        <div className="caption">
+          <span className="meta">
+            <span className="bar" />
+            <span className="date">{portrait.caption.date}</span>
+            <span className="ctx">{portrait.caption.context}</span>
+          </span>
+          <span className="detail">{portrait.caption.detail}</span>
+        </div>
         <div className="base" />
       </div>
 

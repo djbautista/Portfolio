@@ -173,7 +173,10 @@ export function RagPipeline({ active, step }: RagPipelineProps) {
         <span className="rag-icon red rag-box-icon">
           <LlmClusterIcon />
         </span>
-        <span className="rag-box-label">{ragPipeline.llmLabel}</span>
+        <span className="rag-box-label">
+          {ragPipeline.llmLabel}
+          <span className="rag-box-sub">{ragPipeline.llmSub}</span>
+        </span>
       </div>
 
       <span {...reveal('rag-arrow pop', showStep2, 0.72, { left: 1476, top: 480 })}>

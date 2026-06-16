@@ -36,7 +36,7 @@ export function PersonaJourney({
 
       <div className="p-persona">
         <div className="p-avatar">
-          <Image src={persona.avatar.src} alt={persona.avatar.alt} width={124} height={124} />
+          <Image src={persona.avatar.src} alt={persona.avatar.alt} width={156} height={156} />
         </div>
         <div className="p-id">
           <p className="p-name">{persona.name}</p>

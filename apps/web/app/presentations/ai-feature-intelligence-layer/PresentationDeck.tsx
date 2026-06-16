@@ -168,6 +168,18 @@ export function PresentationDeck() {
     [index, titleStage, aboutStage, personaStage, insightStage, solutionStage, archStage, payoffStage, goToSlide],
   );
 
+  // On landing on the Solution slide, auto-reveal the diagram once after 2s
+  // (the manual "next" beat happens on its own). Keyed on `index` so it fires
+  // exactly once per entry: the functional update no-ops if the viewer already
+  // advanced manually, and the cleanup cancels the timer on leaving the slide.
+  useEffect(() => {
+    if (index !== SOLUTION_INDEX) return;
+    const id = setTimeout(() => {
+      setSolutionStage((s) => (s === 0 ? 1 : s));
+    }, 2000);
+    return () => clearTimeout(id);
+  }, [index]);
+
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       switch (e.key) {

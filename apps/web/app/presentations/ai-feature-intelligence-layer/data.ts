@@ -79,7 +79,13 @@ export const aboutSlide = {
   footer: "02 — About",
   portrait: {
     src: "/ai-layer-for-post-release-support/project/assets/about-me.jpg",
-    alt: "David Bautista"
+    alt: "David Bautista at the UNFPA Innovation team conference, 2018",
+    caption: {
+      date: "2018",
+      context: "UNFPA Innovation conference — ECHO design project",
+      detail:
+        "ECHO — an NLP platform by UNFPA Colombia that links informal, conversational citizen language to the formal language of the Sustainable Development Goals."
+    }
   }
 } as const;
 
@@ -115,32 +121,32 @@ export const personaSlide = {
 
 export const personas: Persona[] = [
   {
-    id: "peter",
-    name: "Peter",
-    role: "End User",
-    sub: "6 years on the same feature",
-    avatar: { src: `${AVATAR_BASE}/Peter.png`, alt: "Peter" },
-    steps: ["Old workflow", "Product change", "Broken muscle memory", "Confusion", "Raises an issue"],
-    // Per spec: the prototype shows a metric end-cap for Peter only.
-    metric: {
-      label: "Directly impacts",
-      value: "M.T.T.Respond",
-      caption: "Mean time to respond"
-    }
-  },
-  {
     id: "rachel",
     name: "Rachel",
     role: "Product Designer",
-    avatar: { src: `${AVATAR_BASE}/Rachel.png`, alt: "Rachel" },
+    avatar: { src: `${AVATAR_BASE}/rachel-new.png`, alt: "Rachel" },
     steps: ["User research", "Discovery insights", "Handoff sessions", "Context dilution", "Clarification loops"]
   },
   {
     id: "daniel",
     name: "Daniel",
     role: "Engineer",
-    avatar: { src: `${AVATAR_BASE}/Daniel.png`, alt: "Daniel" },
-    steps: ["Feature shipped", "Time passes", "Support request", "Context reconstruction", "Interruption"]
+    avatar: { src: `${AVATAR_BASE}/daniel-new.png`, alt: "Daniel" },
+    steps: ["Feature shipped", "Time passes", "On-call alert", "Investigates from scratch", "Interruption"]
+  },
+  {
+    id: "peter",
+    name: "Peter",
+    role: "End User",
+    sub: "6 years on the same feature",
+    avatar: { src: `${AVATAR_BASE}/peter-new.png`, alt: "Peter" },
+    steps: ["Old workflow", "Product change", "Broken muscle memory", "Confusion", "Raises an issue"],
+    // Per spec: the prototype shows a metric end-cap for Peter only.
+    metric: {
+      label: "Directly impacts",
+      value: "M.T.T.Respond",
+      caption: "Longer the dig, longer the wait"
+    }
   }
 ];
 
@@ -313,7 +319,7 @@ export const architectureSlide = {
  * Audience is non-technical — lead with the analogy, keep jargon as labels.
  */
 export interface VectorizeBeat {
-  key: "why" | "map" | "rag";
+  key: "why" | "map" | "vector" | "rag";
   eyebrow: string;
   title: string;
   /**
@@ -353,7 +359,9 @@ export const ragPipeline = {
   question: "“Is this a bug?”",
   vectorDbLabel: "Vector DB",
   chunksLabel: "Top-K relevant chunks",
-  llmLabel: "LLM",
+  llmLabel: "AI",
+  /** the clarifier under the AI box — the whole point of RAG, in a muted line */
+  llmSub: "(with relevant context)",
   responseLabel: ["Grounded", "response"],
   steps: [
     { id: "index", prefix: "Step 1:", label: "Knowledge Indexing" },
@@ -376,6 +384,14 @@ export const vectorizeBeats: VectorizeBeat[] = [
     title: "How documents become searchable memory",
     // the mechanism beat cools to a deep Twilio blue — a rest from the red field
     theme: "blue"
+  },
+  // the vector beat draws its own three-stage infographic via <VectorSpace/>
+  // (shared vz-head skipped); same dark field as the RAG beat that follows.
+  {
+    key: "vector",
+    eyebrow: "Inside the Feature Knowledge Base",
+    title: "Text becomes vectors in meaning space",
+    theme: "dark"
   },
   // the RAG beat renders its own title + pipeline via <RagPipeline/> (shared
   // vz-head skipped), and darkens the field so its navy nodes read.
@@ -425,6 +441,61 @@ export const vectorizeMapImage = {
   width: 1517,
   height: 606
 } as const;
+
+/**
+ * The "Text becomes vectors" beat (<VectorSpace/>): three support phrases run
+ * left→right through the pipeline — Text Input → Vectorization → Semantic Space.
+ * The first two describe the same operational problem, so their embeddings are
+ * near-identical and they land in one cluster; the third is a different topic and
+ * sits far away. The shared `accent` ties each phrase's input card, matrix row,
+ * and semantic-space point together. `point` is the dot center on the 1920×1080
+ * plane (like `vectorizeDots`); the rest is copy.
+ */
+export type VectorAccent = "violet" | "purple" | "cyan";
+
+export interface VectorItem {
+  id: string;
+  /** the support phrase, split across the two lines the card + point label show */
+  lines: [string, string];
+  accent: VectorAccent;
+  /** the embedding row under the x₁ x₂ ⋯ xₙ headers (⋯ elides the middle dims) */
+  vector: [string, string, string, string];
+  /** dot center in the 2-D semantic space, on the 1920×1080 plane */
+  point: { x: number; y: number };
+}
+
+export const vectorItems: VectorItem[] = [
+  {
+    id: "pending",
+    lines: ["template stuck", "in pending"],
+    accent: "violet",
+    vector: ["0.72", "0.28", "⋯", "−0.31"],
+    point: { x: 1648, y: 452 }
+  },
+  {
+    id: "approval",
+    lines: ["approval status", "delay"],
+    accent: "purple",
+    vector: ["0.68", "0.33", "⋯", "−0.28"],
+    point: { x: 1632, y: 524 }
+  },
+  {
+    id: "billing",
+    lines: ["billing invoice", "error"],
+    accent: "cyan",
+    vector: ["−0.45", "−0.71", "⋯", "0.62"],
+    point: { x: 1430, y: 662 }
+  }
+];
+
+/** the three pipeline stages: a numbered badge + uppercase label per column. */
+export const vectorStages = ["Text Input", "Vectorization", "Semantic Space (2D)"] as const;
+
+/** matrix column headers; the ⋯ column elides the middle dimensions. */
+export const vectorMatrixHeaders = ["x₁", "x₂", "⋯", "xₙ"] as const;
+
+/** the bottom legend: the one idea the whole beat exists to land. */
+export const vectorLegend = "Similar meaning = closer vectors";
 
 /**
  * A capability column. `left` is the left edge of its capability chip and

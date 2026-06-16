@@ -32,9 +32,11 @@ import {
  * VectorizeOverlay), cross-fading through its beats while the camera stays
  * parked: `vectorize` (the model guesses) → `vectorizeMiss` (its product panel
  * lights up — it never trained on your docs) → `vectorizeMap` (documents →
- * searchable memory) → `vectorizeRag` (the RAG pipeline, Step 1 — Knowledge
- * Indexing) → `vectorizeRagFull` (the same pipeline with Step 2 — Retrieval +
- * Grounded Generation revealed). Stage 7 (`restored`) is the zoom-out: the
+ * searchable memory) → `vectorizeVectors` (text → vectors → semantic space:
+ * similar meaning sits closer) → `vectorizeRag` (the RAG pipeline, Step 1 —
+ * Knowledge Indexing) → `vectorizeRagFull` (the same pipeline with Step 2 —
+ * Retrieval + Grounded Generation revealed). The `restored` stage is the
+ * zoom-out: the
  * sub-slide closes and the camera returns to the base diagram (still just the
  * Feature Memory column) before anything new reveals — a deliberate beat so the
  * push-out isn't entangled with the next column. Stages 8–9 then reveal the
@@ -46,11 +48,12 @@ export const ARCH_STAGE = {
   vectorize: 2,
   vectorizeMiss: 3,
   vectorizeMap: 4,
-  vectorizeRag: 5,
-  vectorizeRagFull: 6,
-  restored: 7,
-  triage: 8,
-  feedback: 9,
+  vectorizeVectors: 5,
+  vectorizeRag: 6,
+  vectorizeRagFull: 7,
+  restored: 8,
+  triage: 9,
+  feedback: 10,
 } as const;
 
 /**

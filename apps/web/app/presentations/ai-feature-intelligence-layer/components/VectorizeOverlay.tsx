@@ -6,16 +6,18 @@ import {
   vectorizeMapImage,
 } from '@/app/presentations/ai-feature-intelligence-layer/data';
 import { RagPipeline } from '@/app/presentations/ai-feature-intelligence-layer/components/RagPipeline';
+import { VectorSpace } from '@/app/presentations/ai-feature-intelligence-layer/components/VectorSpace';
 
 interface VectorizeOverlayProps {
   /** true across the whole vectorize range: the red sub-slide is shown. */
   active: boolean;
   /**
-   * The 0..4 sub-step within the overlay. The "why" beat spans two sub-steps:
+   * The 0..5 sub-step within the overlay. The "why" beat spans two sub-steps:
    * 0 — the model guesses (product panel dim, in shadow); 1 — the panel lights
-   * up (it never trained on your docs). 2 → map beat. The RAG beat spans the
-   * last two: 3 — pipeline Step 1 (Knowledge Indexing); 4 — Step 2 (Retrieval +
-   * Grounded Generation) revealed on top.
+   * up (it never trained on your docs). 2 → map beat. 3 → vector beat (text →
+   * vectors → semantic space). The RAG beat spans the last two: 4 — pipeline
+   * Step 1 (Knowledge Indexing); 5 — Step 2 (Retrieval + Grounded Generation)
+   * revealed on top.
    */
   step: number;
 }
@@ -31,19 +33,20 @@ interface VectorizeOverlayProps {
  * "why RAG, then how" story for a non-technical room:
  *   0 — why not just ask the model? (it never saw your product; it guesses)
  *   1 — documents become a searchable map of meaning (chunk + embed)
- *   2 — RAG: retrieve the few relevant passages, answer grounded with citations
+ *   2 — text → vectors → semantic space (similar meaning sits closer)
+ *   3 — RAG: retrieve the few relevant passages, answer grounded with citations
  *
  * Purely presentational — the deck owns the stage; the headers + repeated nodes
  * (docs, map dots) are data-driven from `data.ts`, and the timing lives in CSS.
  */
 export function VectorizeOverlay({ active, step }: VectorizeOverlayProps) {
-  // The "why" beat owns sub-steps 0 and 1, so the visible beat lags `step` by
-  // one once we pass it; within "why", the product panel lights up at step ≥ 1.
-  // The RAG beat (index 2) owns the last two sub-steps (3, 4), so clamp there.
-  const beatIndex = step <= 1 ? 0 : Math.min(step - 1, 2);
+  // The "why" beat owns sub-steps 0 and 1; within it the product panel lights up
+  // at step ≥ 1. Then step 2 → map (beat 1), step 3 → vector (beat 2), and the
+  // RAG beat (index 3) owns the last two sub-steps (4, 5), so clamp there.
+  const beatIndex = step <= 1 ? 0 : Math.min(step - 1, 3);
   const panelLit = step >= 1;
   // Within the RAG pipeline: 0 reveals Step 1 only, 1 adds Step 2.
-  const ragStep = step >= 4 ? 1 : 0;
+  const ragStep = step >= 5 ? 1 : 0;
   const theme = vectorizeBeats[beatIndex]?.theme;
 
   return (
@@ -53,10 +56,10 @@ export function VectorizeOverlay({ active, step }: VectorizeOverlayProps) {
             on red beats, deep Twilio blue on the map beat) */}
         <div className={`vz-bg${theme ? ` ${theme}` : ''}`} />
 
-        {/* headers cross-fade per beat at a fixed top anchor. The RAG beat is
-            skipped — its <RagPipeline/> renders its own title + red underline. */}
+        {/* headers cross-fade per beat at a fixed top anchor. The vector + RAG
+            beats are skipped — each renders its own in-figure labels. */}
         {vectorizeBeats.map((beat, i) =>
-          beat.key === 'rag' ? null : (
+          beat.key === 'rag' || beat.key === 'vector' ? null : (
             <div key={beat.key} className={`vz-head${beatIndex === i ? ' is-on' : ''}`}>
               <p className="vz-eyebrow">{beat.eyebrow}</p>
               <h2 className="vz-title">{beat.title}</h2>
@@ -137,9 +140,14 @@ export function VectorizeOverlay({ active, step }: VectorizeOverlayProps) {
           </p>
         </div>
 
-        {/* ---- Beat 2: the RAG pipeline diagram (reveals in two steps) ---- */}
+        {/* ---- Beat 2: text → vectors → semantic space ---- */}
         <div className={`vz-beat${beatIndex === 2 ? ' is-on' : ''}`}>
-          <RagPipeline active={active && beatIndex === 2} step={ragStep} />
+          <VectorSpace active={active && beatIndex === 2} />
+        </div>
+
+        {/* ---- Beat 3: the RAG pipeline diagram (reveals in two steps) ---- */}
+        <div className={`vz-beat${beatIndex === 3 ? ' is-on' : ''}`}>
+          <RagPipeline active={active && beatIndex === 3} step={ragStep} />
         </div>
       </div>
     </div>

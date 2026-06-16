@@ -376,6 +376,80 @@
   z-index: 1;
 }
 
+/* ---- photo caption (date · context always reads; ECHO detail on hover/focus) ---- */
+.afil-about .portrait {
+  outline: none;
+}
+.afil-about .portrait .caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  margin: 0;
+  padding: 30px 28px 24px;
+  display: flex;
+  flex-direction: column;
+  /* own backdrop grows with the detail so the text stays readable over the photo */
+  background: linear-gradient(
+    180deg,
+    rgba(6, 8, 12, 0) 0%,
+    rgba(6, 8, 12, 0.66) 46%,
+    rgba(6, 8, 12, 0.9) 100%
+  );
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+.afil-about .portrait .caption .meta {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  font-family: var(--font-body);
+}
+.afil-about .portrait .caption .bar {
+  align-self: center;
+  width: 2px;
+  height: 16px;
+  background: var(--red);
+  box-shadow: 0 0 10px 1px var(--red-soft);
+}
+.afil-about .portrait .caption .date {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ink-1);
+}
+.afil-about .portrait .caption .ctx {
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  color: var(--ink-2);
+}
+.afil-about .portrait .caption .detail {
+  max-width: 600px;
+  max-height: 0;
+  margin-top: 0;
+  opacity: 0;
+  overflow: hidden;
+  transform: translateY(6px);
+  font-size: 17px;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  color: var(--ink-2);
+  transition:
+    opacity 0.5s var(--ease),
+    transform 0.5s var(--ease),
+    max-height 0.5s var(--ease),
+    margin-top 0.5s var(--ease);
+}
+.afil-about .portrait:hover .caption .detail,
+.afil-about .portrait:focus-visible .caption .detail {
+  max-height: 140px;
+  margin-top: 14px;
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* ---- name + role (below the portrait, left) ---- */
 .afil-about .identity {
   position: absolute;
@@ -704,29 +778,84 @@
   /* recenters horizontally on the synthesis beat */
   transition: transform 0.65s var(--ease);
 }
+/* Badge cutout: a full circular ring sits at the base and holds the lower body;
+   the transparent-background portrait rises out of its top so the head and
+   shoulders pop above the ring. The ::before is the disc + ring (behind the
+   figure); the figure is masked so the top reveals fully (head pops out) while
+   the bottom is clipped to the circle (body contained, rounded base).
+   Geometry is in vars so the badge can be nudged in one place. */
 .afil-persona .p-avatar {
+  --badge-r: 62px; /* ring radius */
+  --badge-cy: 92px; /* ring center, from the top of the 156px frame */
+  --img-y: -4px; /* vertical nudge of the portrait within the frame */
+  --head-cx: 50%; /* head-reveal ellipse center x (shift onto an off-axis head) */
+  --head-cy: 30px; /* head-reveal ellipse center y */
+  --head-rx: 46px; /* head-reveal ellipse width radius (covers hair) */
+  --head-ry: 44px; /* head-reveal ellipse height radius */
   position: relative;
   flex: none;
-  width: 124px;
-  height: 124px;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 1px solid var(--line-bright);
-  background: #06080c;
+  width: 156px;
+  height: 156px;
 }
-.afil-persona .p-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 22%;
-  display: block;
-}
-.afil-persona .p-avatar::after {
+.afil-persona .p-avatar::before {
   content: "";
   position: absolute;
-  inset: 0;
+  left: 50%;
+  top: var(--badge-cy);
+  width: calc(var(--badge-r) * 2);
+  height: calc(var(--badge-r) * 2);
+  transform: translate(-50%, -50%);
+  z-index: 0;
   border-radius: 50%;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  background:
+    radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.05), transparent 60%),
+    rgba(8, 10, 16, 0.5);
+  border: 1.5px solid var(--red-soft);
+  box-shadow:
+    inset 0 0 22px rgba(0, 0, 0, 0.5),
+    0 0 22px rgba(242, 47, 70, 0.16);
+  transition:
+    border-color 0.5s var(--ease),
+    box-shadow 0.5s var(--ease);
+  pointer-events: none;
+}
+.afil-persona .p-row.focus .p-avatar::before {
+  border-color: var(--red);
+  box-shadow:
+    inset 0 0 22px rgba(0, 0, 0, 0.5),
+    0 0 30px rgba(242, 47, 70, 0.4);
+}
+.afil-persona .p-avatar img {
+  position: absolute;
+  left: 50%;
+  top: var(--img-y);
+  z-index: 1;
+  width: 156px;
+  height: 156px;
+  transform: translateX(-50%);
+  display: block;
+  /* head ellipse reveals the head + hair so it pops above the ring; the body
+     circle clips the lower body (and wide shoulders) into the ring. Both layers
+     are in the image's own (untransformed) box, so the body circle stays exactly
+     aligned with the ring border — the body can never spill, only the head pops.
+     Layers union. */
+  -webkit-mask-image:
+    radial-gradient(var(--head-rx) var(--head-ry) at var(--head-cx) var(--head-cy), #000 99%, transparent 100%),
+    radial-gradient(var(--badge-r) var(--badge-r) at 50% var(--badge-cy), #000 99%, transparent 100%);
+  -webkit-mask-repeat: no-repeat;
+  mask-image:
+    radial-gradient(var(--head-rx) var(--head-ry) at var(--head-cx) var(--head-cy), #000 99%, transparent 100%),
+    radial-gradient(var(--badge-r) var(--badge-r) at 50% var(--badge-cy), #000 99%, transparent 100%);
+  mask-repeat: no-repeat;
+}
+/* Peter (r2) is twisted — wide head sitting left of center — so the default head
+   ellipse reveals his upper shoulder beyond the ring. A smaller ellipse nudged
+   onto his head pops just the head; the body still clips cleanly to the ring. */
+.afil-persona .p-row.r2 .p-avatar {
+  --head-cx: 47%;
+  --head-cy: 20px;
+  --head-rx: 36px;
+  --head-ry: 50px;
 }
 .afil-persona .p-id {
   min-width: 0;
@@ -2348,6 +2477,16 @@
 .afil-architecture .rag-box.response .rag-box-label {
   font-size: 27px;
 }
+/* the AI box clarifier — smaller, muted, centered under "AI" */
+.afil-architecture .rag-box-sub {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--font-body);
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--ink-2);
+}
 
 /* Top-K relevant chunks: label + three evidence pills */
 .afil-architecture .rag-chunks-label {
@@ -2529,6 +2668,275 @@
   50% {
     box-shadow: 0 0 30px 2px rgba(242, 47, 70, 0.3);
   }
+}
+
+/* ----------------------------------------------------------------------------
+   Vectorize overlay — "Text becomes vectors" beat (<VectorSpace/>).
+   Three stages on the plane: input cards → embedding matrix → 2-D semantic
+   space, plus a bottom legend. Each phrase carries an accent class that sets the
+   --vec* trio (point, soft glow, line), tying its card / row / point together.
+   Reveal reuses the .rag-anim vocabulary; geometry is here, positions inline.
+---------------------------------------------------------------------------- */
+.afil-architecture .vec-stage {
+  position: absolute;
+  inset: 0;
+  color: #e8ecf6;
+}
+.afil-architecture .vec-violet {
+  --vec: #6e8bff;
+  --vec-soft: rgba(110, 139, 255, 0.18);
+  --vec-line: rgba(110, 139, 255, 0.5);
+}
+.afil-architecture .vec-purple {
+  --vec: #c07bf0;
+  --vec-soft: rgba(192, 123, 240, 0.18);
+  --vec-line: rgba(192, 123, 240, 0.5);
+}
+.afil-architecture .vec-cyan {
+  --vec: #2fd0c6;
+  --vec-soft: rgba(47, 208, 198, 0.18);
+  --vec-line: rgba(47, 208, 198, 0.5);
+}
+
+/* stage heads: numbered badge + uppercase label, centered over each column */
+.afil-architecture .vec-head {
+  position: absolute;
+  top: 196px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  text-align: center;
+}
+.afil-architecture .vec-head.h0 {
+  left: 120px;
+  width: 420px;
+}
+.afil-architecture .vec-head.h1 {
+  left: 730px;
+  width: 440px;
+}
+.afil-architecture .vec-head.h2 {
+  left: 1300px;
+  width: 540px;
+}
+.afil-architecture .vec-badge {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(124, 140, 248, 0.65);
+  box-shadow: 0 0 16px -4px rgba(124, 140, 248, 0.5);
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: #d3dbf2;
+}
+.afil-architecture .vec-head-label {
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #c4ccdc;
+}
+
+/* Stage 1 — text input cards */
+.afil-architecture .vec-card {
+  position: absolute;
+  left: 120px;
+  width: 420px;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 0 26px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 18px 40px -28px rgba(0, 0, 0, 0.9);
+}
+.afil-architecture .vec-card-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  color: var(--vec);
+  background: var(--vec-soft);
+  border: 1px solid var(--vec-line);
+}
+.afil-architecture .vec-card-icon svg {
+  width: 26px;
+  height: 26px;
+}
+.afil-architecture .vec-card-text {
+  font-size: 27px;
+  font-weight: 500;
+  line-height: 1.18;
+  color: #f1f4fb;
+}
+
+/* the connector arrows between stages */
+.afil-architecture .vec-arrow {
+  position: absolute;
+  top: 530px;
+  color: rgba(150, 162, 210, 0.85);
+}
+.afil-architecture .vec-arrow.a1 {
+  left: 600px;
+}
+.afil-architecture .vec-arrow.a2 {
+  left: 1212px;
+}
+
+/* Stage 2 — the embedding matrix */
+.afil-architecture .vec-matrix {
+  position: absolute;
+  left: 730px;
+  top: 416px;
+  width: 440px;
+  padding: 10px 24px;
+}
+.afil-architecture .vec-grid {
+  display: grid;
+  grid-template-columns: 54px repeat(4, 1fr);
+  align-items: center;
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+.afil-architecture .vec-cell {
+  display: grid;
+  place-items: center;
+  height: 66px;
+  font-size: 26px;
+  font-variant-numeric: tabular-nums;
+  color: #e9edf7;
+}
+.afil-architecture .vec-corner {
+  height: 52px;
+}
+.afil-architecture .vec-colh {
+  height: 52px;
+  font-style: italic;
+  font-size: 24px;
+  color: #aeb7cc;
+}
+.afil-architecture .vec-num,
+.afil-architecture .vec-rowdot {
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.afil-architecture .vec-cell.dots {
+  color: #8b93a8;
+  letter-spacing: 0.06em;
+}
+.afil-architecture .vec-dot {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--vec);
+  box-shadow: 0 0 12px 1px var(--vec-soft);
+}
+.afil-architecture .vec-bracket {
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  width: 16px;
+  border-top: 2px solid #7c8cf8;
+  border-bottom: 2px solid #7c8cf8;
+  filter: drop-shadow(0 0 6px rgba(110, 139, 255, 0.5));
+}
+.afil-architecture .vec-bracket.l {
+  left: 2px;
+  border-left: 2px solid #7c8cf8;
+  border-radius: 5px 0 0 5px;
+}
+.afil-architecture .vec-bracket.r {
+  right: 2px;
+  border-right: 2px solid #7c8cf8;
+  border-radius: 0 5px 5px 0;
+}
+
+/* Stage 3 — the 2-D semantic space */
+.afil-architecture .vec-plot {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.afil-architecture .vec-axis {
+  stroke: rgba(255, 255, 255, 0.55);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.afil-architecture .vec-guide {
+  stroke: rgba(255, 255, 255, 0.16);
+  stroke-width: 1.5;
+  stroke-dasharray: 6 8;
+}
+.afil-architecture .vec-cluster {
+  fill: rgba(124, 140, 248, 0.06);
+  stroke: rgba(158, 158, 244, 0.8);
+  stroke-width: 1.6;
+  stroke-dasharray: 5 7;
+}
+.afil-architecture .vec-pt {
+  fill: var(--vec);
+  filter: drop-shadow(0 0 8px var(--vec-soft));
+}
+.afil-architecture .vec-axis-tick {
+  position: absolute;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 26px;
+  color: #c4ccdc;
+}
+.afil-architecture .vec-pt-label {
+  position: absolute;
+  width: 210px;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.18;
+  color: var(--vec);
+}
+
+/* bottom legend pill */
+.afil-architecture .vec-legend {
+  position: absolute;
+  left: 610px;
+  width: 700px;
+  top: 884px;
+  height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+.afil-architecture .vec-legend-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.afil-architecture .vec-legend .vec-dot {
+  width: 18px;
+  height: 18px;
+}
+.afil-architecture .vec-legend-link {
+  width: 22px;
+  border-top: 2px dashed rgba(255, 255, 255, 0.5);
+}
+.afil-architecture .vec-legend-text {
+  font-size: 30px;
+  font-weight: 500;
+  color: #eef1f8;
 }
 
 .afil-architecture.staged .arch-reveal.revealed .r0 {
@@ -2992,8 +3400,8 @@
   z-index: 20;
   display: flex;
   align-items: center;
-  gap: 18px;
-  padding: 10px 16px;
+  gap: 12px;
+  padding: 7px 11px;
   border-radius: 999px;
   border: 1px solid var(--border-subtle, #262626);
   background: rgba(10, 12, 16, 0.72);
@@ -3002,8 +3410,8 @@
 }
 .afil-nav-btn {
   appearance: none;
-  width: 38px;
-  height: 38px;
+  width: 25px;
+  height: 25px;
   border-radius: 50%;
   border: 1px solid var(--line-bright);
   background: rgba(255, 255, 255, 0.02);
@@ -3028,16 +3436,16 @@
   cursor: default;
 }
 .afil-nav-btn svg {
-  width: 16px;
-  height: 16px;
+  width: 11px;
+  height: 11px;
 }
 .afil-nav-count {
-  font-size: 16px;
+  font-size: 11px;
   font-weight: 500;
   color: var(--ink-2);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.06em;
-  min-width: 64px;
+  min-width: 42px;
   text-align: center;
 }
 .afil-nav-count .now {
@@ -3048,11 +3456,11 @@
 }
 .afil-nav-dots {
   display: flex;
-  gap: 8px;
+  gap: 5px;
 }
 .afil-nav-dot {
-  width: 9px;
-  height: 9px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   border: 0;
   padding: 0;
@@ -3070,6 +3478,20 @@
 .afil-nav-dot.on {
   background: var(--red);
   transform: scale(1.15);
+}
+
+/* On narrow (mobile) viewports the nav reads as a header instead of a footer:
+   the scaled deck is tiny and centered, leaving generous margins, so pinning the
+   controls to the top keeps them clear of on-screen keyboards / home indicators
+   and within easy thumb reach. env() respects notched safe areas. */
+@media (max-width: 768px) {
+  .afil-nav {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: auto;
+    top: calc(12px + env(safe-area-inset-top, 0px));
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
