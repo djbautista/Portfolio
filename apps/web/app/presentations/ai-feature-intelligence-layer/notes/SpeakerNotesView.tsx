@@ -17,6 +17,7 @@ import {
   getNote,
   type SpeakerNote,
 } from '@/app/presentations/ai-feature-intelligence-layer/speakerNotes';
+import { getTransition } from '@/app/presentations/ai-feature-intelligence-layer/transitions';
 
 import { parseNote, serializeNote } from './noteFormat';
 import './notes.css';
@@ -51,6 +52,33 @@ function NoteBody({ note }: { note: SpeakerNote }) {
                 </ul>
               )}
             </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="afil-notes-empty">No notes for this beat.</p>
+      )}
+    </>
+  );
+}
+
+/**
+ * The teleprompter rendering of a note: the headline, then one big line per
+ * bullet — the single simplest way to say it out loud (`say[0]`, falling back to
+ * the idea if a bullet has no spoken variant). The other `say` alternatives and
+ * the idea labels stay in the data (and the editor); this view just reads the
+ * one line you actually speak. `compact` is the quieter scale used for the
+ * next-beat preview on the right.
+ */
+function SpokenLines({ note, compact = false }: { note: SpeakerNote; compact?: boolean }) {
+  const lines = note.bullets.map((b) => b.say[0] ?? b.idea).filter(Boolean);
+  const Headline = compact ? 'h2' : 'h1';
+  return (
+    <>
+      {note.headline && <Headline className="afil-notes-headline">{note.headline}</Headline>}
+      {lines.length > 0 ? (
+        <ul className="afil-notes-spoken">
+          {lines.map((line, i) => (
+            <li key={i}>{line}</li>
           ))}
         </ul>
       ) : (
@@ -426,8 +454,11 @@ export function SpeakerNotesView() {
   }
 
   // ---------- Follow mode (live) ----------
+  // Split screen: the current beat as big spoken lines on the left, and on the
+  // right how to bridge into the next beat plus a quiet preview of it.
   const current = fromGlobal(beat.global);
   const note = effectiveNote(beat.slide, beat.stage);
+  const transition = getTransition(beat.slide, beat.stage);
   const hasNext = beat.global + 1 < TOTAL_STEPS;
   const nextStep = hasNext ? fromGlobal(beat.global + 1) : null;
   const nextNote = nextStep ? effectiveNote(nextStep.slide, nextStep.stage) : null;
@@ -443,6 +474,9 @@ export function SpeakerNotesView() {
           </span>
         </div>
         <div className="afil-notes-bar-right">
+          <span className="afil-notes-count">
+            {beat.global + 1} / {TOTAL_STEPS}
+          </span>
           <span className={`afil-notes-status is-${status}`}>
             <span className="afil-notes-dot" />
             {STATUS_LABEL[status]}
@@ -457,28 +491,34 @@ export function SpeakerNotesView() {
         <div className="afil-notes-progress-fill" style={{ width: `${progress}%` }} />
       </div>
 
-      <main className="afil-notes-current">
-        <NoteBody note={note} />
-      </main>
+      <div className="afil-notes-split">
+        <main className="afil-notes-now">
+          <SpokenLines note={note} />
+        </main>
 
-      <footer className="afil-notes-next">
-        <span className="afil-notes-next-label">Next</span>
-        {nextStep && nextNote ? (
-          <div className="afil-notes-next-body">
-            <span className="afil-notes-next-loc">
-              {nextStep.slideName} · step {nextStep.stepInSlide} / {nextStep.totalInSlide}
-            </span>
-            <span className="afil-notes-next-text">
-              {nextNote.headline ?? nextNote.bullets[0]?.idea ?? '—'}
-            </span>
+        <aside className="afil-notes-upnext">
+          <div className="afil-notes-transition">
+            <span className="afil-notes-upnext-label">Bridge to next</span>
+            <p className="afil-notes-transition-text">
+              {transition ?? (hasNext ? '—' : 'Hand off to the live demo.')}
+            </p>
           </div>
-        ) : (
-          <span className="afil-notes-next-text">End of deck</span>
-        )}
-        <span className="afil-notes-count">
-          {beat.global + 1} / {TOTAL_STEPS}
-        </span>
-      </footer>
+
+          {nextStep && nextNote ? (
+            <div className="afil-notes-nextview">
+              <span className="afil-notes-next-loc">
+                Next · {nextStep.slideName} · step {nextStep.stepInSlide} /{' '}
+                {nextStep.totalInSlide}
+              </span>
+              <SpokenLines note={nextNote} compact />
+            </div>
+          ) : (
+            <div className="afil-notes-nextview">
+              <span className="afil-notes-next-loc">End of deck</span>
+            </div>
+          )}
+        </aside>
+      </div>
     </div>
   );
 }

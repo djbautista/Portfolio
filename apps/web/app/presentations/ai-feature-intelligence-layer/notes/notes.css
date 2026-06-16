@@ -115,16 +115,52 @@
   transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ---- current beat: the focus of the screen ---- */
-.afil-notes-current {
+/* ---- split: current beat (left) + the bridge into the next (right) ---- */
+.afil-notes-split {
   flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 28px;
+  padding-top: 18px;
+}
+/* left column — the live beat, the focus of the screen */
+.afil-notes-now {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   gap: 18px;
-  padding: 22px 4px;
+  padding: 4px 4px 4px 0;
   overflow-y: auto;
+}
+
+/* the spoken lines you actually read aloud — one big line per bullet (the
+   single simplest phrasing; the idea label and other variants stay in the data) */
+.afil-notes-spoken {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.afil-notes-spoken li {
+  position: relative;
+  padding-left: 30px;
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3.4vw, 40px);
+  font-weight: 600;
+  line-height: 1.18;
+  color: var(--ink-1);
+}
+.afil-notes-spoken li::before {
+  content: "“";
+  position: absolute;
+  left: 0;
+  top: 0.1em;
+  font-size: 1.3em;
+  color: var(--red-soft);
+  font-family: var(--font-display);
 }
 .afil-notes-headline {
   margin: 0;
@@ -203,43 +239,70 @@
   color: var(--ink-3);
 }
 
-/* ---- next beat: quiet footer prompt ---- */
-.afil-notes-next {
+/* ---- right column: how to bridge into the next beat + a preview of it ---- */
+.afil-notes-upnext {
+  min-height: 0;
   display: flex;
-  align-items: center;
-  gap: 16px;
-  padding-top: 14px;
-  border-top: 1px solid var(--line);
-  color: var(--ink-2);
+  flex-direction: column;
+  gap: 18px;
+  padding: 20px 22px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow-y: auto;
 }
-.afil-notes-next-label {
+.afil-notes-upnext-label {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 10px;
+}
+/* the one-line spoken segue that carries you from this beat into the next */
+.afil-notes-transition {
+  flex: none;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+.afil-notes-transition-text {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(18px, 2.2vw, 26px);
+  font-weight: 500;
+  line-height: 1.32;
+  color: var(--ink-1);
+}
+/* a quiet preview of the next beat, in the same spoken style but dialed down */
+.afil-notes-nextview {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.afil-notes-next-loc {
   flex: none;
   font-family: var(--font-display);
   font-size: 12px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
-.afil-notes-next-body {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.afil-notes-next-loc {
-  font-size: 13px;
-  color: var(--ink-3);
-}
-.afil-notes-next-text {
-  flex: 1;
-  min-width: 0;
-  font-size: 18px;
-  line-height: 1.3;
+.afil-notes-upnext .afil-notes-headline {
+  font-size: clamp(20px, 2.4vw, 28px);
   color: var(--ink-2);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+}
+.afil-notes-upnext .afil-notes-spoken {
+  gap: 12px;
+}
+.afil-notes-upnext .afil-notes-spoken li {
+  font-size: clamp(17px, 1.9vw, 23px);
+  color: var(--ink-2);
+}
+.afil-notes-upnext .afil-notes-spoken li::before {
+  color: color-mix(in srgb, var(--red-soft) 70%, transparent);
 }
 .afil-notes-count {
   flex: none;
@@ -436,10 +499,15 @@
   color: var(--ink-1);
 }
 
-/* portrait orientation: a touch tighter, content still centered */
+/* portrait (iPad upright): stack the live beat above the next-beat bridge */
 @media (orientation: portrait) {
-  .afil-notes-current {
-    justify-content: flex-start;
+  .afil-notes-split {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: 18px;
+  }
+  .afil-notes-now {
+    padding-right: 0;
   }
 }
 
