@@ -97,47 +97,85 @@ export function SpeakerNotesView() {
     [],
   );
 
-  // --- SSE subscription (open once on mount) ---
+  // --- SSE subscription ---
+  // Opens one stream and keeps it pinned to the page lifecycle: a refresh must
+  // close the old stream (so the server reaps that listener immediately) and the
+  // fresh page reconnects on its own. `pagehide`/`pageshow` are the reliable
+  // signals for that on iOS Safari (the iPad target), where unmount cleanup and
+  // the socket's `abort` can be skipped on a hard refresh or bfcache restore.
   useEffect(() => {
     const room = normalizeRoom(new URLSearchParams(window.location.search).get('room'));
     roomRef.current = room;
-    const source = new EventSource(`${STREAM_PATH}?room=${encodeURIComponent(room)}`);
 
-    const onEvent = (name: string, handle: (data: string) => void) =>
-      source.addEventListener(name, (event) => handle((event as MessageEvent<string>).data));
+    let source: EventSource | null = null;
 
-    source.onopen = () => setStatus(beatRef.current ? 'live' : 'waiting');
-    onEvent('beat', (data) => {
-      try {
-        setBeat(JSON.parse(data) as DeckState);
-        setStatus('live');
-      } catch {
-        // ignore a malformed frame
-      }
-    });
-    onEvent('notes', (data) => {
-      try {
-        setOverrides(JSON.parse(data) as Record<string, SpeakerNote>);
-      } catch {
-        // ignore a malformed snapshot
-      }
-    });
-    onEvent('note', (data) => {
-      try {
-        const { key, note } = JSON.parse(data) as { key: string; note: SpeakerNote | null };
-        setOverrides((prev) => {
-          const next = { ...prev };
-          if (note) next[key] = note;
-          else delete next[key];
-          return next;
-        });
-      } catch {
-        // ignore a malformed edit frame
-      }
-    });
-    source.onerror = () => setStatus('reconnecting'); // EventSource auto-retries
+    const connect = () => {
+      source?.close(); // never leave a prior stream dangling
+      const es = new EventSource(`${STREAM_PATH}?room=${encodeURIComponent(room)}`);
+      source = es;
 
-    return () => source.close();
+      const onEvent = (name: string, handle: (data: string) => void) =>
+        es.addEventListener(name, (event) => handle((event as MessageEvent<string>).data));
+
+      es.onopen = () => setStatus(beatRef.current ? 'live' : 'waiting');
+      onEvent('beat', (data) => {
+        try {
+          setBeat(JSON.parse(data) as DeckState);
+          setStatus('live');
+        } catch {
+          // ignore a malformed frame
+        }
+      });
+      onEvent('notes', (data) => {
+        try {
+          // a fresh snapshot replaces local overrides — every (re)connect
+          // re-hydrates the latest globally-saved edits
+          setOverrides(JSON.parse(data) as Record<string, SpeakerNote>);
+        } catch {
+          // ignore a malformed snapshot
+        }
+      });
+      onEvent('note', (data) => {
+        try {
+          const { key, note } = JSON.parse(data) as { key: string; note: SpeakerNote | null };
+          setOverrides((prev) => {
+            const next = { ...prev };
+            if (note) next[key] = note;
+            else delete next[key];
+            return next;
+          });
+        } catch {
+          // ignore a malformed edit frame
+        }
+      });
+      es.onerror = () => setStatus('reconnecting'); // EventSource auto-retries
+    };
+
+    const disconnect = () => {
+      source?.close();
+      source = null;
+    };
+
+    connect();
+
+    // Closing/refreshing the tab fires `pagehide` (reliably, incl. iOS) — drop
+    // the stream now. If the page is only frozen for bfcache, `pageshow` with
+    // persisted=true means it wasn't reloaded, so reconnect by hand.
+    const onPageHide = () => disconnect();
+    const onPageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) {
+        setStatus('connecting');
+        connect();
+      }
+    };
+    window.addEventListener('pagehide', onPageHide);
+    window.addEventListener('pageshow', onPageShow);
+
+    return () => {
+      window.removeEventListener('pagehide', onPageHide);
+      window.removeEventListener('pageshow', onPageShow);
+      disconnect();
+    };
   }, []);
 
   // --- keep the iPad awake during the talk ---

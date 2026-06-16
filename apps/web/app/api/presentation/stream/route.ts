@@ -55,7 +55,16 @@ export async function GET(request: Request) {
         try {
           controller.enqueue(encoder.encode(': ping\n\n'));
         } catch {
-          // controller already closed — cleanup runs via cancel()/abort
+          // The write failed, so the client is gone but we never saw an `abort`
+          // (e.g. iOS Safari dropping the socket on refresh). Reap the listener
+          // now instead of leaking it — otherwise a refreshing iPad accretes
+          // ghost subscriptions in the room.
+          cleanup();
+          try {
+            controller.close();
+          } catch {
+            // already closed
+          }
         }
       }, PING_MS);
 
